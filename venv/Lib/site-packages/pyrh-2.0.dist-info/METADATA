@@ -1,0 +1,135 @@
+Metadata-Version: 2.1
+Name: pyrh
+Version: 2.0
+Summary: Unofficial Robinhood Python API
+Home-page: https://github.com/georgianpartners/foreshadow
+License: MIT
+Keywords: trading,options,robinhood,stock,api
+Author: Unofficial Robinhood Python API Developers
+Requires-Python: >=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Requires-Dist: configparser (>=3.5,<4.0); python_version >= "2.7" and python_version < "2.8"
+Requires-Dist: enum (>=0.4.6,<0.5.0); python_version >= "2.7" and python_version < "2.8"
+Requires-Dist: python-dateutil (>=2.8,<3.0)
+Requires-Dist: requests (>=2.23,<3.0)
+Requires-Dist: six (>=1.14,<2.0)
+Project-URL: Repository, https://github.com/georgianpartners/foreshadow
+Description-Content-Type: text/markdown
+
+[![robinhood-logo](./docs/logo-color-transparent.png)](https://github.com/robinhood-unofficial/Robinhood)
+------------
+
+# pyrh - Unofficial Robinhood API
+
+
+[![Gitter](https://img.shields.io/gitter/room/J-Robinhood/Lobby)](https://gitter.im/J-Robinhood/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![GitHub](https://img.shields.io/github/license/robinhood-unofficial/Robinhood)](https://github.com/robinhood-unofficial/Robinhood/blob/master/LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+Python Framework to make trades with Robinhood Private API.
+See the original [blog post](https://medium.com/@rohanpai25/reversing-robinhood-free-accessible-automated-stock-trading-f40fba1e7d8b).
+
+Supports Python 2.7+ and 3.6+
+
+## Current Features
+- Placing buy orders (`Robinhood.place_buy_order`)
+- Placing sell order (`Robinhood.place_sell_order`)
+- Fetch and cancel orders (`Robinhood.order_history` and `Robinhood.cancel_order`)
+- Quote information (`Robinhood.quote_data`)
+- User portfolio data (`Robinhood.portfolios`)
+- User positions data (`Robinhood.positions`)
+- More coming soon
+
+### How To Install:
+Clone the repository into your project directory using:
+
+```
+git clone https://github.com/robinhood-unofficial/Robinhood
+```
+
+Then navigate to the cloned directory, where `setup.py` is located. Now run the following to install:
+
+```
+pip install .
+```
+
+### Converting to Python 3
+Project will work on both python 2 and python 3
+
+### Running [example.py](https://github.com/robinhood-unofficial/Robinhood/blob/master/docs/example.ipynb)
+* Install jupyter
+```
+pip install jupyter
+jupyter notebook
+```
+
+Then navigate to the example file linked above and run it.
+
+### Data returned
+* Quote data
+  + Ask Price
+  + Ask Size
+  + Bid Price
+  + Bid Size
+  + Last trade price
+  + Previous close
+  + Previous close date
+  + Adjusted previous close
+  + Trading halted
+  + Updated at
+  + Historical Price
+* User portfolio data
+  + Adjusted equity previous close
+  + Equity
+  + Equity previous close
+  + Excess margin
+  + Extended hours equity
+  + Extended hours market value
+  + Last core equity
+  + Last core market value
+  + Market value
+  + Order history
+  + Dividend history
+* User positions data
+  + Securities owned
+* News
+
+------------------
+
+# Changelog
+## 2.0
+* Fixed 2fa connection issues
+* Last version to support python 2
+
+## 1.0.1
+* Added custom exception
+
+# Developer setup
+* Python 3.7+ is required
+* poetry is used to manage package dependencies
+* pre-commit is used to manage the project's tooling and linting
+  * black
+  * flake8
+```
+brew install poetry
+brew install pre-commit
+poetry install
+pre-commit install
+```
+
+To manually run the linting checks. They are automatically run when you try to push the
+code.
+```
+pre-commit run -a
+```
+
+# Related
+* [robinhood-ruby](https://github.com/rememberlenny/robinhood-ruby) - RubyGem for interacting with Robinhood API
+* [robinhood-node](https://github.com/aurbano/robinhood-node) - NodeJS module to make trades with Robinhood Private API
+
