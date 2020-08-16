@@ -38,26 +38,28 @@ def pc(arg1):
     data = round(float(data[1]), 2)
     percent = round(((data - prev_close) / prev_close * 100), 2)
     if percent > 0:
-        percent = '+' + str(percent)
+        percent = '+' + str(percent) + '%'
     else:
-        percent = str(percent)
-    return arg1.upper() + ": $" + str(data) + "    " + percent + '%'
+        percent = str(percent) + '%'
+    return arg1.upper() + ": $" + str(data) + "    " + percent
+
+
+def validateTicker(stock):
+    if not re.match(r'\b[a-zA-Z]{1,4}\b', stock):
+        return False
+    else:
+        return True
 
 
 @client.command(name='p')
-async def priceCheck(ctx, arg1):
-    if re.match(r'\b[a-zA-Z]{1,4}\b', arg1):
-        res = pc(arg1)
-        await ctx.send(res)
-
-
-@client.command(name='pp')
 async def priceCheckList(ctx, *args):
     res = ""
     for arg in args:
-        if re.match(r'\b[a-zA-Z]{1,4}\b', arg):
+        if validateTicker(arg):
             pcList = pc(arg)
             res += pcList + '\n'
+        else:
+            res += arg.upper() + " is not a valid ticker."
     await ctx.send(res)
 
 
