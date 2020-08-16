@@ -15,12 +15,18 @@ import schedule
 day = dt.datetime.today().weekday()  # 0-6 index
 hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
 min = datetime.now().minute
+if hour < 12:
+    AM = True
+else:
+    AM = False
+
 client = commands.Bot(command_prefix='.')
+load_dotenv()
 
 
 @client.event
 async def on_ready():
-    print('Bot is ready')
+    print('Bot successfully launched!')
 
 
 def pc(arg1):
@@ -51,18 +57,21 @@ async def priceCheckList(ctx, *args):
     await ctx.send(res)
 
 
-@client.event
-async def checkMarket():
-    res = pc('SPY')
-    print("Checked SPY: " + res + " @ " + str(hour) + ":" + str(min))
-    await client.get_all_channels.send(res)
+# < 5
+async def background_loop():
+    await client.wait_until_ready()
+    print(os.getenv('DISCORD_CHANNEL'))
+    channel = client.get_channel(os.getenv('DISCORD_CHANNEL'))
+    print(channel)
+    while day <= 6 and not client.is_closed():
+        # in range(8,3). 15, 8, 15
+        if min % 1 == 0 and 8 <= hour <= 24:
+            res = pc('SPY')
+            print(("Checked " + res + " @ " + str(hour) + ":" + str(min) + "AM" if AM else "PM"))
+            await channel.send(res)
+            time.sleep(60)
 
-#5
-while day < 6:
-    # in range(8,3). 15, 8, 15
-    if min % 1 == 0 and 8 <= hour <= 24:
-        checkMarket(message="SPY")
-        time.sleep(60)
 
-load_dotenv()
-client.run(os.getenv('TOKEN'))
+client.loop.create_task(background_loop())
+client.run(os.getenv('DISCORD_TOKEN'))
+
