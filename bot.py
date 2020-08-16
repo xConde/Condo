@@ -3,14 +3,11 @@ import os
 import re
 import time
 from rh import rh
-import pytz
 from discord.ext import commands
 from dotenv import load_dotenv
 import datetime as dt
 from datetime import datetime
-from datetime import timedelta
-from pytz import timezone
-import schedule
+
 
 day = dt.datetime.today().weekday()  # 0-6 index
 hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
