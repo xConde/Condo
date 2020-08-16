@@ -24,31 +24,28 @@ holidayDate = {}
 for date in holidays.UnitedStates(years=2020).items():
     holidayDate[str(date[0])[5:]] = str(date[1])
 
-
 client = commands.Bot(command_prefix='.')
 load_dotenv()
 
-#def determineFriday():
 
-
-@client.event
-async def on_ready():
-    print('Bot successfully launched!')
+def grabPercent(curr, prev):
+    perc = round(((curr - prev) / prev * 100), 2)
+    if perc >= 0:
+        perc = '+' + str(perc) + '%'
+        return perc
+    else:
+        perc = str(perc) + '%'
+        return perc
 
 
 def pc(arg1):
     temp = rh.get_quote_list(arg1.upper(), "symbol,last_trade_price")
     temp2 = rh.adjusted_previous_close(arg1.upper())
-    prev_close = temp2[0]
-    prev_close = round(float(prev_close[0]), 2)
-    data = temp[0]
-    data = round(float(data[1]), 2)
-    percent = round(((data - prev_close) / prev_close * 100), 2)
-    if percent > 0:
-        percent = '+' + str(percent) + '%'
-    else:
-        percent = str(percent) + '%'
-    return arg1.upper() + ": $" + str(data) + "    " + percent
+    prev = round(float((temp2[0])[0]), 2)
+    curr = round(float((temp[0])[1]), 2)
+    percent = grabPercent(curr, prev)
+    res = '{:<6}{:^16}{:>12}'.format(arg1.upper() + ':', '$'+str(curr), percent)
+    return res
 
 
 def validateTicker(stock):
@@ -58,10 +55,21 @@ def validateTicker(stock):
         return True
 
 
+@client.event
+async def on_ready():
+    print('Bot successfully launched!')
+
+
 @client.command(name='port')
 async def checkPort(ctx):
-    data = rh.portfolios()
-    await ctx.send("Current port: $" + str(round(float(data['extended_hours_portfolio_equity']), 2)))
+    if int(ctx.message.author.id) == int(os.getenv('ROBINHOOD_USER_ACCOUNT')):
+        data = rh.portfolios()
+        curr = round(float(data['extended_hours_portfolio_equity']), 2)
+        prev = round(float(data['adjusted_portfolio_equity_previous_close']), 2)
+        percentChange = grabPercent(curr, prev)
+        await ctx.send("Current Balance: $" + str(curr) + " " + percentChange)
+    else:
+        await ctx.send("You are not authorized to use this command.")
 
 
 @client.command(name='p')
