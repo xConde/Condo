@@ -11,6 +11,14 @@ load_dotenv()
 channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
 
 
+@client.command(name='hq')
+async def commandBot(ctx, *args):
+    res = ""
+    for stock in args:
+        if s.validateTicker(stock):
+            await ctx.send('do something')
+
+
 @client.command(name='port')
 async def checkPort(ctx):
     if int(ctx.message.author.id) == int(os.getenv('ROBINHOOD_USER_ACCOUNT')):
@@ -26,12 +34,12 @@ async def checkPort(ctx):
 @client.command(name='p')
 async def priceCheckList(ctx, *args):
     res = ""
-    for arg in args:
-        if s.validateTicker(arg):
-            pcList = s.pc(arg)
+    for stock in args:
+        if s.validateTicker(stock):
+            pcList = s.pc(stock)
             res += pcList + '\n'
         else:
-            res += arg.upper() + " is not a valid ticker.\n"
+            res += stock.upper() + " is not a valid ticker.\n"
     await ctx.send(res)
 
 

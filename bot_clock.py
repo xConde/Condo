@@ -1,5 +1,7 @@
 import datetime as dt
 import holidays
+import sched
+import time
 from datetime import datetime
 
 
@@ -12,6 +14,7 @@ holidayDate = {}
 for date in holidays.UnitedStates(years=2020).items():
     holidayDate[str(date[0])[5:]] = str(date[1])
 
+s = sched.scheduler(time.time, time.sleep)
 
 if hour < 12:
     AM = True
