@@ -9,7 +9,7 @@
 - [x] Discord bot use pyrh to output something.
 - [x] Create a discord command "priceCheck" that triggers on '.p'. Should output the ticker, current price, and percentage difference since market open. 
 - [ ] Create a time based event that prints out the "priceChecker" of SPY every 15m during market hours.
-- [ ] Create a discord command "priceCheckList" that performs "priceCheck" on a list of tickers. 
+- [x] Create a discord command "priceCheckList" that triggers on '.pp'. Performs "priceCheck" on a list of tickers. Produces output in a single message. 
 
 ### Next steps
 
