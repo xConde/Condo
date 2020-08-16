@@ -16,8 +16,8 @@ Command prefix = '.'
     SPY: $336.84     +0.01%
 
 #### Portfolio status - check the current balance of the signed in user's portfolio. **TODO: Allow only-owner privillages. 
-.port
 ***********
+    Ex: .port 
     .port 
     Current port: $87,239.96
 
