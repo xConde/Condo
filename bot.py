@@ -3,10 +3,18 @@ import os
 import re
 import time
 from rh import rh
+import pytz
 from discord.ext import commands
 from dotenv import load_dotenv
+import datetime as dt
 from datetime import datetime
+from datetime import timedelta
+from pytz import timezone
+import schedule
 
+day = dt.datetime.today().weekday()  # 0-6 index
+hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
+min = datetime.now().minute
 client = commands.Bot(command_prefix='.')
 
 
@@ -35,13 +43,26 @@ async def priceCheck(ctx, arg1):
 
 @client.command(name='pp')
 async def priceCheckList(ctx, *args):
-    res=""
+    res = ""
     for arg in args:
         if re.match(r'\b[a-zA-Z]{1,4}\b', arg):
             pcList = pc(arg)
             res += pcList + '\n'
     await ctx.send(res)
 
+
+@client.event
+async def checkMarket():
+    res = pc('SPY')
+    print("Checked SPY: " + res + " @ " + str(hour) + ":" + str(min))
+    await client.get_all_channels.send(res)
+
+#5
+while day < 6:
+    # in range(8,3). 15, 8, 15
+    if min % 1 == 0 and 8 <= hour <= 24:
+        checkMarket(message="SPY")
+        time.sleep(60)
 
 load_dotenv()
 client.run(os.getenv('TOKEN'))
