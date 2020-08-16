@@ -23,6 +23,11 @@ Command prefix = '.'
     .port 
     Current port: $87,239.96
 
+### Features:
+
+#### Background Loop - Displays SPY ticker price every 15m between market hours. Not displayed before or after, as well as not on weekends or holidays. 
+
+
 ### Initial build
 
 - [x] Connect to pyrh
@@ -32,7 +37,7 @@ Command prefix = '.'
 - [x] Create a discord command "priceCheck" that triggers on '.p'. Should output the ticker, current price, and percentage difference since market open. 
 - [x] Create a discord command "priceCheckList" that triggers on '.pp'. Performs "priceCheck" on a list of tickers. Produces output in a single message. 
 - [x] Implement eastern time for hours, minutes, day.
-- [ ] Create a background loop, once the bot starts to outprint SPY price to a channel and the console with a timestamp every 15m during market hours.
+- [x] Create a background loop, once the bot starts to outprint SPY price to a channel and the console with a timestamp every 15m during market hours.
 - [x] have background loop account for holiday days (do not post any automatic stock messages on holidays)
 
 
