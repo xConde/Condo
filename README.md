@@ -23,7 +23,7 @@ Command prefix = '.'
     .port 
     Current port: $87,239.96
 
-### Inital build
+### Initial build
 
 - [x] Connect to pyrh
 - [x] Create a discord bot
