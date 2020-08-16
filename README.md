@@ -11,6 +11,7 @@
 - [x] Create a discord command "priceCheckList" that triggers on '.pp'. Performs "priceCheck" on a list of tickers. Produces output in a single message. 
 - [x] Implement eastern time for hours, minutes, day.
 - [ ] Create a background loop, once the bot starts to outprint SPY price to a channel and the console with a timestamp every 15m during market hours.
+- [x] have background loop account for holiday days (do not post any automatic stock messages on holidays)
 
 
 ### Next steps
