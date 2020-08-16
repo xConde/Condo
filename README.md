@@ -16,7 +16,7 @@ Command prefix = '.'
     MSFT: $208.9     +0.1%
     SPY: $336.84     +0.01%
 
-#### Portfolio status - check the current balance of the signed in user's portfolio. **TODO: Allow only-owner privillages. 
+#### Portfolio status - check the current balance of the signed in user's portfolio. Currently set to ONLY allow the discord account associated with the ROBINHOOD_USER_ACCOUNT use this command. 
 ***********
     Ex: .port 
 
