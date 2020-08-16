@@ -9,6 +9,7 @@ Command prefix = '.'
 ***********
     Ex: .p (arg1)
     EX: .p (arg1), (arg2), ... (argN)
+
     [during market hours]
     .p estc aapl msft spy 
     ESTC: $91.47     +2.02%
