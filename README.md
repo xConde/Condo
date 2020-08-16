@@ -1,6 +1,26 @@
 # Discord Stockbot
 ### Discord stock bot that utilizes an unofficial Robinhood API (pyrh) and discord API for market enthusiasts. 
 
+### Discord commands
+
+Command prefix = '.'
+
+#### Price checker - provide ticker names to receive the current price quickly.
+***********
+    Ex: .p (arg1)
+    EX: .p (arg1), (arg2), ... (argN)
+    .p estc aapl msft spy 
+    ESTC: $91.47     +2.02%
+    AAPL: $459.63    -0.09%
+    MSFT: $208.9     +0.1%
+    SPY: $336.84     +0.01%
+
+#### Portfolio status - check the current balance of the signed in user's portfolio. **TODO: Allow only-owner privillages. 
+.port
+***********
+    .port 
+    Current port: $87,239.96
+
 ### Inital build
 
 - [x] Connect to pyrh
