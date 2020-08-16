@@ -37,7 +37,11 @@ def pc(arg1):
     data = temp[0]
     data = round(float(data[1]), 2)
     percent = round(((data - prev_close) / prev_close * 100), 2)
-    return arg1.upper() + ": $" + str(data) + "    " + str(percent) + "%"
+    if percent > 0:
+        percent = '+' + str(percent)
+    else:
+        percent = str(percent)
+    return arg1.upper() + ": $" + str(data) + "    " + percent + '%'
 
 
 @client.command(name='p')
