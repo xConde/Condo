@@ -8,14 +8,12 @@ from datetime import datetime
 from discord.ext import commands
 from dotenv import load_dotenv
 
-# from robinhood import rh
+from robinhood import rh
 
 dayIndex = dt.datetime.today().weekday()  # 0-6 index
 hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
 min = datetime.now().minute
-month = str(dt.datetime.today().date())[5:7]
-day = str(dt.datetime.today().date())[8:]
-currentDay = month + '-' + day
+currentDay = str(dt.datetime.today().date())[5:7] + '-' + str(dt.datetime.today().date())[8:]
 
 if hour < 12:
     AM = True
@@ -26,14 +24,11 @@ holidayDate = {}
 for date in holidays.UnitedStates(years=2020).items():
     holidayDate[str(date[0])[5:]] = str(date[1])
 
-for key, value in holidayDate.items():
-    print(key, value)
-
-print(holidayDate)
-print(currentDay in holidayDate)
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
+
+#def determineFriday():
 
 
 @client.event
@@ -57,10 +52,16 @@ def pc(arg1):
 
 
 def validateTicker(stock):
-    if not re.match(r'\b[a-zA-Z]{1,4}\b', stock):
+    if not re.match(r'\b[a-zA-Z]{1,5}\b', stock):
         return False
     else:
         return True
+
+
+@client.command(name='port')
+async def checkPort(ctx):
+    data = rh.portfolios()
+    await ctx.send("Current port: $" + str(round(float(data['extended_hours_portfolio_equity']), 2)))
 
 
 @client.command(name='p')
@@ -71,7 +72,7 @@ async def priceCheckList(ctx, *args):
             pcList = pc(arg)
             res += pcList + '\n'
         else:
-            res += arg.upper() + " is not a valid ticker."
+            res += arg.upper() + " is not a valid ticker.\n"
     await ctx.send(res)
 
 
