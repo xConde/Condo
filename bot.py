@@ -44,9 +44,17 @@ def pc(arg1):
     temp2 = rh.adjusted_previous_close(arg1.upper())
     prev = round(float((temp2[0])[0]), 2)
     curr = round(float((temp[0])[1]), 2)
-    perc = grabPercent(curr, prev)
-    res = '{:<6}{:^16}{:>12}'.format(arg1.upper() + ':', '$'+str(curr), perc)
-    return res
+    perc1 = grabPercent(curr, prev)
+    if dayIndex < 5 and 8 <= hour <= 15:
+        res = '{:<6}{:^16}{:>12}'.format(arg1.upper() + ':', '$' + str(curr), perc1)
+        return res
+    else:
+        temp = rh.get_quote_list(arg1.upper(), "symbol,last_extended_hours_trade_price")
+        ah = round(float((temp[0])[1]), 2)
+        perc2 = grabPercent(ah, curr)
+        res = '{:<6}{:^16}{:>6}{:>14}{:<25}'.format(arg1.upper() + ':', '$' + str(curr), perc1, '    |    AH: $' + str(ah),
+                                                    "    " + perc2)
+        return res
 
 
 def validateTicker(stock):
