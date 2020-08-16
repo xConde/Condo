@@ -1,66 +1,14 @@
-import datetime as dt
 import os
-import re
 import time
-import holidays
-from datetime import datetime
-
+import stock_controller as s
+from bot_clock import min, hour, dayIndex, currentDay, holidayDate
 from discord.ext import commands
 from dotenv import load_dotenv
-
 from robinhood import rh
-
-dayIndex = dt.datetime.today().weekday()  # 0-6 index
-hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
-min = datetime.now().minute
-currentDay = str(dt.datetime.today().date())[5:7] + '-' + str(dt.datetime.today().date())[8:]
-
-if hour < 12:
-    AM = True
-else:
-    AM = False
-
-holidayDate = {}
-for date in holidays.UnitedStates(years=2020).items():
-    holidayDate[str(date[0])[5:]] = str(date[1])
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
 channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
-
-
-def grabPercent(curr, prev):
-    perc = round(((curr - prev) / prev * 100), 2)
-    if perc >= 0:
-        perc = '+' + str(perc) + '%'
-        return perc
-    else:
-        perc = str(perc) + '%'
-        return perc
-
-
-def pc(arg1):
-    temp = rh.get_quote_list(arg1.upper(), "symbol,last_trade_price")
-    temp2 = rh.adjusted_previous_close(arg1.upper())
-    prev = round(float((temp2[0])[0]), 2)
-    curr = round(float((temp[0])[1]), 2)
-    perc1 = grabPercent(curr, prev)
-    res = '{:<6}{:^16}{:>12}'.format(arg1.upper() + ':', '$' + str(curr), perc1)
-    if dayIndex < 5 and 8 <= hour <= 15:
-        return res
-    else:
-        temp = rh.get_quote_list(arg1.upper(), "symbol,last_extended_hours_trade_price")
-        ah = round(float((temp[0])[1]), 2)
-        perc2 = grabPercent(ah, curr)
-        res = res + '{:>14}{:<25}'.format('    |    AH: $' + str(ah), "    " + perc2)
-        return res
-
-
-def validateTicker(stock):
-    if not re.match(r'\b[a-zA-Z]{1,5}\b', stock):
-        return False
-    else:
-        return True
 
 
 @client.command(name='port')
@@ -69,7 +17,7 @@ async def checkPort(ctx):
         data = rh.portfolios()
         curr = round(float(data['extended_hours_portfolio_equity']), 2)
         prev = round(float(data['adjusted_portfolio_equity_previous_close']), 2)
-        perc = grabPercent(curr, prev)
+        perc = s.grabPercent(curr, prev)
         await ctx.send("Current Balance: $" + str(curr) + " " + perc)
     else:
         await ctx.send("You are not authorized to use this command.")
@@ -79,8 +27,8 @@ async def checkPort(ctx):
 async def priceCheckList(ctx, *args):
     res = ""
     for arg in args:
-        if validateTicker(arg):
-            pcList = pc(arg)
+        if s.validateTicker(arg):
+            pcList = s.pc(arg)
             res += pcList + '\n'
         else:
             res += arg.upper() + " is not a valid ticker.\n"
@@ -92,7 +40,7 @@ async def background_loop():
     while dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate:
         # in range(8,3).
         if min % 15 == 0 and 8 <= hour <= 15:
-            res = pc('SPY')
+            res = s.pc('SPY')
             print(("Checked " + res + " @ " + str(hour) + ":" + str(min) + "AM" if AM else "PM"))
             await channel.send("15 Minute SPY pull " + res)
             time.sleep(60)
