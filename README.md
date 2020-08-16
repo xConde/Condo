@@ -45,12 +45,12 @@ Command prefix = '.'
 - [x] Create a discord command "priceCheck" that triggers on '.p'. Should output the ticker, current price, and percentage difference since market open. 
 - [x] Create a discord command "priceCheckList" that triggers on '.pp'. Performs "priceCheck" on a list of tickers. Produces output in a single message. 
 - [x] Implement eastern time for hours, minutes, day.
-- [x] Create a background loop, once the bot starts to outprint SPY price to a channel and the console with a timestamp every 15m during market hours.
-- [x] have background loop account for holiday days (do not post any automatic stock messages on holidays)
+- [x] Create a background loop, when the bot starts up it will print out the SPY price to a channel and the console with a timestamp every 15m during market hours.
+- [x] Have background loop account for holiday days (do not post any automatic stock messages on holidays)
 
 
 ### Next steps
 
-- [x] Allow priceChecker to diffrentiate the current time to output different results depending on if market is open or not. If market is closed, it should outprint the open price, close price, percent difference, after hours price, and percent difference since market close. 
+- [x] Allow priceChecker to differentiate the current time to output different results depending on if market is open or not. If market is closed, it should outprint the open price, close price, percent difference, after hours price, and percent difference since market close. 
 - [ ] Add an additional condition check to priceCheck/priceCheckList to validate if the ticker exists. Currently an alphabetical combination of 1-4 characters is allowed, a stock such as TVIX can cause an exception to pop. 
-
+- [ ] Begin adding technical analysis to certain stocks (SPY, AAPL, MSFT, AMZN) and shoutout to the channel any extremities. 
