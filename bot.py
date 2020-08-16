@@ -26,6 +26,7 @@ for date in holidays.UnitedStates(years=2020).items():
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
+channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
 
 
 def grabPercent(curr, prev):
@@ -43,8 +44,8 @@ def pc(arg1):
     temp2 = rh.adjusted_previous_close(arg1.upper())
     prev = round(float((temp2[0])[0]), 2)
     curr = round(float((temp[0])[1]), 2)
-    percent = grabPercent(curr, prev)
-    res = '{:<6}{:^16}{:>12}'.format(arg1.upper() + ':', '$'+str(curr), percent)
+    perc = grabPercent(curr, prev)
+    res = '{:<6}{:^16}{:>12}'.format(arg1.upper() + ':', '$'+str(curr), perc)
     return res
 
 
@@ -55,19 +56,14 @@ def validateTicker(stock):
         return True
 
 
-@client.event
-async def on_ready():
-    print('Bot successfully launched!')
-
-
 @client.command(name='port')
 async def checkPort(ctx):
     if int(ctx.message.author.id) == int(os.getenv('ROBINHOOD_USER_ACCOUNT')):
         data = rh.portfolios()
         curr = round(float(data['extended_hours_portfolio_equity']), 2)
         prev = round(float(data['adjusted_portfolio_equity_previous_close']), 2)
-        percentChange = grabPercent(curr, prev)
-        await ctx.send("Current Balance: $" + str(curr) + " " + percentChange)
+        perc = grabPercent(curr, prev)
+        await ctx.send("Current Balance: $" + str(curr) + " " + perc)
     else:
         await ctx.send("You are not authorized to use this command.")
 
@@ -84,23 +80,24 @@ async def priceCheckList(ctx, *args):
     await ctx.send(res)
 
 
-# < 5
 async def background_loop():
     await client.wait_until_ready()
-    print(os.getenv('DISCORD_CHANNEL'))
-    channel = client.get_channel(os.getenv('DISCORD_CHANNEL'))
-    print(channel)
-    while dayIndex <= 6 and not client.is_closed() and currentDay not in holidayDate:
-        # in range(8,3). 15, 8, 15
-        if min % 1 == 0 and 8 <= hour <= 24:
+    while dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate:
+        # in range(8,3).
+        if min % 15 == 0 and 8 <= hour <= 15:
             res = pc('SPY')
             print(("Checked " + res + " @ " + str(hour) + ":" + str(min) + "AM" if AM else "PM"))
-            await channel.send(res)
+            await channel.send("15 Minute SPY pull " + res)
             time.sleep(60)
     if currentDay in holidayDate:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
         time.sleep(60 * 60 * 12)  # sleep for 12hrs
 
 
-# client.loop.create_task(background_loop())
+@client.event
+async def on_ready():
+    print('Bot successfully launched!')
+
+
+client.loop.create_task(background_loop())
 client.run(os.getenv('DISCORD_TOKEN'))
