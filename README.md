@@ -1,7 +1,7 @@
 # Discord Robinhood Stockbot
 ### Discord stock bot that utilizes an unofficial Robinhood API (pyrh) and discord API for market enthusiasts. 
 
-### Discord commands
+### Discord commands:
 
 Command prefix = '.'
 
