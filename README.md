@@ -14,4 +14,5 @@
 ### Next steps
 
 - [ ] Allow priceChecker to diffrentiate the current time to output different results depending on if market is open or not. If market is closed, it should outprint the open price, close price, percent difference, after hours price, and percent difference since market close. 
+- [ ] Add an additional condition check to priceCheck/priceCheckList to validate if the ticker exists. Currently an alphabetical combination of 1-4 characters is allowed, a stock such as TVIX can cause an exception to pop. 
 - [ ] Create a time based event that prints out the "priceChecker" of SPY every 15m during market hours.
