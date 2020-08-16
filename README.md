@@ -9,6 +9,7 @@ Command prefix = '.'
 ***********
     Ex: .p (arg1)
     EX: .p (arg1), (arg2), ... (argN)
+
     .p estc aapl msft spy 
     ESTC: $91.47     +2.02%
     AAPL: $459.63    -0.09%
@@ -18,6 +19,7 @@ Command prefix = '.'
 #### Portfolio status - check the current balance of the signed in user's portfolio. **TODO: Allow only-owner privillages. 
 ***********
     Ex: .port 
+
     .port 
     Current port: $87,239.96
 
