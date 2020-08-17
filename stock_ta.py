@@ -1,5 +1,5 @@
 from bot_clock import s
-from robinhood import rh
+import robin_stocks as rh
 from datetime import datetime
 import numpy as np
 import tulipy as ti

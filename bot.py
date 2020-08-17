@@ -1,30 +1,40 @@
 import os
 import time
 import stock_controller as s
-from bot_clock import min, hour, dayIndex, currentDay, holidayDate
+from bot_clock import min, hour, dayIndex, currentDay, holidayDate, AM
 from discord.ext import commands
 from dotenv import load_dotenv
-from robinhood import rh
+import robin_stocks as r
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
+
+login = r.login(username=os.getenv('USER'), password=os.getenv('PASS'))
+
+if login:
+    print("Created Robinhood instance.")
+else:
+    print("Failed to create Robinhood instance.")
+
 channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
 
 
-@client.command(name='hq')
+@client.command(name='popular')
 async def commandBot(ctx, *args):
     res = ""
     for stock in args:
         if s.validateTicker(stock):
-            await ctx.send('do something')
+            pcList = s.checkPopularity(stock)
+            res += pcList + '\n'
+    await ctx.send(res)
 
 
 @client.command(name='port')
 async def checkPort(ctx):
     if int(ctx.message.author.id) == int(os.getenv('ROBINHOOD_USER_ACCOUNT')):
-        data = rh.portfolios()
-        curr = round(float(data['extended_hours_portfolio_equity']), 2)
-        prev = round(float(data['adjusted_portfolio_equity_previous_close']), 2)
+        profileData = r.load_portfolio_profile()
+        curr = round(float(profileData['extended_hours_equity']), 2)
+        prev = round(float(profileData['adjusted_portfolio_equity_previous_close']), 2)
         perc = s.grabPercent(curr, prev)
         await ctx.send("Current Balance: $" + str(curr) + " " + perc)
     else:
