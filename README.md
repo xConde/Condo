@@ -66,7 +66,7 @@ Command prefix = '.'
 - [ ] Add an additional condition check to priceCheck/priceCheckList to validate if the ticker exists. Currently an alphabetical combination of 1-4 characters is allowed, a stock such as TVIX can cause an exception to pop. 
 - [ ] Set up a database that the bot can use to store information such as discord's most used tickers.
 - [ ] Fix port command, so stock and option positions that the user has is displayed.  
-- [ ] Add the 'f' command which displays friday expiry options (if not provided a date) for the call side (if not provided a side). 
+- [ ] Add the '.f' command which displays friday expiry options (if not provided a date) for the call side (if not provided a side). 
 - [ ] Add a command for implied IV and move for options.
 - [ ] Add an alert anomaly detection for implied sudden changes to stock ticker price.
 - [ ] Add an alert anomaly detection for implied sudden changes to a stock's near expiry options [unusual activity].
