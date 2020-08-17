@@ -1,5 +1,5 @@
 # Discord Robinhood Stockbot
-### Discord stock bot that utilizes an unofficial Robinhood API (pyrh) and discord API for market enthusiasts. 
+### Discord stock bot that utilizes an unofficial Robinhood API (robin_stocks) and discord API for market enthusiasts. 
 
 ### Discord commands:
 
@@ -54,3 +54,4 @@ Command prefix = '.'
 - [x] Allow priceChecker to differentiate the current time to output different results depending on if market is open or not. If market is closed, it should outprint the open price, close price, percent difference, after hours price, and percent difference since market close. 
 - [ ] Add an additional condition check to priceCheck/priceCheckList to validate if the ticker exists. Currently an alphabetical combination of 1-4 characters is allowed, a stock such as TVIX can cause an exception to pop. 
 - [ ] Begin adding technical analysis to certain stocks (SPY, AAPL, MSFT, AMZN) and shoutout to the channel any extremities. 
+
