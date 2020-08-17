@@ -65,7 +65,7 @@ async def checkPort(ctx):
         perc = s.grabPercent(curr, prev)
         diff = round(curr - prev, 2)
         diff = s.validateUporDown(diff)
-        balance = "Current Balance: $" + str(curr) + "    " + diff + "    " + perc + '\n'
+        balance = '{:<10}{:^12}{:>7}{:>12}'.format("Current Balance:", '$'+str(curr), diff, perc+'\n')
         buyingPower = "Buying power: $" + str(bp)
         await ctx.send(balance + buyingPower)
         await ctx.send("Option positions: \n" + res)
@@ -83,7 +83,7 @@ async def priceCheckList(ctx, *args):
         else:
             res += stock.upper() + " is not a valid ticker.\n"
 
-    await ctx.send("```python\n" + res + "```")
+    await ctx.send("```" + res + "```")
 
 
 async def background_loop():

@@ -24,7 +24,7 @@ def validateUporDown(var):
 
 
 def grabPercent(curr, prev):
-    perc = '{:.2f}'.format(round(((curr - prev) / prev * 100), 2))
+    perc = round(((curr - prev) / prev * 100), 2)
     perc = validateUporDown(float(perc))
     return perc + '%'
 
@@ -52,12 +52,12 @@ def pc(stock):
     if dayIndex < 5 and 9 <= hour <= 16:
         if hour != 9 or (hour == 9 and min >= 30):
             low, high = grabIntradayHL(stock)
-            return '{:<6}{:^10}{:^6}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
+            return '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                              '|', 'L: ' + str(low), 'H: ' + str(high))
     else:
         ah = '{:.2f}'.format(round(float(quote['last_extended_hours_trade_price']), 2))
         perc2 = grabPercent(ah, curr)
-        return '{:<6}{:^10}{:^6}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
+        return '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                          '|', 'AH: $' + str(ah), 'H: ' + perc2)
 
 
