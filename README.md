@@ -12,10 +12,10 @@ Command prefix = '.'
 
     [during market hours]
     .p estc aapl msft spy 
-    ESTC: $91.47     +2.02%
-    AAPL: $459.63    -0.09%
-    MSFT: $208.9     +0.1%
-    SPY: $336.84     +0.01%
+    ESTC:    $91.68   +0.23%    |    L: 91.41    H: 93.59
+    AAPL:    $457.9   -0.38%    |    L: 455.86    H: 464.36
+    MSFT:    $209.8   +0.43%    |    L: 208.91    H: 211.19
+    SPY:    $337.87   +0.31%    |    L: 336.85    H: 338.34
 
     [during after hours]
     .p estc aapl msft spy
@@ -29,8 +29,9 @@ Command prefix = '.'
     Ex: .port 
 
     .port 
-    Current port: $87,239.96
-
+    Current Balance: $87239.96    +2,225.16    +2.62%
+    Buying power: $13,242.81
+    Option positions:
 ### Features:
 
 #### Background Loop - Displays SPY ticker price every 15m between market hours. Not displayed before or after, as well as not on weekends or holidays. 
