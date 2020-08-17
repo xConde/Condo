@@ -18,6 +18,12 @@ def grabPercent(curr, prev):
         return perc
 
 
+def tickerPrice(arg1):
+    quote = r.get_quotes(arg1)
+    curr = round(float(quote['last_trade_price']), 2)
+    return curr
+
+
 def pc(arg1):
     quote = r.get_quotes(arg1)
     quote = quote[0]
@@ -35,7 +41,7 @@ def pc(arg1):
 
 
 def validateTicker(stock):
-    if not re.match(r'\b[a-zA-Z]{1,5}\b', stock) :
+    if not re.match(r'\b[a-zA-Z]{1,5}\b', stock):
         return False
     else:
         return True

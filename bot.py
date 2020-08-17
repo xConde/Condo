@@ -19,14 +19,14 @@ else:
 channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
 
 
-@client.command(name='popular')
-async def commandBot(ctx, *args):
-    res = ""
-    for stock in args:
-        if s.validateTicker(stock):
-            pcList = s.checkPopularity(stock)
-            res += pcList + '\n'
-    await ctx.send(res)
+@client.command(name='f')
+async def findOptions(ctx, stock, expir=None, type='call'):
+    info = r.find_options_by_expiration(stock, '2020-08-21', type)
+    first = info[0]
+    price = s.tickerPrice(stock)
+    print(str(price))
+    print(info)
+    print(first)
 
 
 @client.command(name='port')
