@@ -82,7 +82,8 @@ async def priceCheckList(ctx, *args):
             res += pcList + '\n'
         else:
             res += stock.upper() + " is not a valid ticker.\n"
-    await ctx.send(res)
+
+    await ctx.send("```" + res + "```")
 
 
 async def background_loop():

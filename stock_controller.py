@@ -24,40 +24,40 @@ def validateUporDown(var):
 
 
 def grabPercent(curr, prev):
-    perc = round(((curr - prev) / prev * 100), 2)
-    perc = validateUporDown(perc)
+    perc = '{:.2f}'.format(round(((curr - prev) / prev * 100), 2))
+    perc = validateUporDown(float(perc))
     return perc + '%'
 
 
 def tickerPrice(stock):
     quote = r.get_quotes(stock)
-    curr = round(float(quote['last_trade_price']), 2)
+    curr = '{:.2f}'.format((float(quote['last_trade_price']), 2))
     return curr
 
 
 def grabIntradayHL(stock):
     quote = r.get_fundamentals(stock)
     quote = quote[0]
-    low = round(float(quote['low']), 2)
-    high = round(float(quote['high']), 2)
+    low = '{:.2f}'.format(round(float(quote['low']), 2))
+    high = '{:.2f}'.format(round(float(quote['high']), 2))
     return low, high
 
 
 def pc(stock):
     quote = r.get_quotes(stock)
     quote = quote[0]
-    curr = round(float(quote['last_trade_price']), 2)
-    prev = round(float(quote['adjusted_previous_close']), 2)
-    perc1 = grabPercent(curr, prev)
+    curr = '{:.2f}'.format(round(float(quote['last_trade_price']), 2))
+    prev = '{:.2f}'.format(round(float(quote['adjusted_previous_close']), 2))
+    perc1 = grabPercent(float(curr), float(prev))
     if dayIndex < 5 and 9 <= hour <= 16:
         if hour != 9 or (hour == 9 and min >= 30):
             low, high = grabIntradayHL(stock)
-            return '{:<6}{:^12}{:^5}{:>4}{:^14}{:^7}'.format(stock.upper() + ':', '$' + str(curr), perc1,
+            return '{:<6}{:^10}{:^6}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                              '|', 'L: ' + str(low), 'H: ' + str(high))
     else:
-        ah = round(float(quote['last_extended_hours_trade_price']), 2)
+        ah = '{:.2f}'.format(round(float(quote['last_extended_hours_trade_price']), 2))
         perc2 = grabPercent(ah, curr)
-        return '{:<6}{:^12}{:^5}{:>4}{:^14}{:^7}'.format(stock.upper() + ':', '$' + str(curr), perc1,
+        return '{:<6}{:^10}{:^6}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                          '|', 'AH: $' + str(ah), 'H: ' + perc2)
 
 
