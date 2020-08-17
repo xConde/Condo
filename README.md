@@ -19,10 +19,10 @@ Command prefix = '.'
 
     [during after hours]
     .p estc aapl msft spy
-    ESTC:      $91.47     +2.02%    |    AH: $91.47    +0.0%
-    AAPL:     $459.63     -0.09%    |    AH: $459.29    -0.07%
-    MSFT:      $208.9      +0.1%    |    AH: $208.8    -0.05%
-    SPY:      $336.84      +0.0%    |    AH: $336.6    -0.07%
+    ESTC:    $91.47   +2.02%    |    AH: $91.47    +0.0%
+    AAPL:   $459.63   -0.09%    |    AH: $459.29    -0.07%
+    MSFT:    $208.9   +0.1%     |    AH: $208.8    -0.05%
+    SPY:    $336.84   +0.0%     |    AH: $336.6    -0.07%
 
 #### Portfolio status - check the current balance of the signed in user's portfolio. Currently set to ONLY allow the discord account associated with the ROBINHOOD_USER_ACCOUNT use this command. 
 ***********
