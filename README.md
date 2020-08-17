@@ -62,6 +62,13 @@ Command prefix = '.'
 
 - [x] Tweak priceChecker formatting to enhance the aesthetic and allow all information to be posted on a single line. 
 - [x] Allow priceChecker to differentiate the current time to output different results depending on if market is open or not. If market is closed, it should outprint the open price, close price, percent difference, after hours price, and percent difference since market close. 
+- [ ] Add sudo groups for lists of stock tickers. 
 - [ ] Add an additional condition check to priceCheck/priceCheckList to validate if the ticker exists. Currently an alphabetical combination of 1-4 characters is allowed, a stock such as TVIX can cause an exception to pop. 
+- [ ] Set up a database that the bot can use to store information such as discord's most used tickers.
+- [ ] Fix port command, so stock and option positions that the user has is displayed.  
+- [ ] Add f command which displays friday expiry options (if not provided a date) for the call side (if not provided a side). 
+- [ ] Add a command for implied IV and move for options.
+- [ ] Add an alert anomaly detection for implied sudden changes to stock ticker price.
+- [ ] Add an alert anomaly detection for implied sudden changes to a stock's near expiry options [unusual activity].
 - [ ] Begin adding technical analysis to certain stocks (SPY, AAPL, MSFT, AMZN) and shoutout to the channel any extremities. 
 
