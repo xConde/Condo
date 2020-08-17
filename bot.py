@@ -16,7 +16,15 @@ if login:
 else:
     print("Failed to create Robinhood instance.")
 
-channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
+
+@client.command(name='used')
+async def mostUsed(ctx):
+    highest = s.checkMostMentioned()
+    res = ""
+    await ctx.send("Most mentioned stock tickers since startup: ")
+    for val in highest:
+        res += str(val) + ' = ' + str(s.stocks_mentioned.get(val)) + " \n"
+    await ctx.send(res)
 
 
 @client.command(name='f')
@@ -33,10 +41,34 @@ async def findOptions(ctx, stock, expir=None, type='call'):
 async def checkPort(ctx):
     if int(ctx.message.author.id) == int(os.getenv('ROBINHOOD_USER_ACCOUNT')):
         profileData = r.load_portfolio_profile()
-        curr = round(float(profileData['extended_hours_equity']), 2)
+        positionData = r.get_all_open_option_orders()
+        option_positions = {}
+        option_info = {}
+        print(positionData)
+        for option in positionData:
+            option_positions[option['chain_symbol']] = option['quantity']
+            option_info[option['chain_symbol']] = option['price']
+
+        res = ''
+        for val in option_positions:
+            res += '[' + str(int(float(option_positions.get(val)))) + '] ' + str(val) + ' ' + str(
+                round(float(option_info.get(val)), 2)) + '\n'
+
         prev = round(float(profileData['adjusted_portfolio_equity_previous_close']), 2)
+        bp = round(float(profileData['excess_margin']), 2)
+
+        if dayIndex < 5 and 9 <= hour <= 16:
+            if hour != 9 or (hour == 9 and min >= 30):
+                curr = round(float(profileData['last_core_portfolio_equity']), 2)
+            else:
+                curr = round(float(profileData['extended_hours_equity']), 2)
         perc = s.grabPercent(curr, prev)
-        await ctx.send("Current Balance: $" + str(curr) + " " + perc)
+        diff = round(curr - prev, 2)
+        diff = s.validateUporDown(diff)
+        balance = "Current Balance: $" + str(curr) + "    " + diff + "    " + perc + '\n'
+        buyingPower = "Buying power: $" + str(bp)
+        await ctx.send(balance + buyingPower)
+        await ctx.send("Option positions: \n" + res)
     else:
         await ctx.send("You are not authorized to use this command.")
 
@@ -55,13 +87,17 @@ async def priceCheckList(ctx, *args):
 
 async def background_loop():
     await client.wait_until_ready()
-    while dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate:
+    channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
+    flag = 0
+    while dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and 8 <= hour <= 16 \
+            and min % 15 == 0 and flag == 0:
         # in range(8,3).
-        if min % 15 == 0 and 8 <= hour <= 15:
-            res = s.pc('SPY')
-            print(("Checked " + res + " @ " + str(hour) + ":" + str(min) + "AM" if AM else "PM"))
-            await channel.send("15 Minute SPY pull " + res)
-            time.sleep(60)
+        res = s.pc('SPY')
+        print(("Checked " + res + " @ " + str(hour) + ":" + str(min) + "AM" if AM else "PM"))
+        await channel.send("[15m pull] " + res)
+        flag += 1
+    if min == 16:
+        flag = 0
     if currentDay in holidayDate:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
         time.sleep(60 * 60 * 12)  # sleep for 12hrs
@@ -72,5 +108,5 @@ async def on_ready():
     print('Bot successfully launched!')
 
 
-client.loop.create_task(background_loop())
+# client.loop.create_task(background_loop())
 client.run(os.getenv('DISCORD_TOKEN'))
