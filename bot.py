@@ -2,19 +2,14 @@ import os
 import time
 import stock_controller as s
 from bot_clock import min, hour, dayIndex, currentDay, holidayDate, AM
-from discord.ext import commands
+from discord.ext import commands, tasks
 from dotenv import load_dotenv
 import robin_stocks as r
+from itertools import cycle
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
-
-login = r.login(username=os.getenv('USER'), password=os.getenv('PASS'))
-
-if login:
-    print("Created Robinhood instance.")
-else:
-    print("Failed to create Robinhood instance.")
+rhlogin = r.login(username=os.getenv('USER'), password=os.getenv('PASS'))
 
 
 @client.command(name='used')
@@ -65,7 +60,7 @@ async def checkPort(ctx):
         perc = s.grabPercent(curr, prev)
         diff = round(curr - prev, 2)
         diff = s.validateUporDown(diff)
-        balance = '{:<10}{:^12}{:>7}{:>12}'.format("Current Balance:", '$'+str(curr), diff, perc+'\n')
+        balance = '{:<10}{:^12}{:>7}{:>12}'.format("Current Balance:", '$' + str(curr), diff, perc + '\n')
         buyingPower = "Buying power: $" + str(bp)
         await ctx.send(balance + buyingPower)
         await ctx.send("Option positions: \n" + res)
@@ -86,28 +81,26 @@ async def priceCheckList(ctx, *args):
     await ctx.send("```" + res + "```")
 
 
+@tasks.loop(minutes=1)
 async def background_loop():
     await client.wait_until_ready()
     channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
-    flag = 0
-    while dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and 8 <= hour <= 16 \
-            and min % 15 == 0 and flag == 0:
-        # in range(8,3).
+    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and 9 <= hour < 20 \
+            and min % 15 == 0:
         res = s.pc('SPY')
-        print(("Checked " + res + " @ " + str(hour) + ":" + str(min) + "AM" if AM else "PM"))
-        await channel.send("[15m pull] " + res)
-        flag += 1
-    if min == 16:
-        flag = 0
-    if currentDay in holidayDate:
+        print(("Checked " + res + " @ " + str(hour) + ":" + str(min)) + ("AM" if AM else "PM"))
+        await channel.send("[15m] " + res)
+    if currentDay in holidayDate and hour == 9 and min:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
-        time.sleep(60 * 60 * 12)  # sleep for 12hrs
 
 
 @client.event
 async def on_ready():
+    if rhlogin:
+        print("Created Robinhood instance.")
+    else:
+        print("Failed to create Robinhood instance.")
     print('Bot successfully launched!')
 
-
-# client.loop.create_task(background_loop())
+background_loop.start()
 client.run(os.getenv('DISCORD_TOKEN'))
