@@ -5,24 +5,24 @@
 
 Command prefix = '.'
 
-#### Price checker - provide ticker names to receive the current price quickly.
+#### Price checker - provide ticker names to receive the current price quickly. Condensed to allow mobile users to view it on one line. 
 ***********
     Ex: .p (arg1)
     EX: .p (arg1), (arg2), ... (argN)
 
     [during market hours]
     .p estc aapl msft spy 
-    ESTC:    $91.78   +0.34%   |   L: 91.4    H: 93.59
-    AAPL:   $458.75   -0.19%   |  L: 455.86   H: 464.36
-    MSFT:   $210.22   +0.63%   |  L: 208.91   H: 211.19
-    SPY:    $338.14   +0.39%   |  L: 336.85   H: 338.34
+    ESTC:   $92.18  +0.78% |L: 91.40   H: 93.59
+    AAPL:  $458.91  -0.16% |L: 455.86  H: 464.36
+    MSFT:  $209.88  +0.47% |L: 208.91  H: 211.19
+    SPY:   $338.00  +0.34% |L: 336.85  H: 338.34
 
     [during after hours]
     .p estc aapl msft spy
-    ESTC:    $91.47   +0.34%   |   AH: $91.47    +0.0%
-    AAPL:   $459.63   -0.19%   |  AH: 459.29   -0.07%
-    MSFT:   $210.22   +0.63%   |  AH: 208.82   -0.05%
-    SPY:    $338.14   +0.39%   |  AH: 336.63   -0.07%
+    ESTC:   $91.47  +0.34% |AH: $91.47    +0.0%
+    AAPL:  $459.63  -0.19% |AH: 459.29   -0.07%
+    MSFT:  $210.22  +0.63% |AH: 208.82   -0.05%
+    SPY:   $338.14  +0.39% |AH: 336.63   -0.07%
 
 #### Portfolio status - check the current balance of the signed in user's portfolio. Currently set to ONLY allow the discord account associated with the ROBINHOOD_USER_ACCOUNT use this command. 
 ***********
