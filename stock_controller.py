@@ -49,16 +49,18 @@ def pc(stock):
     curr = '{:.2f}'.format(round(float(quote['last_trade_price']), 2))
     prev = '{:.2f}'.format(round(float(quote['adjusted_previous_close']), 2))
     perc1 = grabPercent(float(curr), float(prev))
-    if dayIndex < 5 and 9 <= hour <= 16:
+    if dayIndex < 5 and 9 <= hour < 16:
         if hour != 9 or (hour == 9 and min >= 30):
             low, high = grabIntradayHL(stock)
             return '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
-                                                             '|', 'L: ' + str(low), 'H: ' + str(high))
-    else:
+                                                            '|', 'L: ' + str(low), 'H: ' + str(high))
+    elif quote['last_extended_hours_trade_price']:
         ah = '{:.2f}'.format(round(float(quote['last_extended_hours_trade_price']), 2))
-        perc2 = grabPercent(ah, curr)
-        return '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
-                                                         '|', 'AH: $' + str(ah), 'H: ' + perc2)
+        perc2 = grabPercent(float(ah), float(curr))
+        return '{:<6}{:^8}{:>7}{:>2}{:>6}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1,
+                                                       '|', 'AH: $' + str(ah), perc2)
+    else:
+        return '{:<6}{:^8}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1)
 
 
 def validateTicker(stock):
