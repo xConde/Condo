@@ -138,11 +138,16 @@ async def background_loop():
 
     if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (9 <= hour < 20) \
             and min % 15 == 0:
-        res = s.pc('SPY')
+        scheduledStocks = ['SPY', 'AAPL', 'FB', 'AMZN', 'NFLX']
+        res = "[15M pull] \n"
+        for stock in scheduledStocks:
+            res += s.pc(stock) + '\n'
+            s.stocks_mentioned[stock] = s.stocks_mentioned.get(stock.upper(), 0) - 1
+
         print("Checked " + str(res) + " @ " + str(hour) + ":" + str(min) + ("AM" if (hour < 12) else "PM"))
         await channel.send("```" + res + "```")
-        s.stocks_mentioned['SPY'] = s.stocks_mentioned.get('SPY') - 1
-    if min % 25 == 0:
+
+    if min % 20 == 0:
         s.writeStocksMentioned()
     if currentDay in holidayDate and hour == 9 and min == 0:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
