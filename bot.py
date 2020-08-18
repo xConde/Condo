@@ -65,6 +65,7 @@ async def checkPort(ctx):
     :return:
     """
     if int(ctx.message.author.id) == int(os.getenv('ROBINHOOD_USER_ACCOUNT')):
+        dayIndex = dt.datetime.today().weekday()  # 0-6 index
         hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
         min = datetime.now().minute
         profileData = r.load_portfolio_profile()
