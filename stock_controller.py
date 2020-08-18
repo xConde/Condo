@@ -9,14 +9,14 @@ from heapq import nlargest
 stocks_mentioned = {}  # Maintains stock ticker as key and times mentioned as value.
 
 
-def writeStocksMentioned():
+def writeStocksMentioned(timestamp):
     """Writes [stock ticker, iterations] from stocks_mentioned to "stocks_mentioned.csv"
 
     :return:
     """
     w = csv.writer(open("stocks_mentioned.csv", "w"))
     if w:
-        print('Wrote stocks_mentioned to .csv')
+        print('Wrote stocks_mentioned to .csv ' + timestamp)
     for key, val in stocks_mentioned.items():
         w.writerow([key, val])
 
@@ -166,7 +166,7 @@ def validateTicker(stock):
         return True
 
 
-def autoPull():
+def autoPull(timestamp):
     """Pulls stock quotes for scheduledStocks and formats them to be in order of highest gain to lowest gain.
 
     :return: [String] formatted result
@@ -184,4 +184,5 @@ def autoPull():
     highest = checkMostMentioned(stockPerc, 6)
     for val in highest:
         res += stockQuote[val]
+    print("Pulled [15M] " + timestamp)
     return res
