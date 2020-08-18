@@ -138,7 +138,7 @@ async def background_loop():
 
     if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (9 <= hour < 20) \
             and min % 15 == 0:
-        res = s.autoPull(timestamp)
+        res = s.autoPull(timestamp, hour, min)
         await channel.send("```" + res + "```")
 
     if min % 10 == 0:

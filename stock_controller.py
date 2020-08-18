@@ -168,16 +168,13 @@ def validateTicker(stock):
         return True
 
 
-def autoPull(timestamp):
+def autoPull(timestamp, hour, min):
     """Pulls stock quotes for scheduledStocks and formats them to be in order of highest gain to lowest gain.
 
     :return: [String] formatted result
     """
     scheduledStocks = ['SPY', 'AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL']
-    hour = timestamp[3:5]
-    min = timestamp[6:8]
-    hour = int(hour)
-    min = int(min)
+
     if hour == 9 and min < 30:
         res = "[15M pull] Pre-market\n"
     elif hour < 16:
