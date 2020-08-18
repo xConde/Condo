@@ -174,7 +174,17 @@ def autoPull(timestamp):
     :return: [String] formatted result
     """
     scheduledStocks = ['SPY', 'AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL']
-    res = "[15M pull] \n"
+    hour = timestamp[3:5]
+    min = timestamp[6:8]
+    hour = int(hour)
+    min = int(min)
+    if hour == 9 and min < 30:
+        res = "[15M pull] Pre-market\n"
+    elif hour < 16:
+        res = "[15M pull] Intraday\n"
+    else:
+        res = "[15M pull] After-hours\n"
+
     stockQuote = {}
     stockPerc = {}
     for stock in scheduledStocks:
