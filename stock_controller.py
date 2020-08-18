@@ -1,13 +1,20 @@
-import re
-import robin_stocks as r
-from bot_clock import min, hour, dayIndex
-from heapq import nlargest
-import csv
+import re   # Standard Library
 
-stocks_mentioned = {}
+import csv      # 3rd Party Packages
+import robin_stocks as r
+from heapq import nlargest
+
+from bot_clock import min, hour, dayIndex   # Local Source
+
+
+stocks_mentioned = {}   # Maintains stock ticker as key and times mentioned as value.
 
 
 def writeStocksMentioned():
+    """Writes [stock ticker, iterations] from stocks_mentioned to "stocks_mentioned.csv"
+
+    :return:
+    """
     w = csv.writer(open("stocks_mentioned.csv", "w"))
     if w:
         print('Wrote stocks_mentioned to .csv')
@@ -16,6 +23,10 @@ def writeStocksMentioned():
 
 
 def readStocksMentioned():
+    """Reads "stocks_mentioned.csv" to stocks_mentioned[stock ticker, iterations]
+
+    :return:
+    """
     reader = csv.reader(open("stocks_mentioned.csv"))
     if reader:
         print('Loaded stocks_mentioned dictionary from .csv')
@@ -23,22 +34,35 @@ def readStocksMentioned():
         if row:
             key = row[0]
             stocks_mentioned[key] = int(row[1:][0])
-            # if key in stocks_mentioned:
-            # implement your duplicate row handling here
-            #    pass
 
 
 def checkPopularity(stock):
+    """Prints out the most popular open positions on robinhood to discord.
+
+    ***WORK IN PROGRESS
+    :param stock:
+    :return:
+    """
     stock_instrument = r.get_url(r.quote_data(stock)["instrument"])["id"]
     return r.get_url(urls.build_instruments(stock_instrument, "popularity"))["num_open_positions"]
 
 
 def checkMostMentioned():
+    """Finds the top 5 most mentioned stocks.
+
+    :return: Returns a dictionary of the top 5 most mentioned stocks
+    """
     fiveHighest = nlargest(5, stocks_mentioned, key=stocks_mentioned.get)
     return fiveHighest
 
 
 def validateUporDown(var):
+    """Evaluates if value is positive, if it is add a '+' and return it as a string. If it is not, just return it as``
+     a string.
+
+    :param var:
+    :return: Returns a string.
+    """
     if var >= 0:
         return '+' + str(var)
     else:
@@ -46,18 +70,34 @@ def validateUporDown(var):
 
 
 def grabPercent(curr, prev):
+    """Converts current and previous value to produce a percent difference.
+
+    :param curr: [float] current value
+    :param prev: [float] previous value
+    :return: [string] percent difference
+    """
     perc = round(((curr - prev) / prev * 100), 2)
     perc = validateUporDown(float(perc))
     return perc + '%'
 
 
 def tickerPrice(stock):
+    """Returns last trade price for provided stock
+
+    :param stock: {1-5} character stock-ticker
+    :return: [float] current price
+    """
     quote = r.get_quotes(stock)
     curr = '{:.2f}'.format((float(quote['last_trade_price']), 2))
     return curr
 
 
 def grabIntradayHL(stock):
+    """Returns intra-day low/high of the day.
+
+    :param stock: {1-5} character stock-ticker
+    :return: [float] low, [float] high
+    """
     quote = r.get_fundamentals(stock)
     quote = quote[0]
     low = '{:.2f}'.format(round(float(quote['low']), 2))
@@ -66,6 +106,11 @@ def grabIntradayHL(stock):
 
 
 def pc(stock):
+    """Generates and formats stock prices based on if market is open or in after-hours.
+
+    :param stock: {1-5} character stock-ticker
+    :return: [String] formatted output of price check.
+    """
     quote = r.get_quotes(stock)
     quote = quote[0]
     curr = '{:.2f}'.format(round(float(quote['last_trade_price']), 2))
@@ -86,6 +131,12 @@ def pc(stock):
 
 
 def validateTicker(stock):
+    """Validates user input. If it is allowed, return True and add it to the stocks_mentioned dict.
+
+    ***WORK IN PROGRESS - Need to find a way of stopping forced exceptions from false {1-5} alphabetical tickers.
+    :param stock:
+    :return:
+    """
     if not re.match(r'\b[a-zA-Z]{1,5}\b', stock):
         return False
     else:
