@@ -40,9 +40,30 @@ Command prefix = '.'
     Current Balance:  $87239.96   +2,225.16    +2.62%
     Buying power: $13,242.81
     Option positions:
+
+#### Most mentioned stocks - maintains a record of mentioned stocks (currently on a csv, [stocks_mentioned.csv] updated every 10 minutes) and outputs the top 5 most used stock tickers. 
+***********
+    Ex: .used
+
+    .used
+    Most mentioned stocks:
+    AAPL = 29 
+    SPY = 29 
+    SQ = 20 
+    ESTC = 14 
+    TSLA = 13
+
 ### Features:
 
-#### Background Loop - Displays SPY ticker price every 15m between market hours. Not displayed before or after, as well as not on weekends or holidays. 
+#### Background Loop - Displays a sorted list of specified stocks by gain every 15m between market hours. Not displayed before or after, as well as not on weekends or holidays. Stocks pulled through background loop are not added to 'most mentioned stocks'.  
+***********
+    [15M pull] 
+    AMZN: $3294.32 +3.52% |L: 3205.82 H: 3296.96
+    NFLX: $492.61  +2.13% |L: 482.88  H: 492.79
+    GOOGL:$1532.81 +1.09% |L: 1522.00 H: 1536.00
+    AAPL: $461.64   +0.7% |L: 456.03  H: 462.00
+    SPY:  $338.41  +0.15% |L: 336.61  H: 339.07
+    FB:   $260.30  -0.33% |L: 259.26  H: 262.62
 
 
 ### Initial build
