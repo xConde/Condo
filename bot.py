@@ -85,12 +85,12 @@ async def priceCheckList(ctx, *args):
 async def background_loop():
     await client.wait_until_ready()
     channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
-    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and 9 <= hour < 20 \
+    if (dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and 9 <= hour < 20) \
             and min % 15 == 0:
         res = s.pc('SPY')
         print(("Checked " + res + " @ " + str(hour) + ":" + str(min)) + ("AM" if AM else "PM"))
         await channel.send("[15m] " + res)
-    if currentDay in holidayDate and hour == 9 and min:
+    if currentDay in holidayDate and hour == 9 and min == 0:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
 
 
