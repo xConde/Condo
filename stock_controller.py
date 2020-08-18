@@ -2,9 +2,9 @@ import re   # Standard Library
 
 import csv      # 3rd Party Packages
 import robin_stocks as r
+import datetime as dt
+from datetime import datetime
 from heapq import nlargest
-
-from bot_clock import min, hour, dayIndex   # Local Source
 
 
 stocks_mentioned = {}   # Maintains stock ticker as key and times mentioned as value.
@@ -111,6 +111,10 @@ def pc(stock):
     :param stock: {1-5} character stock-ticker
     :return: [String] formatted output of price check.
     """
+    dayIndex = dt.datetime.today().weekday()  # 0-6 index
+    hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
+    min = datetime.now().minute
+
     quote = r.get_quotes(stock)
     quote = quote[0]
     curr = '{:.2f}'.format(round(float(quote['last_trade_price']), 2))

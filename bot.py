@@ -3,13 +3,21 @@ import os  # Standard library
 from discord.ext import commands, tasks  # 3rd party packages
 from dotenv import load_dotenv
 import robin_stocks as r
+import datetime as dt
+import holidays
+from datetime import datetime
 
-import stock_controller as s    # local source
-from bot_clock import min, hour, dayIndex, currentDay, holidayDate, AM
+
+import stock_controller as s  # local source
+
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
 rhlogin = r.login(username=os.getenv('USER'), password=os.getenv('PASS'))
+
+holidayDate = {}
+for date in holidays.UnitedStates(years=2020).items():
+    holidayDate[str(date[0])[5:]] = str(date[1])
 
 
 @client.command(name='used')
@@ -57,6 +65,8 @@ async def checkPort(ctx):
     :return:
     """
     if int(ctx.message.author.id) == int(os.getenv('ROBINHOOD_USER_ACCOUNT')):
+        hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
+        min = datetime.now().minute
         profileData = r.load_portfolio_profile()
         positionData = r.get_all_open_option_orders()
         option_positions = {}
@@ -120,11 +130,18 @@ async def background_loop():
     """
     await client.wait_until_ready()
     channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
-    if (dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and 9 <= hour < 20) \
+
+    dayIndex = dt.datetime.today().weekday()  # 0-6 index
+    currentDay = str(dt.datetime.today().date())[5:7] + '-' + str(dt.datetime.today().date())[8:]
+    hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
+    min = datetime.now().minute
+
+    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (9 <= hour < 20) \
             and min % 15 == 0:
         res = s.pc('SPY')
-        print(("Checked " + res + " @ " + str(hour) + ":" + str(min)) + ("AM" if AM else "PM"))
+        print("Checked " + str(res) + " @ " + str(hour) + ":" + str(min) + ("AM" if (hour < 12) else "PM"))
         await channel.send("```" + res + "```")
+        s.stocks_mentioned['SPY'] = s.stocks_mentioned.get('SPY') - 1
     if min % 25 == 0:
         s.writeStocksMentioned()
     if currentDay in holidayDate and hour == 9 and min == 0:
@@ -144,6 +161,6 @@ async def on_ready():
     print('Bot successfully launched!')
 
 
-s.readStocksMentioned()     # Populate stocks_mentioned dictionary with .csv items
-background_loop.start()     # Start up background_loop
-client.run(os.getenv('DISCORD_TOKEN'))      # Start up discord bot
+s.readStocksMentioned()  # Populate stocks_mentioned dictionary with .csv items
+background_loop.start()  # Start up background_loop
+client.run(os.getenv('DISCORD_TOKEN'))  # Start up discord bot

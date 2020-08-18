@@ -1,8 +1,12 @@
-from bot_clock import s
 import robin_stocks as rh
 from datetime import datetime
 import numpy as np
 import tulipy as ti
+import sched
+import time
+
+
+s = sched.scheduler(time.time, time.sleep)
 
 # Setup our variables, we haven't entered a trade yet and our RSI period
 enteredTrade = False
