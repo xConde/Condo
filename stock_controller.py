@@ -80,14 +80,16 @@ def grabPercent(curr, prev):
     return perc + '%'
 
 
-def evaluatePercent(perc):
-    """Takes a string formatted percent [ex. '-5.62%'] and evaluates the numerical value to ensure it is non 0``
+def evaluatePercent(curr, prev, perc):
+    """Takes a string formatted percent [ex. '-5.62%'] and evaluates the numerical value to ensure it is not 0``
     returns perc in numerical form.
 
+    :param curr:
+    :param prev:
     :param perc:
     :return:
     """
-    if float(perc[:-1]) != 0.0:
+    if curr != prev:
         return float(perc[:-1])
     else:
         return 0
@@ -137,18 +139,18 @@ def pc(stock):
             low, high = grabIntradayHL(stock)
             res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                            '|', 'L: ' + str(low), 'H: ' + str(high)) + '\n'
-            perc1 = evaluatePercent(perc1)
+            perc1 = evaluatePercent(float(curr), float(prev), perc1)
             return res, perc1
     elif quote['last_extended_hours_trade_price']:
         ah = '{:.2f}'.format(round(float(quote['last_extended_hours_trade_price']), 2))
         perc2 = grabPercent(float(ah), float(curr))
         res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                       '|', 'AH: $' + str(ah), perc2) + '\n'
-        perc2 = evaluatePercent(perc2)
+        perc2 = evaluatePercent(float(ah), float(prev), perc2)
         return res, perc2
     else:
         res = '{:<6}{:^8}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1) + '\n'
-        perc1 = evaluatePercent(perc1)
+        perc1 = evaluatePercent(float(curr), float(prev), perc1)
         return res, perc1
 
 
