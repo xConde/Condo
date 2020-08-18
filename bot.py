@@ -5,7 +5,7 @@ from bot_clock import min, hour, dayIndex, currentDay, holidayDate, AM
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 import robin_stocks as r
-from itertools import cycle
+import csv
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
@@ -16,7 +16,7 @@ rhlogin = r.login(username=os.getenv('USER'), password=os.getenv('PASS'))
 async def mostUsed(ctx):
     highest = s.checkMostMentioned()
     res = ""
-    await ctx.send("Most mentioned stock tickers since startup: ")
+    await ctx.send("Most mentioned stocks: ")
     for val in highest:
         res += str(val) + ' = ' + str(s.stocks_mentioned.get(val)) + " \n"
     await ctx.send(res)
@@ -77,7 +77,6 @@ async def priceCheckList(ctx, *args):
             res += pcList + '\n'
         else:
             res += stock.upper() + " is not a valid ticker.\n"
-
     await ctx.send("```" + res + "```")
 
 
@@ -89,7 +88,9 @@ async def background_loop():
             and min % 15 == 0:
         res = s.pc('SPY')
         print(("Checked " + res + " @ " + str(hour) + ":" + str(min)) + ("AM" if AM else "PM"))
-        await channel.send("[15m] " + res)
+        await channel.send("```" + res + "```")
+    if min % 25 == 0:
+        s.writeStocksMentioned()
     if currentDay in holidayDate and hour == 9 and min == 0:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
 
@@ -102,5 +103,6 @@ async def on_ready():
         print("Failed to create Robinhood instance.")
     print('Bot successfully launched!')
 
+s.readStocksMentioned()
 background_loop.start()
 client.run(os.getenv('DISCORD_TOKEN'))

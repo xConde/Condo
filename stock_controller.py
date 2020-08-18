@@ -2,8 +2,30 @@ import re
 import robin_stocks as r
 from bot_clock import min, hour, dayIndex
 from heapq import nlargest
+import csv
 
 stocks_mentioned = {}
+
+
+def writeStocksMentioned():
+    w = csv.writer(open("stocks_mentioned.csv", "w"))
+    if w:
+        print('Wrote stocks_mentioned to .csv')
+    for key, val in stocks_mentioned.items():
+        w.writerow([key, val])
+
+
+def readStocksMentioned():
+    reader = csv.reader(open("stocks_mentioned.csv"))
+    if reader:
+        print('Loaded stocks_mentioned dictionary from .csv')
+    for row in reader:
+        if row:
+            key = row[0]
+            stocks_mentioned[key] = int(row[1:][0])
+            # if key in stocks_mentioned:
+            # implement your duplicate row handling here
+            #    pass
 
 
 def checkPopularity(stock):
