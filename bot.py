@@ -1,11 +1,11 @@
-import os
-import time
-import stock_controller as s
-from bot_clock import min, hour, dayIndex, currentDay, holidayDate, AM
-from discord.ext import commands, tasks
+import os  # Standard library
+
+from discord.ext import commands, tasks  # 3rd party packages
 from dotenv import load_dotenv
 import robin_stocks as r
-import csv
+
+import stock_controller as s    # local source
+from bot_clock import min, hour, dayIndex, currentDay, holidayDate, AM
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
@@ -14,6 +14,11 @@ rhlogin = r.login(username=os.getenv('USER'), password=os.getenv('PASS'))
 
 @client.command(name='used')
 async def mostUsed(ctx):
+    """Prints out the top five most used stock tickers from stocks_mentioned to the discord channel.
+
+    :param ctx:
+    :return:
+    """
     highest = s.checkMostMentioned()
     res = ""
     await ctx.send("Most mentioned stocks: ")
@@ -23,7 +28,17 @@ async def mostUsed(ctx):
 
 
 @client.command(name='f')
-async def findOptions(ctx, stock, expir=None, type='call'):
+async def findOptions(ctx, stock, expir=None, type=None):
+    """Takes in a stock ticker, an optional expiration date (defaulted to friday expiration [if applicable]), a type``
+    (defaulted to both) and returns the information (Strike, price, volume, OI) on 1 ITM strike and 2 OTM strikes.
+
+    ***WORK IN PROGRESS - need to read more documentation on all option tuples provided by robin_stocks.
+    :param ctx:
+    :param stock: {1-5} character stock-ticker
+    :param expir: Defaulted to 'None'. Represents the expiration date in the format YYYY-MM-DD
+    :param type: Can be either 'call' or 'put' or left blank to get both.
+    :return:
+    """
     info = r.find_options_by_expiration(stock, '2020-08-21', type)
     first = info[0]
     price = s.tickerPrice(stock)
@@ -34,6 +49,13 @@ async def findOptions(ctx, stock, expir=None, type='call'):
 
 @client.command(name='port')
 async def checkPort(ctx):
+    """Prints out the Robinhood owner's account information: balance, buying power, and open positions (shares & options)``
+    . Will only allow the provided discord user id (Robinhood account owner) to use command.
+
+    **WORK IN PROGRESS - need to print user's open positions.
+    :param ctx:
+    :return:
+    """
     if int(ctx.message.author.id) == int(os.getenv('ROBINHOOD_USER_ACCOUNT')):
         profileData = r.load_portfolio_profile()
         positionData = r.get_all_open_option_orders()
@@ -69,7 +91,13 @@ async def checkPort(ctx):
 
 
 @client.command(name='p')
-async def priceCheckList(ctx, *args):
+async def priceCheck(ctx, *args):
+    """Prints the price for stock tickers provided to discord.
+
+    :param ctx:
+    :param args: (arg1), (arg2), ... (argN) Takes one to multiple stock tickers.
+    :return:
+    """
     res = ""
     for stock in args:
         if s.validateTicker(stock):
@@ -82,6 +110,14 @@ async def priceCheckList(ctx, *args):
 
 @tasks.loop(minutes=1)
 async def background_loop():
+    """Runs on startup and every minute that the bot is running.
+    Task 1: If the US market is open (9AM[pre-market] - 8PM[after-hours] and not holiday), print a SPY chart``
+     every 15 minutes.
+    Task 2: Every 25 minutes (global time) write the stocks mentioned to 'stocks_mentioned.csv'.
+    Task 3: If the US market is pre-market (9AM and weekday), but it's a holiday - make an announcement.
+
+    :return:
+    """
     await client.wait_until_ready()
     channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
     if (dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and 9 <= hour < 20) \
@@ -97,12 +133,17 @@ async def background_loop():
 
 @client.event
 async def on_ready():
+    """Prints out start-up statuses to console for operator.
+
+    :return:
+    """
     if rhlogin:
         print("Created Robinhood instance.")
     else:
         print("Failed to create Robinhood instance.")
     print('Bot successfully launched!')
 
-s.readStocksMentioned()
-background_loop.start()
-client.run(os.getenv('DISCORD_TOKEN'))
+
+s.readStocksMentioned()     # Populate stocks_mentioned dictionary with .csv items
+background_loop.start()     # Start up background_loop
+client.run(os.getenv('DISCORD_TOKEN'))      # Start up discord bot
