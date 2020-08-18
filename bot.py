@@ -7,9 +7,7 @@ import datetime as dt
 import holidays
 from datetime import datetime
 
-
 import stock_controller as s  # local source
-
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
@@ -27,7 +25,7 @@ async def mostUsed(ctx):
     :param ctx:
     :return:
     """
-    highest = s.checkMostMentioned()
+    highest = s.checkMostMentioned(s.stocks_mentioned, 5)
     res = ""
     await ctx.send("Most mentioned stocks: ")
     for val in highest:
@@ -112,8 +110,8 @@ async def priceCheck(ctx, *args):
     res = ""
     for stock in args:
         if s.validateTicker(stock):
-            pcList = s.pc(stock)
-            res += pcList + '\n'
+            pcList, perc = s.pc(stock)  # currently not using perc return - maybe in future?
+            res += pcList
         else:
             res += stock.upper() + " is not a valid ticker.\n"
     await ctx.send("```" + res + "```")
@@ -124,7 +122,7 @@ async def background_loop():
     """Runs on startup and every minute that the bot is running.
     Task 1: If the US market is open (9AM[pre-market] - 8PM[after-hours] and not holiday), print a SPY chart``
      every 15 minutes.
-    Task 2: Every 25 minutes (global time) write the stocks mentioned to 'stocks_mentioned.csv'.
+    Task 2: Every 10 minutes (global time) write the stocks mentioned to 'stocks_mentioned.csv'.
     Task 3: If the US market is pre-market (9AM and weekday), but it's a holiday - make an announcement.
 
     :return:
@@ -139,16 +137,11 @@ async def background_loop():
 
     if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (9 <= hour < 20) \
             and min % 15 == 0:
-        scheduledStocks = ['SPY', 'AAPL', 'FB', 'AMZN', 'NFLX']
-        res = "[15M pull] \n"
-        for stock in scheduledStocks:
-            res += s.pc(stock) + '\n'
-            s.stocks_mentioned[stock] = s.stocks_mentioned.get(stock.upper(), 0) - 1
-
+        res = s.autoPull()
         print("Checked " + str(res) + " @ " + str(hour) + ":" + str(min) + ("AM" if (hour < 12) else "PM"))
         await channel.send("```" + res + "```")
 
-    if min % 20 == 0:
+    if min % 10 == 0:
         s.writeStocksMentioned()
     if currentDay in holidayDate and hour == 9 and min == 0:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")

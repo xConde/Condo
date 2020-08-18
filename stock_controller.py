@@ -1,13 +1,12 @@
-import re   # Standard Library
+import re  # Standard Library
 
-import csv      # 3rd Party Packages
+import csv  # 3rd Party Packages
 import robin_stocks as r
 import datetime as dt
 from datetime import datetime
 from heapq import nlargest
 
-
-stocks_mentioned = {}   # Maintains stock ticker as key and times mentioned as value.
+stocks_mentioned = {}  # Maintains stock ticker as key and times mentioned as value.
 
 
 def writeStocksMentioned():
@@ -47,12 +46,12 @@ def checkPopularity(stock):
     return r.get_url(urls.build_instruments(stock_instrument, "popularity"))["num_open_positions"]
 
 
-def checkMostMentioned():
+def checkMostMentioned(dict, max):
     """Finds the top 5 most mentioned stocks.
 
     :return: Returns a dictionary of the top 5 most mentioned stocks
     """
-    fiveHighest = nlargest(5, stocks_mentioned, key=stocks_mentioned.get)
+    fiveHighest = nlargest(max, dict, key=dict.get)
     return fiveHighest
 
 
@@ -79,6 +78,19 @@ def grabPercent(curr, prev):
     perc = round(((curr - prev) / prev * 100), 2)
     perc = validateUporDown(float(perc))
     return perc + '%'
+
+
+def evaluatePercent(perc):
+    """Takes a string formatted percent [ex. '-5.62%'] and evaluates the numerical value to ensure it is non 0``
+    returns perc in numerical form.
+
+    :param perc:
+    :return:
+    """
+    if float(perc[:-1]) != 0.0:
+        return float(perc[:-1])
+    else:
+        return 0
 
 
 def tickerPrice(stock):
@@ -123,15 +135,21 @@ def pc(stock):
     if dayIndex < 5 and 9 <= hour < 16:
         if hour != 9 or (hour == 9 and min >= 30):
             low, high = grabIntradayHL(stock)
-            return '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
-                                                            '|', 'L: ' + str(low), 'H: ' + str(high))
+            res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
+                                                           '|', 'L: ' + str(low), 'H: ' + str(high)) + '\n'
+            perc1 = evaluatePercent(perc1)
+            return res, perc1
     elif quote['last_extended_hours_trade_price']:
         ah = '{:.2f}'.format(round(float(quote['last_extended_hours_trade_price']), 2))
         perc2 = grabPercent(float(ah), float(curr))
-        return '{:<6}{:^8}{:>7}{:>2}{:>6}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1,
-                                                       '|', 'AH: $' + str(ah), perc2)
+        res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1,
+                                                      '|', 'AH: $' + str(ah), perc2) + '\n'
+        perc2 = evaluatePercent(perc2)
+        return res, perc2
     else:
-        return '{:<6}{:^8}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1)
+        res = '{:<6}{:^8}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1) + '\n'
+        perc1 = evaluatePercent(perc1)
+        return res, perc1
 
 
 def validateTicker(stock):
@@ -146,3 +164,24 @@ def validateTicker(stock):
     else:
         stocks_mentioned[stock.upper()] = stocks_mentioned.get(stock.upper(), 0) + 1
         return True
+
+
+def autoPull():
+    """Pulls stock quotes for scheduledStocks and formats them to be in order of highest gain to lowest gain.
+
+    :return: [String] formatted result
+    """
+    scheduledStocks = ['SPY', 'AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL']
+    res = "[15M pull] \n"
+    stockQuote = {}
+    stockPerc = {}
+    for stock in scheduledStocks:
+        stockRes, perc = pc(stock)
+        stockQuote[stock] = stockRes
+        stockPerc[stock] = perc
+        stocks_mentioned[stock] = stocks_mentioned.get(stock.upper(), 0) - 1
+
+    highest = checkMostMentioned(stockPerc, 6)
+    for val in highest:
+        res += stockQuote[val]
+    return res
