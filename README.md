@@ -112,12 +112,12 @@ Command prefix = '.'
 - [x] Allow priceChecker to differentiate the current time to output different results depending on if market is open or not. If market is closed, it should outprint the open price, close price, percent difference, after hours price, and percent difference since market close. 
 - [x] Implement csv read to 'stocks mentioned' on load up and csv write every 20 minutes while bot is running.
 - [x] Add comments and clean up code.
-- [x] Add an additional condition check to validateTicker if the stock provided fits the criteria of 1-5 letters, but does not exist. A stock such as TVIX can cause an exception to pop. 
+- [x] Add an additional condition check to validateTicker if the stock provided fits the criteria of 1-5 letters, but does not exist. A stock such as TVIX can cause an exception to pop.
+- [x] Add a command for implied IV and move for options. 
 - [ ] Add sudo groups for lists of stock tickers. 
 - [ ] Set up a database that the bot can use to store information such as discord's most used tickers.
-- [ ] Fix port command, so stock and option positions that the user has is displayed.  
+- [ ] ~~Fix port command, so stock and option positions that the user has is displayed.~~ ***Currently not possible through robin_stocks API.
 - [ ] Add the '.f' command which displays friday expiry options (if not provided a date) for the call side (if not provided a side). 
-- [ ] Add a command for implied IV and move for options.
 - [ ] Add an alert anomaly detection for implied sudden changes to stock ticker price.
 - [ ] Add an alert anomaly detection for implied sudden changes to a stock's near expiry options [unusual activity].
 - [ ] Begin adding technical analysis to certain stocks (SPY, AAPL, MSFT, AMZN) and shoutout to the channel any extremities. 
