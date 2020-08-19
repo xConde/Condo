@@ -16,14 +16,6 @@ Command prefix = '.'
     AAPL: $460.45  +0.18% |L: 455.86  H: 464.36
     MSFT: $210.20  +0.62% |L: 208.91  H: 211.19
     SPY:  $338.10  +0.37% |L: 336.85  H: 338.34
-    
-    .p spce tsla aapl fb amzn googl
-    SPCE:  $18.18  -1.99% |L: 17.24   H: 18.73
-    TSLA: $1799.86 +9.04% |L: 1672.83 H: 1805.00
-    AAPL: $460.76  +0.25% |L: 455.86  H: 464.36
-    FB:   $261.24   +0.0% |L: 259.40  H: 264.10
-    AMZN: $3180.13 +1.02% |L: 3154.18 H: 3190.05
-    GOOGL:$1518.97 +0.95% |L: 1505.00 H: 1523.78
 
     [during after hours]
     .p estc aapl msft spy
@@ -31,7 +23,24 @@ Command prefix = '.'
     AAPL: $459.63  -0.19% |AH: 455.29  -0.07%
     MSFT: $210.22  +0.63% |AH: 208.82  -0.05%
     SPY:  $338.14  +0.39% |AH: 336.63  -0.07%
+#### Find option - Displays stock option information based on ticker, type (call or put), and expiration. Auto generates closest 'monthly' expiration if expiration is not provided. Also, option type is defaulted to call. 
+***********
+    Ex: .f [stock], [strike]
+    Ex: .f [stock], [strike], [type]
+    Ex: .f [stock], [strike], [type], [expiration]
 
+    .f aapl 470
+    AAPL 08-21 C $2.19 -18.28%
+    Vol:27K OI:16K IV:30% BE:472.19
+
+    .f fb 260 p
+    FB 08-21 P $2.20 -22.26%
+    Vol:8K  OI:4K IV:34% BE:257.80
+    
+    .f fb 260 c 2020-08-28
+    FB 08-28 C $7.45 +14.97%
+    Vol:4K  OI:1K IV:35% BE:267.45
+    
 #### Portfolio status - check the current balance of the signed in user's portfolio. Currently set to ONLY allow the discord account associated with the ROBINHOOD_USER_ACCOUNT use this command. 
 ***********
     Ex: .port 

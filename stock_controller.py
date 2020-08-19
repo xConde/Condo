@@ -35,6 +35,15 @@ def readStocksMentioned():
             stocks_mentioned[key] = int(row[1:][0])
 
 
+def formatThousand(val):
+    if val > 1000:
+        val = '{:.2f}'.format(round(val / 1000), 1) + 'K'
+        if val[-3:] == '00K':
+            return val[:-4] + 'K'
+    return val
+
+
+
 def checkPopularity(stock):
     """Prints out the most popular open positions on robinhood to discord.
 
@@ -44,6 +53,29 @@ def checkPopularity(stock):
     """
     stock_instrument = r.get_url(r.quote_data(stock)["instrument"])["id"]
     return r.get_url(urls.build_instruments(stock_instrument, "popularity"))["num_open_positions"]
+
+
+def third_friday(year, month, day):
+    """Return datetime.date for monthly option expiration given year and
+    month
+    """
+    # The 15th is the lowest third day in the month
+    third = dt.date(year, month, 15)
+    # What day of the week is the 15th?
+    w = third.weekday()
+    # Friday is weekday 4
+    if w != 4:
+        # Replace just the day (of month)
+        third = third.replace(day=(15 + (4 - w) % 7))
+
+    if day > third.day:
+        month += 1
+        third = dt.date(year, month, 15)
+        w = third.weekday()
+        if w != 4:
+            third = third.replace(day=(15 + (4 - w) % 7))
+
+    return third
 
 
 def checkMostMentioned(dict, max):
