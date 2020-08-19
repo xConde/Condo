@@ -10,14 +10,14 @@ Command prefix = '.'
     Ex: .p (arg1)
     EX: .p (arg1), (arg2), ... (argN)
 
-    [during market hours]
+    {during market hours}
     .p estc aapl msft spy 
     ESTC:  $92.31  +0.92% |L: 91.40   H: 93.59
     AAPL: $460.45  +0.18% |L: 455.86  H: 464.36
     MSFT: $210.20  +0.62% |L: 208.91  H: 211.19
     SPY:  $338.10  +0.37% |L: 336.85  H: 338.34
 
-    [during after hours]
+    {during after hours}
     .p estc aapl msft spy
     ESTC:  $91.47  +0.34% |AH: 91.47   +0.00%
     AAPL: $459.63  -0.19% |AH: 455.29  -0.07%
@@ -80,6 +80,16 @@ Command prefix = '.'
     AAPL: $461.64   +0.7% |L: 456.03  H: 462.00
     SPY:  $338.41  +0.15% |L: 336.61  H: 339.07
     FB:   $260.30  -0.33% |L: 259.26  H: 262.62
+    
+    {Pre market and after hours pull}
+    [15M pull] Pre-market
+    AAPL: $462.25  +0.83% |AH: $463.22 +0.21%
+    SPY:  $338.64  +0.22% |AH: $338.90 +0.08%
+    NFLX: $491.87  +1.97% |AH: $491.98 +0.02%
+    FB:   $262.34  +0.45% |AH: $261.90 -0.17%
+    GOOGL:$1555.78 +2.61% |AH: $1552.70  -0.2%
+    MSFT: $211.49  +0.58% |AH: $210.98 -0.24%
+    AMZN: $3312.49 +4.09% |AH: $3302.00 -0.32%
 
 
 ### Initial build
