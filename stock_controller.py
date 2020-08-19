@@ -160,8 +160,7 @@ def pc(stock):
     hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
     min = datetime.now().minute
 
-    quote = r.get_quotes(stock)
-    quote = quote[0]
+    quote = r.get_quotes(stock)[0]
     curr = '{:.2f}'.format(round(float(quote['last_trade_price']), 2))
     prev = '{:.2f}'.format(round(float(quote['adjusted_previous_close']), 2))
     perc1 = grabPercent(float(curr), float(prev))
@@ -188,11 +187,10 @@ def pc(stock):
 def validateTicker(stock):
     """Validates user input. If it is allowed, return True and add it to the stocks_mentioned dict.
 
-    ***WORK IN PROGRESS - Need to find a way of stopping forced exceptions from false {1-5} alphabetical tickers.
     :param stock:
     :return:
     """
-    if not re.match(r'\b[a-zA-Z]{1,5}\b', stock):
+    if not re.match(r'\b[a-zA-Z]{1,5}\b', stock) or not r.get_quotes(stock)[0]:
         return False
     else:
         stocks_mentioned[stock.upper()] = stocks_mentioned.get(stock.upper(), 0) + 1
