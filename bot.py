@@ -49,12 +49,16 @@ async def findOptions(ctx, stock, strike, type=None, expir=None):
     now = dt.datetime.now()
     exp = s.third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
 
+    fformat = 'Ex: .f [stock], [strike]\n' \
+              'Ex: .f [stock], [strike], [type]\n' \
+              'Ex: .f [stock], [strike], [type], [expiration]\n'
+
     if expir:
-        if re.match(r'\d{4}-\d{2}-\d{2}', expir):
+        if re.match(r'^\d{4}-\d{2}-\d{2}$', expir):
             exp = expir
         else:
-            res = 'Defaulted expiration date to ' + exp + '. Please follow YYYY-MM-DD format, bud.'
-            await ctx.send("```" + res + "```")
+            say = 'Defaulted expiration date to ' + exp + '. YYYY-MM-DD\n' + fformat
+            await ctx.send("```" + say + "```")
 
     res = str(stock.upper()) + " " + exp[5:] + " "
     if type:
@@ -64,10 +68,14 @@ async def findOptions(ctx, stock, strike, type=None, expir=None):
         elif type.lower() == 'calls' or type.lower() == 'c':
             type = 'call'
             res += 'C '
+        else:
+            say = 'Defaulted type to ' + 'calls' + '. \n' + fformat
+            await ctx.send("```" + say + "```")
+            type = 'call'
+            res += 'C '
     else:
         type = 'call'
         res += 'C '
-
 
     if s.validateTicker(stock):
         info = r.find_options_by_expiration_and_strike(stock, exp, strike, type)

@@ -43,7 +43,6 @@ def formatThousand(val):
     return val
 
 
-
 def checkPopularity(stock):
     """Prints out the most popular open positions on robinhood to discord.
 
@@ -205,7 +204,7 @@ def autoPull(timestamp, hour, min):
 
     :return: [String] formatted result
     """
-    scheduledStocks = ['SPY', 'AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL']
+    scheduledStocks = ['SPY', 'AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL', 'MSFT']
 
     if hour == 9 and min < 30:
         res = "[15M pull] Pre-market\n"
@@ -222,7 +221,7 @@ def autoPull(timestamp, hour, min):
         stockPerc[stock] = perc
         stocks_mentioned[stock] = stocks_mentioned.get(stock.upper(), 0) - 1
 
-    highest = checkMostMentioned(stockPerc, 6)
+    highest = checkMostMentioned(stockPerc, len(scheduledStocks))
     for val in highest:
         res += stockQuote[val]
     print("Pulled [15M] " + timestamp)
