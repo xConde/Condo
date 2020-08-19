@@ -166,7 +166,7 @@ def pc(stock):
     prev = '{:.2f}'.format(round(float(quote['adjusted_previous_close']), 2))
     perc1 = grabPercent(float(curr), float(prev))
 
-    if dayIndex < 5 and 9 <= hour < 16 and (not hour == 9 and min < 30):
+    if dayIndex < 5 and 8 <= hour < 16 and (not hour == 9 and min < 30):
             low, high = grabIntradayHL(stock)
             res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                            '|', 'L: ' + str(low), 'H: ' + str(high)) + '\n'
@@ -206,7 +206,7 @@ def autoPull(timestamp, hour, min):
     """
     scheduledStocks = ['SPY', 'AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL', 'MSFT']
 
-    if hour == 9 and min < 30:
+    if hour <= 9 and (not hour == 9 and min >= 30):
         res = "[15M pull] Pre-market\n"
     elif hour < 16:
         res = "[15M pull] Intraday\n"

@@ -180,14 +180,14 @@ async def background_loop():
     min = datetime.now().minute
     timestamp = " @ " + str(hour) + ":" + str(min) + ("AM" if (hour < 12) else "PM")
 
-    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (9 <= hour < 20) \
+    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (8 <= hour < 20) \
             and min % 15 == 0:
         res = s.autoPull(timestamp, hour, min)
         await channel.send("```" + res + "```")
 
     if min % 10 == 0:
         s.writeStocksMentioned(timestamp)
-    if currentDay in holidayDate and hour == 9 and min == 0:
+    if currentDay in holidayDate and hour == 8 and min == 0:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
 
 

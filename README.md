@@ -73,7 +73,8 @@ Command prefix = '.'
 
 #### Background Loop - Displays a sorted list of specified stocks by gain every 15m between market hours. Not displayed before or after, as well as not on weekends or holidays. Stocks pulled through background loop are not added to 'most mentioned stocks'.  
 ***********
-    [15M pull] 
+    {during market hours}
+    [15M pull] Intraday
     AMZN: $3294.32 +3.52% |L: 3205.82 H: 3296.96
     NFLX: $492.61  +2.13% |L: 482.88  H: 492.79
     GOOGL:$1532.81 +1.09% |L: 1522.00 H: 1536.00
