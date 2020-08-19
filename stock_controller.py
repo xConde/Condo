@@ -219,7 +219,6 @@ def autoPull(timestamp, hour, min):
         stockRes, perc = pc(stock)
         stockQuote[stock] = stockRes
         stockPerc[stock] = perc
-        stocks_mentioned[stock] = stocks_mentioned.get(stock.upper(), 0) - 1
 
     highest = checkMostMentioned(stockPerc, len(scheduledStocks))
     for val in highest:

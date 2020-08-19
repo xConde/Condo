@@ -23,7 +23,7 @@ Command prefix = '.'
     AAPL: $459.63  -0.19% |AH: 455.29  -0.07%
     MSFT: $210.22  +0.63% |AH: 208.82  -0.05%
     SPY:  $338.14  +0.39% |AH: 336.63  -0.07%
-#### Find option - Displays stock option information based on ticker, type (call or put), and expiration. Auto generates closest 'monthly' expiration if expiration is not provided. Also, option type is defaulted to call. 
+#### Find option - Displays stock option information based on ticker, type (call or put), and expiration. Auto generates closest 'monthly' expiration if expiration is not provided. Also, option type is defaulted to call. Defaults an incorrect provided parameter (type or expiration), notifies the user on the specific wrong input, and displays a format example.
 ***********
     Ex: .f [stock], [strike]
     Ex: .f [stock], [strike], [type]
@@ -41,6 +41,14 @@ Command prefix = '.'
     FB 08-28 C $7.45 +14.97%
     Vol:4K  OI:1K IV:35% BE:267.45
     
+    .f fb 265 c 2020-08-282
+    Defaulted expiration date to 2020-08-21. YYYY-MM-DD
+    Ex: .f [stock], [strike]
+    Ex: .f [stock], [strike], [type]
+    Ex: .f [stock], [strike], [type], [expiration]
+    
+    FB 08-21 C $2.44 +26.42%
+    Vol:34K  OI:8K IV:37% BE:267.44
 #### Portfolio status - check the current balance of the signed in user's portfolio. Currently set to ONLY allow the discord account associated with the ROBINHOOD_USER_ACCOUNT use this command. 
 ***********
     Ex: .port 
@@ -49,7 +57,6 @@ Command prefix = '.'
     Current Balance:  $87239.96   +2,225.16    +2.62%
     Buying power: $13,242.81
     Option positions:
-
 #### Most mentioned stocks - maintains a record of mentioned stocks (currently on a csv, [stocks_mentioned.csv] updated every 10 minutes) and outputs the top 5 most used stock tickers. 
 ***********
     Ex: .used
