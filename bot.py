@@ -102,7 +102,7 @@ async def checkPort(ctx):
     """Prints out the Robinhood owner's account information: balance, buying power, and open positions (shares & options)``
     . Will only allow the provided discord user id (Robinhood account owner) to use command.
 
-    **WORK IN PROGRESS - need to print user's open positions.
+    **WORK IN PROGRESS - [currently not available] need to print user's open positions.
     :param ctx:
     :return:
     """
@@ -111,18 +111,18 @@ async def checkPort(ctx):
         hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
         min = datetime.now().minute
         profileData = r.load_portfolio_profile()
-        positionData = r.get_all_open_option_orders()
+        # positionData = r.get_all_open_option_orders()
         option_positions = {}
         option_info = {}
-        print(positionData)
-        for option in positionData:
+        # print(positionData)
+        """for option in positionData:
             option_positions[option['chain_symbol']] = option['quantity']
             option_info[option['chain_symbol']] = option['price']
 
         res = ''
         for val in option_positions:
             res += '[' + str(int(float(option_positions.get(val)))) + '] ' + str(val) + ' ' + str(
-                round(float(option_info.get(val)), 2)) + '\n'
+                round(float(option_info.get(val)), 2)) + '\n'"""
 
         prev = round(float(profileData['adjusted_portfolio_equity_previous_close']), 2)
         bp = round(float(profileData['excess_margin']), 2)
@@ -138,7 +138,7 @@ async def checkPort(ctx):
         balance = '{:<10}{:^12}{:>7}{:>12}'.format("Current Balance:", '$' + str(curr), diff, perc + '\n')
         buyingPower = "Buying power: $" + str(bp)
         await ctx.send(balance + buyingPower)
-        await ctx.send("Option positions: \n" + res)
+        # await ctx.send("Option positions: \n" + res)
     else:
         await ctx.send("You are not authorized to use this command.")
 
