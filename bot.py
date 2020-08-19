@@ -19,6 +19,28 @@ for date in holidays.UnitedStates(years=2020).items():
     holidayDate[str(date[0])[5:]] = str(date[1])
 
 
+@client.command(name='spyup')
+async def top_sp500(ctx):
+    """Prints out top 5 S&P performers for the day
+
+    :param ctx:
+    :return:
+    """
+    res = s.pull_sp500('up')
+    await ctx.send("```" + res + "```")
+
+
+@client.command(name='spydown')
+async def bottom_sp500(ctx):
+    """Prints out bottom 5 S&P performers for the day
+
+    :param ctx:
+    :return:
+    """
+    res = s.pull_sp500('down')
+    await ctx.send("```" + res + "```")
+
+
 @client.command(name='used')
 async def mostUsed(ctx):
     """Prints out the top five most used stock tickers from stocks_mentioned to the discord channel.

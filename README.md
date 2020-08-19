@@ -5,7 +5,8 @@
 
 Command prefix = '.'
 
-#### Price checker - provide ticker names to receive the current price quickly. Condensed to allow mobile users to view it on one line. 
+##### Price checker - 
+provide ticker names to receive the current price quickly. Condensed to allow mobile users to view it on one line. 
 ***********
     Ex: .p (arg1)
     EX: .p (arg1), (arg2), ... (argN)
@@ -23,7 +24,8 @@ Command prefix = '.'
     AAPL: $459.63  -0.19% |AH: 455.29  -0.07%
     MSFT: $210.22  +0.63% |AH: 208.82  -0.05%
     SPY:  $338.14  +0.39% |AH: 336.63  -0.07%
-#### Find option - Displays stock option information based on ticker, type (call or put), and expiration. Auto generates closest 'monthly' expiration if expiration is not provided. Also, option type is defaulted to call. Defaults an incorrect provided parameter (type or expiration), notifies the user on the specific wrong input, and displays a format example.
+##### Find option - 
+Displays stock option information based on ticker, type (call or put), and expiration. Auto generates closest 'monthly' expiration if expiration is not provided. Also, option type is defaulted to call. Defaults an incorrect provided parameter (type or expiration), notifies the user on the specific wrong input, and displays a format example.
 ***********
     Ex: .f [stock], [strike]
     Ex: .f [stock], [strike], [type]
@@ -49,7 +51,28 @@ Command prefix = '.'
     
     FB 08-21 C $2.44 +26.42%
     Vol:34K  OI:8K IV:37% BE:267.44
-#### Portfolio status - check the current balance of the signed in user's portfolio. Currently set to ONLY allow the discord account associated with the ROBINHOOD_USER_ACCOUNT use this command. 
+    
+##### Top/Bottom 5 S&P performing stocks - 
+Displays out top 5 S&P performers/sinkers for the day. Sorts by market performance, not extended hours.
+***********
+    Ex: .spyup
+    Ex: .spydown
+
+    .spyup
+    TGT:  $154.22 +12.65% |AH: $155.24 +0.66%
+    FCX:   $14.94  +3.68% |AH: $14.97  +0.2%
+    CTL:   $11.29  +3.58% |AH: $11.40 +0.97%
+    NCLH:  $15.68  +3.16% |AH: $15.76 +0.51%
+    LYV:   $51.56  +2.46% |AH: $51.56  +0.0%
+
+    .spydown
+    JKHY: $172.22 -12.87% |AH: $172.88 +0.38%
+    TJX:   $54.36  -5.38% |AH: $54.50 +0.26%
+    GILD:  $65.70  -4.87% |AH: $65.80 +0.15%
+    ROST:  $90.26  -4.28% |AH: $90.26  +0.0%
+    REG:   $40.20  -3.87% |AH: $40.20  +0.0%
+##### Portfolio status - 
+Checks the current balance of the signed in user's portfolio. Currently set to ONLY allow the discord account associated with the ROBINHOOD_USER_ACCOUNT use this command. 
 ***********
     Ex: .port 
 
@@ -57,7 +80,8 @@ Command prefix = '.'
     Current Balance:  $87239.96   +2,225.16    +2.62%
     Buying power: $13,242.81
     Option positions:
-#### Most mentioned stocks - maintains a record of mentioned stocks (currently on a csv, [stocks_mentioned.csv] updated every 10 minutes) and outputs the top 5 most used stock tickers. 
+##### Most mentioned stocks -
+Maintains a record of mentioned stocks (currently on a csv, [stocks_mentioned.csv] updated every 10 minutes) and outputs the top 5 most used stock tickers. 
 ***********
     Ex: .used
 
@@ -71,7 +95,8 @@ Command prefix = '.'
 
 ### Features:
 
-#### Background Loop - Displays a sorted list of specified stocks by gain every 15m between market hours. Not displayed before or after, as well as not on weekends or holidays. Stocks pulled through background loop are not added to 'most mentioned stocks'.  
+##### Background Loop -
+Displays a sorted list of specified stocks by gain every 15m between market hours. Not displayed before or after, as well as not on weekends or holidays. Stocks pulled through background loop are not added to 'most mentioned stocks'.  
 ***********
     {during market hours}
     [15M pull] Intraday

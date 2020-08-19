@@ -35,6 +35,16 @@ def readStocksMentioned():
             stocks_mentioned[key] = int(row[1:][0])
 
 
+def pull_sp500(dir):
+    movers = r.get_top_movers_sp500(dir)
+    res = ""
+    for i in range(0, 5):
+        stock = movers[i]['symbol']
+        stockRes, perc = pc(stock)
+        res += stockRes
+    return res
+
+
 def formatThousand(val):
     if val > 1000:
         val = '{:.2f}'.format(round(val / 1000), 1) + 'K'
