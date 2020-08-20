@@ -35,6 +35,19 @@ def readStocksMentioned():
             stocks_mentioned[key] = int(row[1:][0])
 
 
+def getCommands():
+    res = ""
+    res += "- Price checker: Receive the current price on a stock\n"
+    res += "EX: .p (arg1), (arg2), ... (argN)\n"
+    res += "- Find option: Displays stock option information based on ticker, type (call or put), and expiration.\n"
+    res += "Ex: .f [stock], [strike]\n" + "Ex: .f [stock], [strike], [type]\n" + "Ex: .f [stock], [strike], [type], [expiration]\n"
+    res += "- Top/Bottom 5 S&P performing stocks\n"
+    res += "Ex: .spyup\n" + "Ex: .spydown\n"
+    res += "- Most mentioned stocks: Maintains a record of mentioned stocks.\n"
+    res += "Ex: .used\n"
+    return res
+
+
 def pull_sp500(dir):
     movers = r.get_top_movers_sp500(dir)
     res = ""
@@ -175,12 +188,12 @@ def pc(stock):
     prev = '{:.2f}'.format(round(float(quote['adjusted_previous_close']), 2))
     perc1 = grabPercent(float(curr), float(prev))
 
-    if dayIndex < 5 and 8 <= hour < 16 and not (hour == 9 and min < 30):
-            low, high = grabIntradayHL(stock)
-            res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
-                                                           '|', 'L: ' + str(low), 'H: ' + str(high)) + '\n'
-            perc1 = evaluatePercent(float(curr), float(prev), perc1)
-            return res, perc1
+    if dayIndex < 5 and 9 <= hour < 16 and not (hour == 9 and min < 30):
+        low, high = grabIntradayHL(stock)
+        res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
+                                                       '|', 'L: ' + str(low), 'H: ' + str(high)) + '\n'
+        perc1 = evaluatePercent(float(curr), float(prev), perc1)
+        return res, perc1
     elif quote['last_extended_hours_trade_price']:
         ah = '{:.2f}'.format(round(float(quote['last_extended_hours_trade_price']), 2))
         perc2 = grabPercent(float(ah), float(curr))

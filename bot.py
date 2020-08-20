@@ -19,6 +19,12 @@ for date in holidays.UnitedStates(years=2020).items():
     holidayDate[str(date[0])[5:]] = str(date[1])
 
 
+@client.command(name='commands')
+async def commands(ctx):
+    res = s.getCommands()
+    await ctx.send("```" + res + "```")
+
+
 @client.command(name='spyup')
 async def top_sp500(ctx):
     """Prints out top 5 S&P performers for the day

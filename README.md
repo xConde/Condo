@@ -6,7 +6,7 @@
 Command prefix = '.'
 
 ##### Price checker - 
-provide ticker names to receive the current price quickly. Condensed to allow mobile users to view it on one line. 
+Receive the current price on a stock quickly. Condensed to allow mobile users to view it on one line. 
 ***********
     Ex: .p (arg1)
     EX: .p (arg1), (arg2), ... (argN)
