@@ -65,12 +65,21 @@ async def mostUsed(ctx):
     await ctx.send(res)
 
 
-@client.command(name='option')
-async def findOptionChain(ctx):
-    await ctx.send("```" + 'To be announced' + "```")
-
-
 @client.command(name='f')
+async def findOptionChain(ctx, stock):
+    if s.validateTicker(stock):
+        strikes = o.grabOptionStrikes(stock)
+        res = "Option chain for " + stock.upper() + ": \n"
+        for strike in strikes:
+            res += str(strike) + " \n"
+        await ctx.send("```" + res + "```")
+    else:
+        await ctx.send("```" + stock.upper() + " is not a valid ticker.\n" + "```")
+
+
+
+
+@client.command(name='option')
 async def findOptions(ctx, stock, strike, type=None, expir=None):
     """Takes in a stock ticker, an optional expiration date (defaulted to friday expiration [if applicable]), a type``
     (defaulted to both) and returns the information (Strike, price, volume, OI) on 1 ITM strike and 2 OTM strikes.

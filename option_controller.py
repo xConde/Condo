@@ -44,6 +44,27 @@ def third_friday(year, month, day):
         return third_friday(int(year), int(month), int(day)+1)
 
 
+def round_up_price(price, multiplier):
+    num = price + (multiplier - 1)
+    return num - (num % multiplier)
+
+
+def getValueMult(stock):
+    info = r.get_chains(stock)
+    return float(info['trade_value_multiplier'])
+
+
+def grabOptionStrikes(stock):
+    price = s.tickerPrice(stock)
+    mult = getValueMult(stock)
+    strikes = []
+    for i in range(0, 5):
+        price = round_up_price(price, mult)
+        strikes.append(price)
+        print(price)
+    return strikes
+
+
 def validateType(type):
     if type and (type.lower() == 'puts' or type.lower() == 'put' or type.lower() == 'p'):
         return 'put'

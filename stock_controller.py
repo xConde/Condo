@@ -132,9 +132,9 @@ def tickerPrice(stock):
     :param stock: {1-5} character stock-ticker
     :return: [float] current price
     """
-    quote = r.get_quotes(stock)
-    curr = '{:.2f}'.format((float(quote['last_trade_price']), 2))
-    return curr
+    price = float(r.get_latest_price(stock)[0])
+    print(price)
+    return price
 
 
 def grabIntradayHL(stock):
