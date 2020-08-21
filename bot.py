@@ -1,5 +1,4 @@
 import os  # Standard library
-import re
 
 from discord.ext import commands, tasks  # 3rd party packages
 from dotenv import load_dotenv
@@ -9,6 +8,7 @@ import holidays
 from datetime import datetime
 
 import stock_controller as s  # local source
+import option_controller as o
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
@@ -32,6 +32,9 @@ async def top_sp500(ctx):
     :param ctx:
     :return:
     """
+    curr = 358.79
+    prev = 358.79
+
     res = s.pull_sp500('up')
     await ctx.send("```" + res + "```")
 
@@ -62,6 +65,11 @@ async def mostUsed(ctx):
     await ctx.send(res)
 
 
+@client.command(name='option')
+async def findOptionChain(ctx):
+    await ctx.send("```" + 'To be announced' + "```")
+
+
 @client.command(name='f')
 async def findOptions(ctx, stock, strike, type=None, expir=None):
     """Takes in a stock ticker, an optional expiration date (defaulted to friday expiration [if applicable]), a type``
@@ -74,55 +82,10 @@ async def findOptions(ctx, stock, strike, type=None, expir=None):
 
     :return:
     """
-    now = dt.datetime.now()
-    exp = s.third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
-
-    fformat = 'Ex: .f [stock], [strike]\n' \
-              'Ex: .f [stock], [strike], [type]\n' \
-              'Ex: .f [stock], [strike], [type], [expiration]\n'
-
-    if expir:
-        if re.match(r'^\d{4}-\d{2}-\d{2}$', expir):
-            exp = expir
-        else:
-            say = 'Defaulted expiration date to ' + exp + '. YYYY-MM-DD\n' + fformat
-            await ctx.send("```" + say + "```")
-
-    res = str(stock.upper()) + " " + exp[5:] + " "
-    if type:
-        if type.lower() == 'puts' or type.lower() == 'p':
-            type = 'put'
-            res += 'P '
-        elif type.lower() == 'calls' or type.lower() == 'c':
-            type = 'call'
-            res += 'C '
-        else:
-            say = 'Defaulted type to ' + 'calls' + '. \n' + fformat
-            await ctx.send("```" + say + "```")
-            type = 'call'
-            res += 'C '
-    else:
-        type = 'call'
-        res += 'C '
-
-    if s.validateTicker(stock):
-        info = r.find_options_by_expiration_and_strike(stock, exp, strike, type)
-        first = info[0]
-        curr = '{:.2f}'.format(round(float(first['adjusted_mark_price']), 2))
-        prev = '{:.2f}'.format(round(float(first['previous_close_price']), 2))
-        breakeven = '{:.2f}'.format(round(float(first['break_even_price']), 2))
-        iv = int(float(first['implied_volatility']) * 100)
-        perc = s.grabPercent(float(curr), float(prev))
-        volume = int(first['volume'])
-        volume = s.formatThousand(volume)
-        oi = int(first['open_interest'])
-        oi = s.formatThousand(oi)
-
-        res = '{:<4}{:<6}{:>8}{:>2}{:>7}{:>7}{:>11}'.format(res, '$' + str(curr), perc + '\n',
-                                                            'Vol:' + str(volume), 'OI:' + str(oi),
-                                                            'IV:' + str(iv) + '%',
-                                                            'BE:' + str(breakeven) + '\n')
-        await ctx.send("```" + res + "```")
+    res, msg = o.pcOption(stock, strike, type, expir)
+    if msg:
+        await ctx.send("```" + msg + "```")
+    await ctx.send("```" + res + "```")
 
 
 @client.command(name='port')

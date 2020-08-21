@@ -77,29 +77,6 @@ def checkPopularity(stock):
     return r.get_url(urls.build_instruments(stock_instrument, "popularity"))["num_open_positions"]
 
 
-def third_friday(year, month, day):
-    """Return datetime.date for monthly option expiration given year and
-    month
-    """
-    # The 15th is the lowest third day in the month
-    third = dt.date(year, month, 15)
-    # What day of the week is the 15th?
-    w = third.weekday()
-    # Friday is weekday 4
-    if w != 4:
-        # Replace just the day (of month)
-        third = third.replace(day=(15 + (4 - w) % 7))
-
-    if day > third.day:
-        month += 1
-        third = dt.date(year, month, 15)
-        w = third.weekday()
-        if w != 4:
-            third = third.replace(day=(15 + (4 - w) % 7))
-
-    return third
-
-
 def checkMostMentioned(dict, max):
     """Finds the top 5 most mentioned stocks.
 
