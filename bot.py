@@ -67,6 +67,16 @@ async def mostUsed(ctx):
 
 @client.command(name='f')
 async def findOptionChain(ctx, stock, type=None, expir=None):
+    """Takes in a stock ticker, an optional expiration date (defaulted to friday expiration [if applicable]),``
+     a type (defaulted to call) and prints the information (Strike, price, volume, OI) on 1 ITM strike and 3 OTM strikes``
+     to discord.
+
+    :param ctx:
+    :param stock: {1-5} character stock-ticker.
+    :param type: Defaulted to 'call'. Can be either 'call' or 'put'.
+    :param expir: Defaulted to 'None'. Represents the expiration date in the format YYYY-MM-DD
+    :return:
+    """
     if s.validateTicker(stock):
         res = o.pcOptionChain(stock, type, expir)
         await ctx.send("```" + res + "```")
@@ -76,12 +86,12 @@ async def findOptionChain(ctx, stock, type=None, expir=None):
 
 @client.command(name='option')
 async def findOptions(ctx, stock, strike, type=None, expir=None):
-    """Takes in a stock ticker, an optional expiration date (defaulted to friday expiration [if applicable]), a type``
-    (defaulted to both) and returns the information (Strike, price, volume, OI) on 1 ITM strike and 2 OTM strikes.
+    """Takes in a stock ticker, strike, an optional expiration date (defaulted to friday expiration [if applicable]),``
+     a type (defaulted to call) and prints the information (Strike, price, volume, OI) to discord.
 
     :param ctx:
     :param stock: {1-5} character stock-ticker.
-    :param type: Defauled to 'call'. Can be either 'call' or 'put'.
+    :param type: Defaulted to 'call'. Can be either 'call' or 'put'.
     :param expir: Defaulted to 'None'. Represents the expiration date in the format YYYY-MM-DD
 
     :return:
