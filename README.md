@@ -209,7 +209,6 @@ Displays a sorted list of specified stocks by gain every 15m between market hour
 - [x] Create a background loop, when the bot starts up it will print out the SPY price to a channel and the console with a timestamp every 15m during market hours.
 - [x] Have background loop account for holiday days (do not post any automatic stock messages on holidays)
 
-
 ### Next steps
 
 - [x] Tweak priceChecker formatting to enhance the aesthetic and allow all information to be posted on a single line. 
@@ -218,11 +217,17 @@ Displays a sorted list of specified stocks by gain every 15m between market hour
 - [x] Add comments and clean up code.
 - [x] Add an additional condition check to validateTicker if the stock provided fits the criteria of 1-5 letters, but does not exist. A stock such as TVIX can cause an exception to pop.
 - [x] Add a command for implied IV and move for options. 
-- [x] Add the '.f' command which displays monthly (third friday) expiry options (if not provided a date) for the call side (if not provided a side). 
-- [ ] Add sudo groups for lists of stock tickers. 
-- [ ] Set up a database that the bot can use to store information such as discord's most used tickers.
+- [x] Add the '.option' command which displays monthly (third friday) expiry options (if not provided a date) for the call side (if not provided a side). 
+- [x] Add a function that calculates the third friday of each month and verifies the current day is not. This could be used to auto generate an expiration date (monthlies).
+- [x] Add a function roundPrice, which rounds up/down based on what type of option is desired (call or put).
+- [x] Add a validateType function that returns a type that is corrected or defaulted.
+- [x] Add a validateExp function that returns an expiration that is provided, if correct or defaulted date.
 - [ ] ~~Fix port command, so stock and option positions that the user has is displayed.~~ ***Currently not possible through robin_stocks API.
-- [ ] Add an alert anomaly detection for implied sudden changes to stock ticker price.
-- [ ] Add an alert anomaly detection for implied sudden changes to a stock's near expiry options [unusual activity].
-- [ ] Begin adding technical analysis to certain stocks (SPY, AAPL, MSFT, AMZN) and shoutout to the channel any extremities. 
 
+### Final steps
+
+- [x] Add an option chain command that checks 1 ITM and 3 OTM strikes for any ticker
+- [x] Add a validateStrike function that determines if a strike is correct, if not it calls grabStrikeIterator, RoundPrice, and finally grabStrike to produce a strike.
+- [x] Add a searchStrikeIterator function that determines a strike price iterator based off of valid option strike entries.
+- [x] Add a grabStrikeIterator function that returns a proper strike price iterator.
+- [x] Add a grabStrike function that grabs a determined strike price based on strike iterator, iteration, and roundedprice.
