@@ -32,9 +32,6 @@ async def top_sp500(ctx):
     :param ctx:
     :return:
     """
-    curr = 358.79
-    prev = 358.79
-
     res = s.pull_sp500('up')
     await ctx.send("```" + res + "```")
 
@@ -116,19 +113,8 @@ async def checkPort(ctx):
         hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
         min = datetime.now().minute
         profileData = r.load_portfolio_profile()
-        # positionData = r.get_all_open_option_orders()
         option_positions = {}
         option_info = {}
-        # print(positionData)
-        """for option in positionData:
-            option_positions[option['chain_symbol']] = option['quantity']
-            option_info[option['chain_symbol']] = option['price']
-
-        res = ''
-        for val in option_positions:
-            res += '[' + str(int(float(option_positions.get(val)))) + '] ' + str(val) + ' ' + str(
-                round(float(option_info.get(val)), 2)) + '\n'"""
-
         prev = round(float(profileData['adjusted_portfolio_equity_previous_close']), 2)
         bp = round(float(profileData['excess_margin']), 2)
 
@@ -143,7 +129,6 @@ async def checkPort(ctx):
         balance = '{:<10}{:^12}{:>7}{:>12}'.format("Current Balance:", '$' + str(curr), diff, perc + '\n')
         buyingPower = "Buying power: $" + str(bp)
         await ctx.send(balance + buyingPower)
-        # await ctx.send("Option positions: \n" + res)
     else:
         await ctx.send("You are not authorized to use this command.")
 
