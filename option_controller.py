@@ -49,20 +49,71 @@ def round_up_price(price, multiplier):
     return num - (num % multiplier)
 
 
+def searchStrikeIterator(stock, type, expir, price):
+    strikeOptionList = [5, 2.5, 1, .5]
+    for i in range(0, len(strikeOptionList)):
+        strikeIterator = strikeOptionList[i]
+        price = round_down(price, strikeIterator)
+        checkStrike = strikeIterator * round(price / strikeIterator) + strikeIterator * 1
+        if r.find_options_by_expiration_and_strike(stock, expir, checkStrike, type):
+            return strikeIterator
+    print("Did not find any strikes")
+
+
+def grabStrikeIterator(stock, type, expir, price):
+    list1 = ['SPY', 'QQQ', 'IWM', 'SPCE', 'VXX']
+    list5 = ['AAPL', 'FB', 'MSFT', 'NFLX', 'JPM', 'DIS', 'SQ', 'TSLA', 'ESTC', 'GOOGL', 'NVDA', 'TGT', 'WMT']
+    if stock.upper() in list1:
+        return 1
+    elif stock.upper() in list5:
+        return 5
+    else:
+        return searchStrikeIterator(stock, type, expir, price)
+
+
+def round_down(price, divisor):
+    return price - (price % divisor)
+
+
 def getValueMult(stock):
     info = r.get_chains(stock)
     return float(info['trade_value_multiplier'])
 
 
-def grabOptionStrikes(stock):
-    price = s.tickerPrice(stock)
-    mult = getValueMult(stock)
+def pcOptionChain(stock, type, expir):
     strikes = []
-    for i in range(0, 5):
-        price = round_up_price(price, mult)
-        strikes.append(price)
-        print(price)
-    return strikes
+    price = s.tickerPrice(stock)
+    type = validateType(type)
+    expir = validateExp(expir)
+    strikeIterator = grabStrikeIterator(stock, type, expir, price)
+
+    if type == 'call':
+        price = round_down(price, strikeIterator)
+    else:
+        price = strikeIterator * round(price / strikeIterator) + strikeIterator * 0   # round up
+
+    for i in range(0, 4):
+        if type == 'call':
+            strikes.append((strikeIterator * round(price / strikeIterator)) + strikeIterator * i)
+        else:
+            price = (price - (price % strikeIterator)) - strikeIterator
+            strikes.append(price)
+
+    res = "Option chain for " + stock.upper() + ": (1 ITM / 3 OTM)\n"
+    i = 1
+    for strike in strikes:
+        opt, msg = pcOption(stock, strike, type, expir)
+        res += str(i) + ". " + opt + '\n'
+        i += 1
+    return res
+
+
+def validateStrike(stock, type, expir, strike):
+    price = s.tickerPrice(stock)
+    if r.find_options_by_expiration_and_strike(stock, expir, strike, type):
+        return strike
+    else:
+        return searchStrikeIterator(stock, type, expir, price)
 
 
 def validateType(type):
@@ -82,17 +133,19 @@ def validateExp(expir):
 
 
 def pcOption(stock, strike, type, expir):
-    exp = ""
     type = validateType(type)
     exp = validateExp(expir)
+    vstrike = validateStrike(stock, type, expir, strike)
 
-    res = str(stock.upper()) + " " + exp[5:] + " " + strike + type[0].upper() + " "
+    res = str(stock.upper()) + " " + exp[5:] + " " + str(vstrike) + type[0].upper() + " "
     msg = ""
     if s.validateTicker(stock):  # Option request invalidated
         if expir and expir != exp:
-            msg = 'Defaulted expiration date to ' + exp + '. YYYY-MM-DD\n' + optionFormat
+            msg += 'Defaulted expiration date to ' + exp + '. YYYY-MM-DD\n' + optionFormat + '\n'
+        if vstrike != strike:
+            msg += 'Defaulted strike to ' + str(vstrike) + '.'
 
-        option = r.find_options_by_expiration_and_strike(stock, exp, strike, type)[0]
+        option = r.find_options_by_expiration_and_strike(stock, exp, vstrike, type)[0]
         curr = '{:.2f}'.format(round(float(option['adjusted_mark_price']), 2))
         prev = '{:.2f}'.format(round(float(option['previous_close_price']), 2))
         breakeven = '{:.2f}'.format(round(float(option['break_even_price']), 2))

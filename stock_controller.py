@@ -133,7 +133,6 @@ def tickerPrice(stock):
     :return: [float] current price
     """
     price = float(r.get_latest_price(stock)[0])
-    print(price)
     return price
 
 

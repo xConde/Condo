@@ -66,17 +66,12 @@ async def mostUsed(ctx):
 
 
 @client.command(name='f')
-async def findOptionChain(ctx, stock):
+async def findOptionChain(ctx, stock, type=None, expir=None):
     if s.validateTicker(stock):
-        strikes = o.grabOptionStrikes(stock)
-        res = "Option chain for " + stock.upper() + ": \n"
-        for strike in strikes:
-            res += str(strike) + " \n"
+        res = o.pcOptionChain(stock, type, expir)
         await ctx.send("```" + res + "```")
     else:
         await ctx.send("```" + stock.upper() + " is not a valid ticker.\n" + "```")
-
-
 
 
 @client.command(name='option')
