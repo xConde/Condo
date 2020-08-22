@@ -1,8 +1,7 @@
-import re
+import re   # Standard library
 
-import robin_stocks as r
+import robin_stocks as r    # 3rd party packages
 import datetime as dt
-from datetime import datetime
 
 import stock_controller as s  # local source
 
@@ -12,8 +11,12 @@ optionFormat = 'Ex: [stock], [strike]\n' \
 
 
 def third_friday(year, month, day):
-    """Return datetime.date for monthly option expiration given year and
-    month
+    """Return datetime.date for monthly option expiration given year and month.
+
+    :param year:
+    :param month:
+    :param day:
+    :return:
     """
     # The 15th is the lowest third day in the month
     third = dt.date(year, month, 15)
@@ -38,13 +41,22 @@ def third_friday(year, month, day):
 
     currentDate = str(year) + '-' + month + '-' + str(day)
 
-    if str(third) != currentDate:
+    if str(third) != currentDate:   # See if current day is the monthly expiration, if it is move to next month.
         return third
     else:
         return third_friday(int(year), int(month), int(day)+1)
 
 
 def searchStrikeIterator(stock, type, expir, price):
+    """Iterate through a list of possible strike option iterators from greatest to least (to prevent a possible match for
+    rounding, but not actually exist for 1-3 more option strike prices). Return strike iterator.
+
+    :param stock:
+    :param type:
+    :param expir:
+    :param price:
+    :return:
+    """
     strikeOptionList = [5, 2.5, 1, .5]
     for i in range(0, len(strikeOptionList)):
         strikeIterator = strikeOptionList[i]
@@ -56,6 +68,15 @@ def searchStrikeIterator(stock, type, expir, price):
 
 
 def grabStrikeIterator(stock, type, expir, price):
+    """Check to see if stock option chain iterator being requested is one of the highly used tickers inside of one of two lists.
+    If it is not, send information to search strike iterator and find the strike iterator.
+
+    :param stock:
+    :param type:
+    :param expir:
+    :param price:
+    :return:
+    """
     list1 = ['SPY', 'QQQ', 'IWM', 'SPCE', 'VXX']
     list5 = ['AAPL', 'FB', 'MSFT', 'NFLX', 'JPM', 'DIS', 'SQ', 'TSLA', 'ESTC', 'GOOGL', 'NVDA', 'TGT', 'WMT']
     if stock.upper() in list1:
@@ -66,49 +87,12 @@ def grabStrikeIterator(stock, type, expir, price):
         return searchStrikeIterator(stock, type, expir, price)
 
 
-def pcOptionChain(stock, type, expir):
-    strikes = []
-    price = s.tickerPrice(stock)
-    type = validateType(type)
-    expir = validateExp(expir)
-    strikeIterator = grabStrikeIterator(stock, type, expir, price)
-
-    if type == 'call':
-        price = price - (price % strikeIterator)
-    else:
-        if (strikeIterator * round(price / strikeIterator) + strikeIterator * 0) == (price - (price % strikeIterator)):
-            price = strikeIterator * round(price / strikeIterator) + strikeIterator * 1  # round up further to make strike ITM
-        else:
-            price = strikeIterator * round(price / strikeIterator) + strikeIterator * 0  # round up
-
-    for i in range(0, 4):
-        if type == 'call':
-            strikes.append((strikeIterator * round(price / strikeIterator)) + strikeIterator * i)
-        else:
-            strikes.append(price)
-            price = price - price % strikeIterator - strikeIterator
-
-    res = "Option chain for " + stock.upper() + ":\n"
-    i = 0
-    for strike in strikes:
-        opt, msg = pcOption(stock, strike, type, expir)
-        if i == 0:
-            res += "[ITM] " + opt + '------------------------------------\n'
-        else:
-            res += str(i) + " OTM. " + opt + '------------------------------------\n'
-        i += 1
-    return res
-
-
-def validateStrike(stock, type, expir, strike):
-    price = s.tickerPrice(stock)
-    if not r.find_options_by_expiration_and_strike(stock, expir, strike, type):
-        return searchStrikeIterator(stock, type, expir, price)
-    else:
-        return strike
-
-
 def validateType(type):
+    """Given a type return a type that is corrected or defaulted.
+
+    :param type:
+    :return:
+    """
     if type and (type.lower() == 'puts' or type.lower() == 'put' or type.lower() == 'p'):
         return 'put'
     else:
@@ -116,6 +100,11 @@ def validateType(type):
 
 
 def validateExp(expir):
+    """Given an expiration date return an expiration that is provided if correct or a default date.
+
+    :param expir:
+    :return:
+    """
     now = dt.datetime.now()
     generatedExp = third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
     if expir and re.match(r'^\d{4}-\d{2}-\d{2}$', expir):
@@ -124,7 +113,34 @@ def validateExp(expir):
         return generatedExp
 
 
+def validateStrike(stock, type, expir, strike):
+    """Given parameters that should all be correct validate strike price. If strike price is not correct, return a
+    correct one.
+
+    :param stock:
+    :param type:
+    :param expir:
+    :param strike:
+    :return:
+    """
+    price = s.tickerPrice(stock)
+    if not r.find_options_by_expiration_and_strike(stock, expir, strike, type):
+        return searchStrikeIterator(stock, type, expir, price)
+    else:
+        return strike
+
+
 def pcOption(stock, strike, type, expir):
+    """Given parameters needed to collect option data, validate/correct type, exp, and strike, and return option data
+    relating to all of these fields. Also returns a msg if something major was defaulted when the user attempted to
+    provide that certain parameter.
+
+    :param stock:
+    :param strike:
+    :param type:
+    :param expir:
+    :return:
+    """
     type = validateType(type)
     exp = validateExp(expir)
     vstrike = validateStrike(stock, type, expir, strike)
@@ -156,3 +172,48 @@ def pcOption(stock, strike, type, expir):
         res = stock.upper() + " is not a valid ticker.\n"
 
     return res, msg
+
+
+def pcOptionChain(stock, type, expir):
+    """Provided a stock ticker, type, expiration - validate type and expiration given. Generate strike iterator to move
+    up/down option chain. Round up/down based on 'type' of option desired to allow first option shown to be ITM for
+    that type. It is possible when initially rounding up [puts] for a strike price to be closer to a rounded down 5, so
+    it compares that with the [calls] ITM to ensure they're not the same. Formats options gathered and returns a string.
+
+    :param stock:
+    :param type:
+    :param expir:
+    :return:
+    """
+    strikes = []
+    price = s.tickerPrice(stock)
+    type = validateType(type)
+    expir = validateExp(expir)
+    strikeIterator = grabStrikeIterator(stock, type, expir, price)
+
+    if type == 'call':  # Round down to make the first call shown ITM
+        price = price - (price % strikeIterator)
+    else:  # Round up to make the first put shown ITM
+        if (strikeIterator * round(price / strikeIterator) + strikeIterator * 0) == (price - (price % strikeIterator)):
+            price = strikeIterator * round(
+                price / strikeIterator) + strikeIterator * 1  # round up further to make strike ITM
+        else:
+            price = strikeIterator * round(price / strikeIterator) + strikeIterator * 0  # round up
+
+    for i in range(0, 4):  # Now that we have the iterator and rounded price, collect actual strikes
+        if type == 'call':
+            strikes.append((strikeIterator * round(price / strikeIterator)) + strikeIterator * i)
+        else:
+            strikes.append(price)
+            price = price - price % strikeIterator - strikeIterator
+
+    res = "Option chain for " + stock.upper() + ":\n"
+    i = 0
+    for strike in strikes:  # We have strikes, call pcOption and format output
+        opt, msg = pcOption(stock, strike, type, expir)
+        if i == 0:
+            res += "[ITM] " + opt + '------------------------------------\n'
+        else:
+            res += str(i) + " OTM. " + opt + '------------------------------------\n'
+        i += 1
+    return res
