@@ -88,8 +88,10 @@ def searchStrikeIterator(stock, type, expir, price):
         price = price - (price % strikeIterator)
         checkStrike = strikeIterator * round(price / strikeIterator) + strikeIterator * 0
         checkStrike2 = strikeIterator * round(price / strikeIterator) + strikeIterator * 1
+        checkStrike3 = strikeIterator * round(price / strikeIterator) + strikeIterator * 2
         if r.find_options_by_expiration_and_strike(stock, expir, checkStrike, type) \
-                and r.find_options_by_expiration_and_strike(stock, expir, checkStrike2, type)[0]['volume']:
+                and r.find_options_by_expiration_and_strike(stock, expir, checkStrike2, type)[0]['volume']\
+                and r.find_options_by_expiration_and_strike(stock, expir, checkStrike3, type)[0]['volume']:
             return strikeIterator
     print("Did not find any strikes")
 
@@ -106,10 +108,13 @@ def grabStrikeIterator(stock, type, expir, price):
     """
     list1 = ['SPY', 'QQQ', 'IWM', 'SPCE', 'VXX']
     list5 = ['AAPL', 'FB', 'MSFT', 'NFLX', 'JPM', 'DIS', 'SQ', 'ESTC', 'GOOGL', 'NVDA', 'TGT', 'WMT']
+    list10 = ['ZM']
     if stock.upper() in list1:
         return 1
     elif stock.upper() in list5:
         return 5
+    elif stock.upper() in list10:
+        return 10
     else:
         return searchStrikeIterator(stock, type, expir, price)
 
