@@ -75,12 +75,20 @@ def searchStrikeIterator(stock, type, expir, price):
     :param price:
     :return:
     """
-    strikeOptionList = [5, 2.5, 1, .5]
+    if price > 1000:
+        strikeOptionList = [5, 10, 50]
+    elif price > 100:
+        strikeOptionList = [1, 5, 10, 50]
+    elif price < 100:
+        strikeOptionList = [.5, 1, 5, 10, 50]
+
     for i in range(0, len(strikeOptionList)):
         strikeIterator = strikeOptionList[i]
         price = price - (price % strikeIterator)
-        checkStrike = strikeIterator * round(price / strikeIterator) + strikeIterator * 1
-        if r.find_options_by_expiration_and_strike(stock, expir, checkStrike, type):
+        checkStrike = strikeIterator * round(price / strikeIterator) + strikeIterator * 0
+        checkStrike2 = strikeIterator * round(price / strikeIterator) + strikeIterator * 1
+        if r.find_options_by_expiration_and_strike(stock, expir, checkStrike, type) \
+                and r.find_options_by_expiration_and_strike(stock, expir, checkStrike2, type)[0]['volume']:
             return strikeIterator
     print("Did not find any strikes")
 
@@ -96,7 +104,7 @@ def grabStrikeIterator(stock, type, expir, price):
     :return:
     """
     list1 = ['SPY', 'QQQ', 'IWM', 'SPCE', 'VXX']
-    list5 = ['AAPL', 'FB', 'MSFT', 'NFLX', 'JPM', 'DIS', 'SQ', 'TSLA', 'ESTC', 'GOOGL', 'NVDA', 'TGT', 'WMT']
+    list5 = ['AAPL', 'FB', 'MSFT', 'NFLX', 'JPM', 'DIS', 'SQ', 'ESTC', 'GOOGL', 'NVDA', 'TGT', 'WMT']
     if stock.upper() in list1:
         return 1
     elif stock.upper() in list5:
@@ -117,7 +125,7 @@ def grabStrike(price, strikeIterator, type, i):
         return strikeIterator * round(price / strikeIterator) + strikeIterator * i
     else:
         if i != 0:
-            return price - price % strikeIterator - strikeIterator
+            return price - price % strikeIterator - strikeIterator * i
         else:
             return price
 
@@ -211,7 +219,7 @@ def pcOption(stock, strike, type, expir):
     return res, msg
 
 
-def pcOptionChain(stock, type, expir):
+def pcOptionChain(stock, type, expir, price):
     """Provided a stock ticker, type, expiration - validate type and expiration given. Generate strike iterator to move
     up/down option chain. Round up/down based on 'type' of option desired. Formats options gathered and returns a string.
 
@@ -221,7 +229,6 @@ def pcOptionChain(stock, type, expir):
     :return:
     """
     strikes = []
-    price = s.tickerPrice(stock)
     type = validateType(type)
     expir = validateExp(expir)
     strikeIterator = grabStrikeIterator(stock, type, expir, price)

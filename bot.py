@@ -74,8 +74,10 @@ async def findOptionChain(ctx, stock, type=None, expir=None):
     :param expir: Defaulted to 'None'. Represents the expiration date in the format YYYY-MM-DD
     :return:
     """
-    if s.validateTicker(stock):
-        res = o.pcOptionChain(stock, type, expir)
+    price = s.tickerPrice(stock)
+
+    if s.validateTicker(stock) and price >= 5:
+        res = o.pcOptionChain(stock, type, expir, price)
         await ctx.send("```" + res + "```")
     else:
         await ctx.send("```" + stock.upper() + " is not a valid ticker.\n" + "```")
