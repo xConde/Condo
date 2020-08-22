@@ -4,7 +4,27 @@
 ### Discord commands:
 
 Command prefix = '.'
+##### Commands - 
+Display directory of commands.
+***********
+    Ex: .commands
 
+    .commands
+    - Price checker: Receive the current price on a stock
+    EX: .p (arg1), (arg2), ... (argN)
+    - Option: Displays stock option information based on ticker, strike, type (call or put), and expiration.
+    Ex: .option [stock], [strike]
+    Ex: .option [stock], [strike], [type]
+    Ex: .option [stock], [strike], [type], [expiration]
+     - Option chain: Displays stock option chain information based on ticker, type (call or put), and expiration.
+    Ex: .f [stock]
+    Ex: .f [stock], [type]
+    Ex: .f [stock], [type], [expiration]
+    - Top/Bottom 5 S&P performing stocks
+    Ex: .spyup
+    Ex: .spydown
+    - Most mentioned stocks: Maintains a record of mentioned stocks.
+    Ex: .used
 ##### Price checker - 
 Receive the current price on a stock quickly. Condensed to allow mobile users to view it on one line. 
 ***********

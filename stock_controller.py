@@ -39,8 +39,14 @@ def getCommands():
     res = ""
     res += "- Price checker: Receive the current price on a stock\n"
     res += "EX: .p (arg1), (arg2), ... (argN)\n"
-    res += "- Find option: Displays stock option information based on ticker, type (call or put), and expiration.\n"
-    res += "Ex: .f [stock], [strike]\n" + "Ex: .f [stock], [strike], [type]\n" + "Ex: .f [stock], [strike], [type], [expiration]\n"
+    res += "- Option: Displays stock option information based on ticker, strike, type (call or put), " \
+           "and expiration.\n"
+    res += "Ex: .option [stock], [strike]\n" + "Ex: .option [stock], [strike], [type]\n" + "Ex: .option [stock], " \
+                                                                                           "[strike], [type], " \
+                                                                                           "[expiration]\n "
+    res += "- Option chain: Displays stock option chain information based on ticker, type (call or put), " \
+           "and expiration.\n"
+    res += "Ex: .f [stock]\n" + "Ex: .f [stock], [type]\n" + "Ex: .f [stock], [type], [expiration]\n"
     res += "- Top/Bottom 5 S&P performing stocks\n"
     res += "Ex: .spyup\n" + "Ex: .spydown\n"
     res += "- Most mentioned stocks: Maintains a record of mentioned stocks.\n"
@@ -64,17 +70,6 @@ def formatThousand(val):
         if val[-3:] == '00K':
             return val[:-4] + 'K'
     return val
-
-
-def checkPopularity(stock):
-    """Prints out the most popular open positions on robinhood to discord.
-
-    ***WORK IN PROGRESS
-    :param stock:
-    :return:
-    """
-    stock_instrument = r.get_url(r.quote_data(stock)["instrument"])["id"]
-    return r.get_url(urls.build_instruments(stock_instrument, "popularity"))["num_open_positions"]
 
 
 def checkMostMentioned(dict, max):
