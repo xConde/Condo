@@ -47,6 +47,24 @@ def third_friday(year, month, day):
         return third_friday(int(year), int(month), int(day)+1)
 
 
+def roundPrice(price, strikeIterator, type):
+    """Round up/down based on 'type' of option desired to allow first option shown to be ITM for
+    that type. It is possible when initially rounding up [puts] for a strike price to be closer to a rounded down 5, so
+    it compares that with the [calls] ITM to ensure they're not the same.
+
+    :param price:
+    :param strikeIterator:
+    :return:
+    """
+    if type == 'call':  # Round down to make the first call shown ITM
+        return price - (price % strikeIterator)
+    else:  # Round up to make the first put shown ITM
+        if (strikeIterator * round(price / strikeIterator) + strikeIterator * 0) == (price - (price % strikeIterator)):
+            return strikeIterator * round(price / strikeIterator) + strikeIterator * 1  # round up further to make strike ITM
+        else:
+            return strikeIterator * round(price / strikeIterator) + strikeIterator * 0  # round up
+
+
 def searchStrikeIterator(stock, type, expir, price):
     """Iterate through a list of possible strike option iterators from greatest to least (to prevent a possible match for
     rounding, but not actually exist for 1-3 more option strike prices). Return strike iterator.
@@ -87,6 +105,23 @@ def grabStrikeIterator(stock, type, expir, price):
         return searchStrikeIterator(stock, type, expir, price)
 
 
+def grabStrike(price, strikeIterator, type, i):
+    """Grabs strike price for a rounded price, strike iterator, and iteration based on type.
+
+    :param price:
+    :param strikeIterator:
+    :param i:
+    :return:
+    """
+    if type == 'call':
+        return strikeIterator * round(price / strikeIterator) + strikeIterator * i
+    else:
+        if i != 0:
+            return price - price % strikeIterator - strikeIterator
+        else:
+            return price
+
+
 def validateType(type):
     """Given a type return a type that is corrected or defaulted.
 
@@ -125,7 +160,9 @@ def validateStrike(stock, type, expir, strike):
     """
     price = s.tickerPrice(stock)
     if not r.find_options_by_expiration_and_strike(stock, expir, strike, type):
-        return searchStrikeIterator(stock, type, expir, price)
+        strikeIterator = grabStrikeIterator(stock, type, expir, price)
+        price = roundPrice(price, strikeIterator, type)
+        return grabStrike(price, strikeIterator, type, 0)
     else:
         return strike
 
@@ -151,7 +188,7 @@ def pcOption(stock, strike, type, expir):
         if expir and expir != exp:
             msg += 'Defaulted expiration date to ' + exp + '. YYYY-MM-DD\n' + optionFormat + '\n'
         if vstrike != strike:
-            msg += 'Defaulted strike to ' + str(vstrike) + '.'
+            msg += 'Strike price ' + strike + ' did not exist for ' + stock.upper() + '. Defaulted strike to ' + str(vstrike) + '.'
 
         option = r.find_options_by_expiration_and_strike(stock, exp, vstrike, type)[0]
         curr = '{:.2f}'.format(round(float(option['adjusted_mark_price']), 2))
@@ -176,9 +213,7 @@ def pcOption(stock, strike, type, expir):
 
 def pcOptionChain(stock, type, expir):
     """Provided a stock ticker, type, expiration - validate type and expiration given. Generate strike iterator to move
-    up/down option chain. Round up/down based on 'type' of option desired to allow first option shown to be ITM for
-    that type. It is possible when initially rounding up [puts] for a strike price to be closer to a rounded down 5, so
-    it compares that with the [calls] ITM to ensure they're not the same. Formats options gathered and returns a string.
+    up/down option chain. Round up/down based on 'type' of option desired. Formats options gathered and returns a string.
 
     :param stock:
     :param type:
@@ -191,21 +226,10 @@ def pcOptionChain(stock, type, expir):
     expir = validateExp(expir)
     strikeIterator = grabStrikeIterator(stock, type, expir, price)
 
-    if type == 'call':  # Round down to make the first call shown ITM
-        price = price - (price % strikeIterator)
-    else:  # Round up to make the first put shown ITM
-        if (strikeIterator * round(price / strikeIterator) + strikeIterator * 0) == (price - (price % strikeIterator)):
-            price = strikeIterator * round(
-                price / strikeIterator) + strikeIterator * 1  # round up further to make strike ITM
-        else:
-            price = strikeIterator * round(price / strikeIterator) + strikeIterator * 0  # round up
+    price = roundPrice(price, strikeIterator, type)
 
     for i in range(0, 4):  # Now that we have the iterator and rounded price, collect actual strikes
-        if type == 'call':
-            strikes.append((strikeIterator * round(price / strikeIterator)) + strikeIterator * i)
-        else:
-            strikes.append(price)
-            price = price - price % strikeIterator - strikeIterator
+        strikes.append(grabStrike(price, strikeIterator, type, i))
 
     res = "Option chain for " + stock.upper() + ":\n"
     i = 0
