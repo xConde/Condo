@@ -77,7 +77,7 @@ def pcOptionChain(stock, type, expir):
         price = price - (price % strikeIterator)
     else:
         if (strikeIterator * round(price / strikeIterator) + strikeIterator * 0) == (price - (price % strikeIterator)):
-            price = strikeIterator * round(price / strikeIterator) + strikeIterator * 1  # round up
+            price = strikeIterator * round(price / strikeIterator) + strikeIterator * 1  # round up further to make strike ITM
         else:
             price = strikeIterator * round(price / strikeIterator) + strikeIterator * 0  # round up
 
@@ -88,11 +88,14 @@ def pcOptionChain(stock, type, expir):
             strikes.append(price)
             price = price - price % strikeIterator - strikeIterator
 
-    res = "Option chain for " + stock.upper() + ": (1 ITM / 3 OTM)\n"
-    i = 1
+    res = "Option chain for " + stock.upper() + ":\n"
+    i = 0
     for strike in strikes:
         opt, msg = pcOption(stock, strike, type, expir)
-        res += str(i) + ". " + opt + '\n'
+        if i == 0:
+            res += "[ITM] " + opt + '------------------------------------\n'
+        else:
+            res += str(i) + " OTM. " + opt + '------------------------------------\n'
         i += 1
     return res
 

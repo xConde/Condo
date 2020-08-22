@@ -60,46 +60,49 @@ Utilizes an optimized way of discovering option strike prices relative to the st
     Ex: .f [stock], [type], [expiration] *Expiration = monthlies only for accurate results.
 
     .f aapl
-    Option chain for AAPL: (1 ITM / 3 OTM)
-    1. AAPL 09-18 495C $24.80 +147.26%
+    Option chain for AAPL:
+    [ITM] AAPL 09-18 495C $24.80 +147.26%
     Vol:7K  OI:1K IV:42% BE:519.80
-    
-    2. AAPL 09-18 500C $22.50 +157.73%
+    ------------------------------------
+    1 OTM. AAPL 09-18 500C $22.50 +157.73%
     Vol:22K OI:24K IV:43% BE:522.50
-    
-    3. AAPL 09-18 505C $20.38 +169.93%
+    ------------------------------------
+    2 OTM. AAPL 09-18 505C $20.38 +169.93%
     Vol:3K  OI:1K IV:43% BE:525.38
-    
-    4. AAPL 09-18 510C $18.53 +181.61%
+    ------------------------------------
+    3 OTM. AAPL 09-18 510C $18.53 +181.61%
     Vol:3K  OI:3K IV:43% BE:528.53
+    ------------------------------------
 
     .f fb p
-    Option chain for FB: (1 ITM / 3 OTM)
-    1. FB 09-18 260P $7.00   +13.27%
+    Option chain for FB:
+    [ITM] FB 09-18 270P $11.63  +11.29%
+    Vol:2K  OI:2K IV:33% BE:258.37
+    ------------------------------------
+    1 OTM. FB 09-18 265P $9.10   +12.62%
+    Vol:642 OI:14K IV:34% BE:255.90
+    ------------------------------------
+    2 OTM. FB 09-18 260P $7.00   +13.27%
     Vol:452 OI:14K IV:34% BE:253.00
-    
-    2. FB 09-18 255P $5.35   +13.83%
+    ------------------------------------
+    3 OTM. FB 09-18 255P $5.35   +13.83%
     Vol:772  OI:3K IV:35% BE:249.65
-    
-    3. FB 09-18 250P $4.03   +14.16%
-    Vol:769  OI:5K IV:36% BE:245.97
-    
-    4. FB 09-18 245P $3.10   +14.39%
-    Vol:560  OI:4K IV:37% BE:241.90
+    ------------------------------------
     
     .f fb p 2020-10-16
-    Option chain for FB: (1 ITM / 3 OTM)
-    1. FB 10-16 260P $11.53   +7.46%
+    Option chain for FB:
+    [ITM] FB 10-16 270P $16.03   +6.87%
+    Vol:67 OI:642 IV:34% BE:253.97
+    ------------------------------------
+    1 OTM. FB 10-16 265P $13.53   +5.29%
+    Vol:75 OI:12K IV:35% BE:251.47
+    ------------------------------------
+    2 OTM. FB 10-16 260P $11.53   +7.46%
     Vol:188  OI:4K IV:35% BE:248.47
-    
-    2. FB 10-16 255P $9.55    +8.15%
+    ------------------------------------
+    3 OTM. FB 10-16 255P $9.55    +8.15%
     Vol:266  OI:1K IV:36% BE:245.45
-    
-    3. FB 10-16 250P $8.00    +6.67%
-    Vol:353  OI:2K IV:37% BE:242.00
-    
-    4. FB 10-16 245P $6.55    +8.26%
-    Vol:111  OI:1K IV:37% BE:238.45
+    ------------------------------------
 
 ##### Top/Bottom 5 S&P performing stocks - 
 Displays out top 5 S&P performers/sinkers for the day. Sorts by market performance, not extended hours.
