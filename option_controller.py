@@ -44,16 +44,11 @@ def third_friday(year, month, day):
         return third_friday(int(year), int(month), int(day)+1)
 
 
-def round_up_price(price, multiplier):
-    num = price + (multiplier - 1)
-    return num - (num % multiplier)
-
-
 def searchStrikeIterator(stock, type, expir, price):
     strikeOptionList = [5, 2.5, 1, .5]
     for i in range(0, len(strikeOptionList)):
         strikeIterator = strikeOptionList[i]
-        price = round_down(price, strikeIterator)
+        price = price - (price % strikeIterator)
         checkStrike = strikeIterator * round(price / strikeIterator) + strikeIterator * 1
         if r.find_options_by_expiration_and_strike(stock, expir, checkStrike, type):
             return strikeIterator
@@ -71,15 +66,6 @@ def grabStrikeIterator(stock, type, expir, price):
         return searchStrikeIterator(stock, type, expir, price)
 
 
-def round_down(price, divisor):
-    return price - (price % divisor)
-
-
-def getValueMult(stock):
-    info = r.get_chains(stock)
-    return float(info['trade_value_multiplier'])
-
-
 def pcOptionChain(stock, type, expir):
     strikes = []
     price = s.tickerPrice(stock)
@@ -88,16 +74,19 @@ def pcOptionChain(stock, type, expir):
     strikeIterator = grabStrikeIterator(stock, type, expir, price)
 
     if type == 'call':
-        price = round_down(price, strikeIterator)
+        price = price - (price % strikeIterator)
     else:
-        price = strikeIterator * round(price / strikeIterator) + strikeIterator * 0   # round up
+        if (strikeIterator * round(price / strikeIterator) + strikeIterator * 0) == (price - (price % strikeIterator)):
+            price = strikeIterator * round(price / strikeIterator) + strikeIterator * 1  # round up
+        else:
+            price = strikeIterator * round(price / strikeIterator) + strikeIterator * 0  # round up
 
     for i in range(0, 4):
         if type == 'call':
             strikes.append((strikeIterator * round(price / strikeIterator)) + strikeIterator * i)
         else:
-            price = (price - (price % strikeIterator)) - strikeIterator
             strikes.append(price)
+            price = price - price % strikeIterator - strikeIterator
 
     res = "Option chain for " + stock.upper() + ": (1 ITM / 3 OTM)\n"
     i = 1
@@ -110,10 +99,10 @@ def pcOptionChain(stock, type, expir):
 
 def validateStrike(stock, type, expir, strike):
     price = s.tickerPrice(stock)
-    if r.find_options_by_expiration_and_strike(stock, expir, strike, type):
-        return strike
-    else:
+    if not r.find_options_by_expiration_and_strike(stock, expir, strike, type):
         return searchStrikeIterator(stock, type, expir, price)
+    else:
+        return strike
 
 
 def validateType(type):
