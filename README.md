@@ -72,6 +72,13 @@ Displays stock option information based on ticker, type (call or put), and expir
     FB 08-21 C $2.44 +26.42%
     Vol:34K  OI:8K IV:37% BE:267.44
     
+    .option aapl 230
+    Strike price 250 did not exist for AAPL.
+    Defaulted strike to 495 (1 ITM).
+    
+    AAPL 09-18 495C $24.80 +147.26%
+    Vol:7K  OI:1K IV:42% BE:519.80
+    
 ##### Check Option Chain - 
 Utilizes an optimized way of discovering option strike prices relative to the stock. Prints out 1 ITM (In-The-Money) option and 3 OTM (Out-The-Money). Works with calls and puts. 
 ***********

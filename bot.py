@@ -95,8 +95,9 @@ async def findOptions(ctx, stock, strike, type=None, expir=None):
     """
     res, msg = o.pcOption(stock, strike, type, expir)
     if msg:
-        await ctx.send("```" + msg + "```")
-    await ctx.send("```" + res + "```")
+        await ctx.send("```" + msg + '\n' + res + "```")
+    else:
+        await ctx.send("```" + res + "```")
 
 
 @client.command(name='port')

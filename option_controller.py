@@ -188,8 +188,8 @@ def pcOption(stock, strike, type, expir):
         if expir and expir != exp:
             msg += 'Defaulted expiration date to ' + exp + '. YYYY-MM-DD\n' + optionFormat + '\n'
         if vstrike != strike:
-            msg += 'Strike price ' + strike + ' did not exist for ' + stock.upper() + '. Defaulted strike to ' + str(vstrike) + '.'
-
+            msg += 'Strike price ' + strike + ' did not exist for ' + stock.upper() + \
+                   '.\nDefaulted strike to ' + str(vstrike) + ' (1 ITM).\n'
         option = r.find_options_by_expiration_and_strike(stock, exp, vstrike, type)[0]
         curr = '{:.2f}'.format(round(float(option['adjusted_mark_price']), 2))
         prev = '{:.2f}'.format(round(float(option['previous_close_price']), 2))
