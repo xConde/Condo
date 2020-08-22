@@ -74,11 +74,13 @@ async def findOptionChain(ctx, stock, type=None, expir=None):
     :param expir: Defaulted to 'None'. Represents the expiration date in the format YYYY-MM-DD
     :return:
     """
-    price = s.tickerPrice(stock)
-
-    if s.validateTicker(stock) and price >= 5:
-        res = o.pcOptionChain(stock, type, expir, price)
-        await ctx.send("```" + res + "```")
+    if s.validateTicker(stock):
+        price = s.tickerPrice(stock)
+        if price >= 5:
+            res = o.pcOptionChain(stock, type, expir, price)
+            await ctx.send("```" + res + "```")
+        else:
+            await ctx.send("```" + stock.upper() + " is not a valid ticker for options.\n" + "```")
     else:
         await ctx.send("```" + stock.upper() + " is not a valid ticker.\n" + "```")
 
@@ -95,11 +97,18 @@ async def findOptions(ctx, stock, strike, type=None, expir=None):
 
     :return:
     """
-    res, msg = o.pcOption(stock, strike, type, expir)
-    if msg:
-        await ctx.send("```" + msg + '\n' + res + "```")
+    if s.validateTicker(stock):
+        price = s.tickerPrice(stock)
+        if price >= 5:
+            res, msg = o.pcOption(stock, strike, type, expir)
+            if msg:
+                await ctx.send("```" + msg + '\n' + res + "```")
+            else:
+                await ctx.send("```" + res + "```")
+        else:
+            await ctx.send("```" + stock.upper() + " is not a valid ticker for options.\n" + "```")
     else:
-        await ctx.send("```" + res + "```")
+        await ctx.send("```" + stock.upper() + " is not a valid ticker.\n" + "```")
 
 
 @client.command(name='port')

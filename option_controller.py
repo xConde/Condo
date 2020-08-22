@@ -1,6 +1,6 @@
-import re   # Standard library
+import re  # Standard library
 
-import robin_stocks as r    # 3rd party packages
+import robin_stocks as r  # 3rd party packages
 import datetime as dt
 
 import stock_controller as s  # local source
@@ -41,10 +41,10 @@ def third_friday(year, month, day):
 
     currentDate = str(year) + '-' + month + '-' + str(day)
 
-    if str(third) != currentDate:   # See if current day is the monthly expiration, if it is move to next month.
+    if str(third) != currentDate:  # See if current day is the monthly expiration, if it is move to next month.
         return third
     else:
-        return third_friday(int(year), int(month), int(day)+1)
+        return third_friday(int(year), int(month), int(day) + 1)
 
 
 def roundPrice(price, strikeIterator, type):
@@ -60,7 +60,8 @@ def roundPrice(price, strikeIterator, type):
         return price - (price % strikeIterator)
     else:  # Round up to make the first put shown ITM
         if (strikeIterator * round(price / strikeIterator) + strikeIterator * 0) == (price - (price % strikeIterator)):
-            return strikeIterator * round(price / strikeIterator) + strikeIterator * 1  # round up further to make strike ITM
+            return strikeIterator * round(
+                price / strikeIterator) + strikeIterator * 1  # round up further to make strike ITM
         else:
             return strikeIterator * round(price / strikeIterator) + strikeIterator * 0  # round up
 
@@ -192,30 +193,27 @@ def pcOption(stock, strike, type, expir):
 
     res = str(stock.upper()) + " " + exp[5:] + " " + str(vstrike) + type[0].upper() + " "
     msg = ""
-    if s.validateTicker(stock):  # Option request invalidated
-        if expir and expir != exp:
-            msg += 'Defaulted expiration date to ' + exp + '. YYYY-MM-DD\n' + optionFormat + '\n'
-        if vstrike != strike:
-            msg += 'Strike price ' + strike + ' did not exist for ' + stock.upper() + \
-                   '.\nDefaulted strike to ' + str(vstrike) + ' (1 ITM).\n'
-        option = r.find_options_by_expiration_and_strike(stock, exp, vstrike, type)[0]
-        curr = '{:.2f}'.format(round(float(option['adjusted_mark_price']), 2))
-        prev = '{:.2f}'.format(round(float(option['previous_close_price']), 2))
-        breakeven = '{:.2f}'.format(round(float(option['break_even_price']), 2))
-        iv = int(float(option['implied_volatility']) * 100)
-        perc = s.grabPercent(float(curr), float(prev))
-        volume = int(option['volume'])
-        volume = s.formatThousand(volume)
-        oi = int(option['open_interest'])
-        oi = s.formatThousand(oi)
 
-        res = '{:<4}{:<6}{:>10}{:>2}{:>7}{:>7}{:>11}'.format(res, '$' + str(curr), perc + '\n',
-                                                             'Vol:' + str(volume), 'OI:' + str(oi),
-                                                             'IV:' + str(iv) + '%',
-                                                             'BE:' + str(breakeven) + '\n')
-    else:
-        res = stock.upper() + " is not a valid ticker.\n"
+    if expir and expir != exp:
+        msg += 'Defaulted expiration date to ' + exp + '. YYYY-MM-DD\n' + optionFormat + '\n'
+    if vstrike != strike:
+        msg += 'Strike price ' + strike + ' did not exist for ' + stock.upper() + \
+               '.\nDefaulted strike to ' + str(vstrike) + ' (1 ITM).\n'
+    option = r.find_options_by_expiration_and_strike(stock, exp, vstrike, type)[0]
+    curr = '{:.2f}'.format(round(float(option['adjusted_mark_price']), 2))
+    prev = '{:.2f}'.format(round(float(option['previous_close_price']), 2))
+    breakeven = '{:.2f}'.format(round(float(option['break_even_price']), 2))
+    iv = int(float(option['implied_volatility']) * 100)
+    perc = s.grabPercent(float(curr), float(prev))
+    volume = int(option['volume'])
+    volume = s.formatThousand(volume)
+    oi = int(option['open_interest'])
+    oi = s.formatThousand(oi)
 
+    res = '{:<4}{:<6}{:>10}{:>2}{:>7}{:>7}{:>11}'.format(res, '$' + str(curr), perc + '\n',
+                                                         'Vol:' + str(volume), 'OI:' + str(oi),
+                                                         'IV:' + str(iv) + '%',
+                                                         'BE:' + str(breakeven) + '\n')
     return res, msg
 
 
