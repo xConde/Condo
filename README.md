@@ -1,5 +1,6 @@
-# Discord Robinhood Stockbot
-### Discord stock bot that utilizes an unofficial Robinhood API (robin_stocks) and discord API for market enthusiasts. 
+Discord Stonks
+========================
+#### Discord stonks utilizes an unofficial Robinhood API (robin_stocks), discord API, and various other tools/imports to create a user-friendly environment for market enthusiasts. 
 
 ### Discord commands:
 
