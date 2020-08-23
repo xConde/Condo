@@ -7,6 +7,7 @@ from datetime import datetime
 from heapq import nlargest
 
 stocks_mentioned = {}  # Maintains stock ticker as key and times mentioned as value.
+stocks_mentioned_csv = "Discord_Stonks/stocks_mentioned.csv"
 
 
 def writeStocksMentioned(timestamp):
@@ -14,7 +15,7 @@ def writeStocksMentioned(timestamp):
 
     :return:
     """
-    w = csv.writer(open("stocks_mentioned.csv", "w"))
+    w = csv.writer(open(stocks_mentioned_csv, "w"))
     if w:
         print('Wrote stocks_mentioned to .csv ' + timestamp)
     for key, val in stocks_mentioned.items():
@@ -26,7 +27,7 @@ def readStocksMentioned():
 
     :return:
     """
-    reader = csv.reader(open("stocks_mentioned.csv"))
+    reader = csv.reader(open(stocks_mentioned_csv))
     if reader:
         print('Loaded stocks_mentioned dictionary from .csv')
     for row in reader:

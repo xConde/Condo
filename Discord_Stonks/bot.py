@@ -7,8 +7,7 @@ import datetime as dt
 import holidays
 from datetime import datetime
 
-import stock_controller as s  # local source
-import option_controller as o
+from Discord_Stonks import option_controller as o, stock_controller as s
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()

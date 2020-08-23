@@ -3,7 +3,7 @@ import re  # Standard library
 import robin_stocks as r  # 3rd party packages
 import datetime as dt
 
-import stock_controller as s  # local source
+from Discord_Stonks import stock_controller as s
 
 optionFormat = 'Ex: [stock], [strike]\n' \
                'Ex: [stock], [strike], [type]\n' \
