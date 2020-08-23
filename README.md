@@ -4,9 +4,29 @@ Stonks
 
 <img src="https://i.kym-cdn.com/photos/images/original/001/499/826/2f0.png" width="200" height="200">
 
-### Discord commands:
+Table of Contents
+=================
+
+<!--ts-->
+   * [Discord Commands](#discord-commands)
+      * [Commands](#commands)
+      * [Price Checker](#price-checker)
+      * [Find Specific Option](#find-specific-option)
+      * [Check Option Chain](#check-option-chain)
+      * [Top/Bottom 5 S&P performing stocks](#top/bottom-5-s&p-performing-stocks)
+      * [Portfolio status](#portfolio-status)
+      * [Most mentioned stocks](#most-mentioned-stocks)
+   * [Features](#features)
+      * [Background Loop](#background-loop)
+   * [Checklist](#checklist)
+<!--te-->
+
+Discord commands
+=================
 
 Command prefix = '.'
+
+<a name="commands"></a>
 ##### Commands - 
 Display directory of commands.
 ***********
@@ -28,6 +48,7 @@ Display directory of commands.
     Ex: .spydown
     - Most mentioned stocks: Maintains a record of mentioned stocks.
     Ex: .used
+<a name="price-checker"></a>
 ##### Price checker - 
 Receive the current price on a stock quickly. Condensed to allow mobile users to view it on one line. 
 ***********
@@ -47,6 +68,7 @@ Receive the current price on a stock quickly. Condensed to allow mobile users to
     AAPL: $459.63  -0.19% |AH: 455.29  -0.07%
     MSFT: $210.22  +0.63% |AH: 208.82  -0.05%
     SPY:  $338.14  +0.39% |AH: 336.63  -0.07%
+<a name="find-specific-option"></a>
 ##### Find specific option - 
 Displays stock option information based on ticker, type (call or put), and expiration. Auto generates closest 'monthly' expiration if expiration is not provided. Also, option type is defaulted to call. Defaults an incorrect provided parameter (type, expiration, strike), notifies the user on the specific wrong input (expiration and strike), and displays a format example.
 ***********
@@ -81,7 +103,7 @@ Displays stock option information based on ticker, type (call or put), and expir
     
     AAPL 09-18 495C $24.80 +147.26%
     Vol:7K  OI:1K IV:42% BE:519.80
-    
+<a name="check-option-chain"></a>
 ##### Check Option Chain - 
 Utilizes an optimized way of discovering option strike prices relative to the stock. Prints out 1 ITM (In-The-Money) option and 3 OTM (Out-The-Money). Works with calls and puts. 
 ***********
@@ -133,7 +155,7 @@ Utilizes an optimized way of discovering option strike prices relative to the st
     3 OTM. FB 10-16 255P $9.55    +8.15%
     Vol:266  OI:1K IV:36% BE:245.45
     ------------------------------------
-
+<a name="top/bottom-5-s&p-performing-stocks"></a>
 ##### Top/Bottom 5 S&P performing stocks - 
 Displays out top 5 S&P performers/sinkers for the day. Sorts by market performance, not extended hours.
 ***********
@@ -153,6 +175,7 @@ Displays out top 5 S&P performers/sinkers for the day. Sorts by market performan
     GILD:  $65.70  -4.87% |AH: $65.80 +0.15%
     ROST:  $90.26  -4.28% |AH: $90.26  +0.0%
     REG:   $40.20  -3.87% |AH: $40.20  +0.0%
+<a name="portfolio-status"></a>
 ##### Portfolio status - 
 Checks the current balance of the signed in user's portfolio. Currently set to ONLY allow the discord account associated with the ROBINHOOD_USER_ACCOUNT use this command. 
 ***********
@@ -162,6 +185,7 @@ Checks the current balance of the signed in user's portfolio. Currently set to O
     Current Balance:  $87239.96   +2,225.16    +2.62%
     Buying power: $13,242.81
     Option positions:
+<a name="most-mentioned-stocks"></a>
 ##### Most mentioned stocks -
 Maintains a record of mentioned stocks (currently on a csv, [stocks_mentioned.csv] updated every 10 minutes) and outputs the top 5 most used stock tickers. 
 ***********
@@ -175,8 +199,9 @@ Maintains a record of mentioned stocks (currently on a csv, [stocks_mentioned.cs
     ESTC = 14 
     TSLA = 13
 
-### Features:
-
+Features
+=================
+<a name="background-loop"></a>
 ##### Background Loop -
 Displays a sorted list of specified stocks by gain every 15m between market hours. Not displayed before or after, as well as not on weekends or holidays. Stocks pulled through background loop are not added to 'most mentioned stocks'.  
 ***********
@@ -199,6 +224,8 @@ Displays a sorted list of specified stocks by gain every 15m between market hour
     MSFT: $211.49  +0.58% |AH: $210.98 -0.24%
     AMZN: $3312.49 +4.09% |AH: $3302.00 -0.32%
 
+Checklist
+=================
 
 ### Initial build
 
