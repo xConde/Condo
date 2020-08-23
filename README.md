@@ -2,7 +2,7 @@ Stonks
 ========================
 #### Stonks utilizes an unofficial Robinhood API (robin_stocks), discord API, and various other tools/imports to create a user-friendly environment for market enthusiasts. 
 
-<img src="https://i.kym-cdn.com/photos/images/original/001/499/826/2f0.png" width="200" height="200">
+![alt text](https://emoji.gg/assets/emoji/6522_Stonks.png)
 
 Table of Contents
 =================
