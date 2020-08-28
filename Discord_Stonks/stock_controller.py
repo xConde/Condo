@@ -116,7 +116,7 @@ def evaluatePercent(curr, prev, perc):
     :param perc:
     :return:
     """
-    if curr != prev:
+    if curr != prev and perc[-3] != "0.0":
         return float(perc[:-1])
     else:
         return 0
