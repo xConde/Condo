@@ -7,7 +7,7 @@ from datetime import datetime
 from heapq import nlargest
 
 stocks_mentioned = {}  # Maintains stock ticker as key and times mentioned as value.
-stocks_mentioned_csv = "Discord_Stonks/stocks_mentioned.csv"
+stocks_mentioned_csv = "Discord_Stonks/doc/stocks_mentioned.csv"
 
 
 def writeStocksMentioned(timestamp):

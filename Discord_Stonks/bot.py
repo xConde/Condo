@@ -21,7 +21,7 @@ for date in holidays.UnitedStates(years=2020).items():
 @client.command(name='commands')
 async def commands(ctx):
     res = ""
-    with open('Discord_Stonks/commands.txt', 'r') as file:
+    with open('Discord_Stonks/doc/commands.txt', 'r') as file:
         for line in file:
             res += line
     await ctx.send("```" + res + "```")
