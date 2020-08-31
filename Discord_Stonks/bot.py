@@ -57,11 +57,10 @@ async def mostUsed(ctx):
     :return:
     """
     highest = s.checkMostMentioned(s.stocks_mentioned, 5)
-    res = ""
-    await ctx.send("Most mentioned stocks: ")
+    res = "Most mentioned stocks:\n"
     for val in highest:
         res += str(val) + ' = ' + str(s.stocks_mentioned.get(val)) + " \n"
-    await ctx.send(res)
+    await ctx.send("```" + res + "```")
 
 
 @client.command(name='f')
