@@ -10,6 +10,12 @@ optionFormat = 'Ex: [stock], [strike]\n' \
                'Ex: [stock], [strike], [type], [expiration]\n'
 
 
+def find_friday():
+    now = dt.datetime.now()
+    friday = (now.today() + dt.timedelta((4 - now.weekday()) % 7)).strftime("%Y-%m-%d")
+    return friday
+
+
 def third_friday(year, month, day):
     """Return datetime.date for monthly option expiration given year and month.
 
@@ -90,7 +96,7 @@ def searchStrikeIterator(stock, type, expir, price):
         checkStrike2 = strikeIterator * round(price / strikeIterator) + strikeIterator * 1
         checkStrike3 = strikeIterator * round(price / strikeIterator) + strikeIterator * 2
         if r.find_options_by_expiration_and_strike(stock, expir, checkStrike, type) \
-                and r.find_options_by_expiration_and_strike(stock, expir, checkStrike2, type)[0]['volume']\
+                and r.find_options_by_expiration_and_strike(stock, expir, checkStrike2, type)[0]['volume'] \
                 and r.find_options_by_expiration_and_strike(stock, expir, checkStrike3, type)[0]['volume']:
             return strikeIterator
     print("Did not find any strikes")
