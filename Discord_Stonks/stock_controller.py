@@ -169,7 +169,7 @@ def pc(stock):
     elif quote['last_extended_hours_trade_price']:
         ah = '{:.2f}'.format(round(float(quote['last_extended_hours_trade_price']), 2))
         perc2 = grabPercent(float(ah), float(curr))
-        res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1,
+        res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>9}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                       '|', 'AH: $' + str(ah), perc2) + '\n'
         perc2 = evaluatePercent(float(ah), float(prev), perc2)
         return res, perc2
