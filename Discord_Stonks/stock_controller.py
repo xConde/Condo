@@ -36,25 +36,6 @@ def readStocksMentioned():
             stocks_mentioned[key] = int(row[1:][0])
 
 
-def getCommands():
-    res = ""
-    res += "- Price checker: Receive the current price on a stock\n"
-    res += "EX: .p (arg1), (arg2), ... (argN)\n"
-    res += "- Option: Displays stock option information based on ticker, strike, type (call or put), " \
-           "and expiration.\n"
-    res += "Ex: .option [stock], [strike]\n" + "Ex: .option [stock], [strike], [type]\n" + "Ex: .option [stock], " \
-                                                                                           "[strike], [type], " \
-                                                                                           "[expiration]\n "
-    res += "- Option chain: Displays stock option chain information based on ticker, type (call or put), " \
-           "and expiration.\n"
-    res += "Ex: .f [stock]\n" + "Ex: .f [stock], [type]\n" + "Ex: .f [stock], [type], [expiration]\n"
-    res += "- Top/Bottom 5 S&P performing stocks\n"
-    res += "Ex: .spyup\n" + "Ex: .spydown\n"
-    res += "- Most mentioned stocks: Maintains a record of mentioned stocks.\n"
-    res += "Ex: .used\n"
-    return res
-
-
 def pull_sp500(dir):
     movers = r.get_top_movers_sp500(dir)
     res = ""
