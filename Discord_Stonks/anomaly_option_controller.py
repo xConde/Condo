@@ -4,7 +4,7 @@ import csv
 from Discord_Stonks import option_controller as o, stock_controller as s, bot_calendar as cal
 
 
-strike_value = {}   # Maintains SPY strike value (Strike : Cost [volume * premium])
+strike_value_SPY = {}   # Maintains SPY strike value (Strike : Cost [volume * premium])
 SPY_strike_value_csv = "Discord_Stonks/doc/SPY_strike_value.csv"
 call_strikes_SPY = []
 put_strikes_SPY = []
@@ -20,7 +20,7 @@ def loadStrikes(ticker):
     put_strikes = []
 
     price = s.tickerPrice(ticker)
-    strikeIterator = o.grabStrikeIterator(ticker, type, expir, price)
+    strikeIterator = o.grabStrikeIterator(ticker, 'call', expir, price)
     callprice = o.roundPrice(price, strikeIterator, 'call')
     putprice = o.roundPrice(price, strikeIterator, 'put')
 
@@ -45,19 +45,19 @@ def loadStrikes_SPY():
 
 
 def writeStocksMentioned(timestamp):
-    """Writes [stock ticker, iterations] from stocks_mentioned to "stocks_mentioned.csv"
+    """Writes [strike, value] from strike_value_SPY to "SPY_strike_value.csv"
 
     :return:
     """
     w = csv.writer(open(SPY_strike_value_csv, "w"))
     if w:
         print('Wrote SPY_strike_value to .csv ' + timestamp)
-    for key, val in strike_value.items():
+    for key, val in strike_value_SPY.items():
         w.writerow([key, val])
 
 
 def readStocksMentioned():
-    """Reads "stocks_mentioned.csv" to stocks_mentioned[stock ticker, iterations]
+    """Reads "SPY_strike_value.csv" to strike_value_SPY[strike, value]
 
     :return:
     """
@@ -68,7 +68,7 @@ def readStocksMentioned():
     for row in reader:
         if row:
             key = row[0]
-            strike_value[key] = int(row[1:][0])
+            strike_value_SPY[key] = int(row[1:][0])
 
 
 def formatIntForHumans(num):
@@ -90,6 +90,7 @@ def generateValue(ticker, call_strikes, put_strikes, exp):
 
     :return: 2 ints call_value, put_value
     """
+    strike_value = {}
     call_value = 0
     put_value = 0
 
@@ -101,26 +102,32 @@ def generateValue(ticker, call_strikes, put_strikes, exp):
         value = o.pcOptionMin(ticker, strike, 'put', exp)
         strike_value[str(strike)+'P'] = value
         put_value += value
-    return call_value, put_value
+    res = dominatingSide(ticker, call_value, put_value, exp)
+    return strike_value, res
 
 
 def generateValue_SPY():
     """Generates value from strike (premium) * volume. Stores everything in strike_value, returns call_value & put_value
 
-    :return: 2 ints call_value, put_value
+    :return: highest difference in value
     """
-    loadStrikes_SPY()
-    call_value = 0
-    put_value = 0
+    highestDiff = 5000000
+    anomaly = {}
     for strike in call_strikes_SPY:
         value = o.pcOptionMin('SPY', strike, 'call', expir)
-        strike_value[str(strike)+'C'] = value
-        call_value += value
+        prev_value = strike_value_SPY.get(str(strike)+'C')
+        diff = int(value - prev_value)
+        strike_value_SPY[str(strike)+'C'] = int(value)
+        if diff > highestDiff:
+            anomaly[str(strike)+'C'] = diff
     for strike in put_strikes_SPY:
         value = o.pcOptionMin('SPY', strike, 'put', expir)
-        strike_value[str(strike)+'P'] = value
-        put_value += value
-    return call_value, put_value
+        prev_value = strike_value_SPY.get(str(strike)+'P')
+        diff = int(value - prev_value)
+        strike_value_SPY[str(strike)+'P'] = int(value)
+        if diff > highestDiff:
+            anomaly[str(strike)+'P'] = diff
+    return anomaly
 
 
 def dominatingSide(ticker, call, put, exp=None):
@@ -134,7 +141,7 @@ def dominatingSide(ticker, call, put, exp=None):
     if not exp:
         exp = expir
 
-    res = "Valued " + ticker + " " + exp + " options\n"
+    res = "Valued " + ticker.upper() + " " + exp + " options\n"
     largeSide = "Calls" if call > put else "Puts"
     call_abv = formatIntForHumans(call)
     put_abv = formatIntForHumans(put)
@@ -147,27 +154,31 @@ def dominatingSide(ticker, call, put, exp=None):
 
 
 def mostExpensive(ticker):
-    call_strikes, put_strikes = loadStrikes(ticker)
-    exp = o.validateExp(ticker, expir, call_strikes[0], 'call')
-    call, put = generateValue(ticker, call_strikes, put_strikes, exp)
-    res = dominatingSide(ticker, call, put, exp)
-    highest = s.checkMostMentioned(strike_value, 5)
-    for val in highest:
-        cost = formatIntForHumans(strike_value.get(val))
-        res += str(val) + ' = $' + cost + "\n"
-    return res
+    """Outputs dominating side and highest value strikes (+type)
 
-
-def mostExpensive_SPY():
-    """Outputs dominatingSide and highest value strikes (+type)
-
+    :param ticker:
     :return:
     """
-    call, put = generateValue_SPY()
-    res = dominatingSide('SPY', call, put)
+    call_strikes, put_strikes = loadStrikes(ticker)
+    exp = o.validateExp(ticker, expir, call_strikes[0], 'call')
+    strike_value, res = generateValue(ticker, call_strikes, put_strikes, exp)
+
     highest = s.checkMostMentioned(strike_value, 5)
     for val in highest:
         cost = formatIntForHumans(strike_value.get(val))
         res += str(val) + ' = $' + cost + "\n"
     return res
+
+
+def checkAnomalies(timestamp):
+    anomaly = generateValue_SPY()
+    writeStocksMentioned(timestamp)
+
+    if anomaly:
+        print("Found anomalies @ " + timestamp)
+        res = "Anomalies found:\n"
+        for val in anomaly:
+            cost = formatIntForHumans(anomaly.get(val))
+            res += str(val) + ' = $' + cost + "\n"
+        return res
 

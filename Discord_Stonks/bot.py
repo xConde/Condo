@@ -203,6 +203,10 @@ async def background_loop():
 
     if min % 10 == 0:
         s.writeStocksMentioned(timestamp)
+    if min % 5 == 0:
+        res = a.checkAnomalies(timestamp)
+        if res:
+            await channel.send("```" + res + "```")
     if currentDay in holidayDate and hour == 8 and min == 0:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
 
@@ -219,7 +223,7 @@ async def on_ready():
         print("Failed to create Robinhood instance.")
     print('Bot successfully launched!')
 
-
 s.readStocksMentioned()  # Populate stocks_mentioned dictionary with .csv items
+a.readStocksMentioned()  # Populate option value for SPY friday option chain
 background_loop.start()  # Start up background_loop
 client.run(os.getenv('DISCORD_TOKEN'))  # Start up discord bot

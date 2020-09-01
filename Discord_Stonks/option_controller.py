@@ -77,7 +77,7 @@ def grabStrikeIterator(stock, type, expir, price):
     :return:
     """
     list1 = ['SPY', 'QQQ', 'IWM', 'SPCE', 'VXX']
-    list5 = ['AAPL', 'FB', 'MSFT', 'NFLX', 'JPM', 'DIS', 'SQ', 'ESTC', 'GOOGL', 'NVDA', 'TGT', 'WMT']
+    list5 = ['AAPL', 'FB', 'MSFT', 'NFLX', 'JPM', 'DIS', 'SQ', 'ESTC', 'GOOGL', 'NVDA', 'TGT', 'WMT', 'TSLA']
     list10 = ['ZM']
     if stock.upper() in list1:
         return 1

@@ -20,6 +20,7 @@ Table of Contents
       * [Most mentioned stocks](#most-mentioned-stocks)
    * [Features](#features)
       * [Background Loop](#background-loop)
+      * [Checking S&P Anomalies](#anomalies)
    * [Checklist](#checklist)
 <!--te-->
 
@@ -239,7 +240,13 @@ Displays a sorted list of specified stocks by gain every 15m between market hour
     GOOGL:$1555.78 +2.61% |AH: $1552.70  -0.2%
     MSFT: $211.49  +0.58% |AH: $210.98 -0.24%
     AMZN: $3312.49 +4.09% |AH: $3302.00 -0.32%
-
+<a name="anomalies"></a>
+##### Checking S&P Anomalies -
+Scans the S&P option chain for any irregular changes over the past 5 minutes and alerts the chat if any are found.
+*********** 
+    Anomalies found:
+    340P = $2.1M
+    
 Checklist
 =================
 
