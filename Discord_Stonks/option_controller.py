@@ -57,7 +57,13 @@ def searchStrikeIterator(stock, type, expir, price):
                 and r.find_options_by_expiration_and_strike(stock, expir, checkStrike2, type)[0]['volume'] \
                 and r.find_options_by_expiration_and_strike(stock, expir, checkStrike3, type)[0]['volume']:
             return strikeIterator
-    print("Did not find any strikes")
+    now = dt.datetime.now()
+    generatedExp = cal.third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
+    if expir != generatedExp:
+        print("Did not find any strikes trying again")
+        searchStrikeIterator(stock, type, generatedExp, price)
+    else:
+        print("Did not find any strikes, stopping.")
 
 
 def grabStrikeIterator(stock, type, expir, price):
@@ -112,7 +118,7 @@ def validateType(type):
         return 'call'
 
 
-def validateExp(expir):
+def validateExp(stock, expir, strike, type):
     """Given an expiration date return an expiration that is provided if correct or a default date.
 
     :param expir:
@@ -120,7 +126,7 @@ def validateExp(expir):
     """
     now = dt.datetime.now()
     generatedExp = cal.third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
-    if expir and re.match(r'^\d{4}-\d{2}-\d{2}$', expir):
+    if expir and re.match(r'^\d{4}-\d{2}-\d{2}$', expir) and r.find_options_by_expiration_and_strike(stock, expir, strike, type):
         return expir
     else:
         return generatedExp
@@ -145,6 +151,22 @@ def validateStrike(stock, type, expir, strike):
         return strike
 
 
+def pcOptionMin(stock, strike, type, expir):
+    """Given parameters needed to collect option data, provide the current volume and price for option. ***Used
+    for anomaly_option_controller (parameters are verified).
+
+    :param stock:
+    :param strike:
+    :param type:
+    :param expir:
+    :return:
+    """
+    option = r.find_options_by_expiration_and_strike(stock, expir, strike, type)[0]
+    curr = round(float(option['adjusted_mark_price'])*100, 2)
+    volume = int(option['volume'])
+    return curr * volume
+
+
 def pcOption(stock, strike, type, expir):
     """Given parameters needed to collect option data, validate/correct type, exp, and strike, and return option data
     relating to all of these fields. Also returns a msg if something major was defaulted when the user attempted to
@@ -157,7 +179,7 @@ def pcOption(stock, strike, type, expir):
     :return:
     """
     type = validateType(type)
-    exp = validateExp(expir)
+    exp = validateExp(stock, expir, strike, type)
     vstrike = validateStrike(stock, type, expir, strike)
 
     res = str(stock.upper()) + " " + exp[5:] + " " + str(vstrike) + type[0].upper() + " "

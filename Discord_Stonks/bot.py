@@ -7,7 +7,7 @@ import datetime as dt
 import holidays
 from datetime import datetime
 
-from Discord_Stonks import option_controller as o, stock_controller as s
+from Discord_Stonks import option_controller as o, stock_controller as s, anomaly_option_controller as a
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
@@ -16,6 +16,19 @@ rhlogin = r.login(username=os.getenv('USER'), password=os.getenv('PASS'))
 holidayDate = {}
 for date in holidays.UnitedStates(years=2020).items():
     holidayDate[str(date[0])[5:]] = str(date[1])
+
+
+@client.command(name='read')
+async def readFridayOptionChain(ctx, stock):
+    if s.validateTicker(stock):
+        price = s.tickerPrice(stock)
+        if price >= 5:
+            res = a.mostExpensive(stock)
+            await ctx.send("```" + res + "```")
+        else:
+            await ctx.send("```" + stock.upper() + " is not a valid ticker for options.\n" + "```")
+    else:
+        await ctx.send("```" + stock.upper() + " is not a valid ticker.\n" + "```")
 
 
 @client.command(name='commands')

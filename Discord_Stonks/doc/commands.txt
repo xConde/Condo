@@ -8,6 +8,8 @@ Ex: .option [stock], [strike], [type], [expiration]
 Ex: .f [stock]
 Ex: .f [stock], [type]
 Ex: .f [stock], [type], [expiration]
+- Read Option Info: Displays closest valued options for a ticker with which side is dominating and top 5 most valued strikes.
+Ex. .read [stock]
 - Top/Bottom 5 S&P performing stocks
 Ex: .spyup
 Ex: .spydown
