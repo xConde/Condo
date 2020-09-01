@@ -219,7 +219,6 @@ def pcOptionChain(stock, type, expir, price):
     """
     strikes = []
     type = validateType(type)
-    expir = validateExp(expir)
     strikeIterator = grabStrikeIterator(stock, type, expir, price)
 
     price = roundPrice(price, strikeIterator, type)
@@ -227,6 +226,7 @@ def pcOptionChain(stock, type, expir, price):
     for i in range(0, 4):  # Now that we have the iterator and rounded price, collect actual strikes
         strikes.append(grabStrike(price, strikeIterator, type, i))
 
+    expir = validateExp(stock, expir, strikes[0], type)
     res = "Option chain for " + stock.upper() + ":\n"
     i = 0
     for strike in strikes:  # We have strikes, call pcOption and format output
