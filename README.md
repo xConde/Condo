@@ -11,8 +11,10 @@ Table of Contents
    * [Discord Commands](#discord-commands)
       * [Commands](#commands)
       * [Price Checker](#price-checker)
-      * [Find Specific Option](#find-specific-option)
-      * [Check Option Chain](#check-option-chain)
+      * [Options](#options)
+          * [Find Specific Option](#find-specific-option)
+          * [Check Option Chain](#check-option-chain)
+          * [Read Option Side](#read)
       * [Top/Bottom 5 S&P performing stocks](#top/bottom-5-s&p-performing-stocks)
       * [Portfolio status](#portfolio-status)
       * [Most mentioned stocks](#most-mentioned-stocks)
@@ -155,6 +157,20 @@ Utilizes an optimized way of discovering option strike prices relative to the st
     3 OTM. FB 10-16 255P $9.55    +8.15%
     Vol:266  OI:1K IV:36% BE:245.45
     ------------------------------------
+<a name="read"></a>
+##### Read Option Info - 
+Displays closest valued options for a ticker with which side is dominating and top 5 most valued strikes.
+***********
+    Ex: .read [stock]
+
+    .read vxx
+    Valued VXX 2020-09-04 options
+    Calls are dominating (3.63M > 965K)
+    27C = $1.64M
+    26C = $866K
+    26P = $573K
+    28C = $430K
+    30C = $398K
 <a name="top/bottom-5-s&p-performing-stocks"></a>
 ##### Top/Bottom 5 S&P performing stocks - 
 Displays out top 5 S&P performers/sinkers for the day. Sorts by market performance, not extended hours.
