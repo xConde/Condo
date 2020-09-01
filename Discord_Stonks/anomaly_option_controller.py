@@ -106,27 +106,31 @@ def generateValue(ticker, call_strikes, put_strikes, exp):
     return strike_value, res
 
 
+def checkDiff(anomaly, value, strike, type):
+    highestDiff = 800000
+    prev_value = strike_value_SPY.get(str(strike) + type)
+    diff = int(value - prev_value)
+    if diff > highestDiff:
+        anomaly[str(strike) + type] = diff
+    return anomaly
+
+
 def generateValue_SPY():
     """Generates value from strike (premium) * volume. Stores everything in strike_value, returns call_value & put_value
 
     :return: highest difference in value
     """
-    highestDiff = 5000000
     anomaly = {}
     for strike in call_strikes_SPY:
         value = o.pcOptionMin('SPY', strike, 'call', expir)
-        prev_value = strike_value_SPY.get(str(strike)+'C')
-        diff = int(value - prev_value)
+        if strike_value_SPY.get(str(strike)+'C'):
+            anomaly = checkDiff(anomaly, value, strike, 'C')
         strike_value_SPY[str(strike)+'C'] = int(value)
-        if diff > highestDiff:
-            anomaly[str(strike)+'C'] = diff
     for strike in put_strikes_SPY:
         value = o.pcOptionMin('SPY', strike, 'put', expir)
-        prev_value = strike_value_SPY.get(str(strike)+'P')
-        diff = int(value - prev_value)
+        if strike_value_SPY.get(str(strike)+'P'):
+            anomaly = checkDiff(anomaly, value, strike, 'P')
         strike_value_SPY[str(strike)+'P'] = int(value)
-        if diff > highestDiff:
-            anomaly[str(strike)+'P'] = diff
     return anomaly
 
 
