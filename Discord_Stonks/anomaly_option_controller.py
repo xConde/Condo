@@ -179,10 +179,10 @@ def checkAnomalies(timestamp):
     writeStocksMentioned(timestamp)
 
     if anomaly:
-        print("Found anomalies @ " + timestamp)
+        print("Found anomalies " + timestamp)
         res = "Anomalies found:\n"
         for val in anomaly:
             cost = formatIntForHumans(anomaly.get(val))
-            res += str(val) + ' = $' + cost + "\n"
+            res += str(val) + ' = +$' + cost + "\n"
         return res
 

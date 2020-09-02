@@ -196,17 +196,16 @@ async def background_loop():
     min = datetime.now().minute
     timestamp = " @ " + str(hour) + ":" + str(min) + ("AM" if (hour < 12) else "PM")
 
-    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (8 <= hour < 20) \
-            and min % 15 == 0:
-        res = s.autoPull(timestamp, hour, min)
-        await channel.send("```" + res + "```")
-
+    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (8 <= hour < 20):
+        if min % 3 == 0:
+            res = a.checkAnomalies(timestamp)
+            if res:
+                await channel.send("```" + res + "```")
+        if min % 15 == 0:
+            res = s.autoPull(timestamp, hour, min)
+            await channel.send("```" + res + "```")
     if min % 10 == 0:
         s.writeStocksMentioned(timestamp)
-    if min % 5 == 0:
-        res = a.checkAnomalies(timestamp)
-        if res:
-            await channel.send("```" + res + "```")
     if currentDay in holidayDate and hour == 8 and min == 0:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
 
