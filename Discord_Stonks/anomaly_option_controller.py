@@ -110,7 +110,7 @@ def generateValue(ticker, call_strikes, put_strikes, exp):
     return strike_value, res
 
 
-def checkDiff(anomaly, value, strike, type, DTE):
+def checkDiff(anomaly, value, strike, type, expir, DTE):
     """Checks difference in the last recorded price and reports if the difference is greater than highestDiff for
     DTE
 
@@ -121,14 +121,14 @@ def checkDiff(anomaly, value, strike, type, DTE):
     :param DTE:
     :return: anomaly (empty or populated)
     """
-    if DTE >= 7:
+    if DTE < 7:
         highestDiff = 450000
     else:
-        highestDiff = 600000
-    prev_value = strike_value_SPY.get(str(strike) + type)
+        highestDiff = 525000
+    prev_value = strike_value_SPY.get(expir + ' ' + str(strike) + type)
     diff = int(value - prev_value)
     if diff > highestDiff:
-        anomaly[str(strike) + type] = diff
+        anomaly[str(DTE) + ' ' + str(strike) + type] = diff
     return anomaly
 
 
@@ -144,9 +144,9 @@ def generateValue_SPY(strike, type, expir, anomaly):
     DTE = cal.DTE(expir)
     typeAbv = type[0].upper()
     value = o.pcOptionMin('SPY', strike, type, expir)
-    if strike_value_SPY.get(DTE + 'DTE ' + str(strike) + typeAbv):
-        anomaly = checkDiff(anomaly, value, strike, typeAbv, DTE)
-    strike_value_SPY[DTE + 'DTE ' + str(strike) + typeAbv] = int(value)
+    if strike_value_SPY.get(expir + ' ' + str(strike) + typeAbv):
+        anomaly = checkDiff(anomaly, value, strike, typeAbv, expir, DTE)
+    strike_value_SPY[expir + ' ' + str(strike) + typeAbv] = int(value)
     return anomaly
 
 
@@ -217,7 +217,7 @@ def checkAnomalies(timestamp):
 
     if anomaly:
         print("Found anomalies " + timestamp)
-        res = "Anomalies found:\n"
+        res = "Found large cash movement in past 3 min:\n"
         for val in anomaly:
             cost = formatIntForHumans(anomaly.get(val))
             res += str(val) + ' = +$' + cost + "\n"
