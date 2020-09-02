@@ -244,8 +244,9 @@ Displays a sorted list of specified stocks by gain every 15m between market hour
 ##### Checking S&P Anomalies -
 Scans the S&P option chain for any irregular changes over the past 5 minutes and alerts the chat if any are found.
 *********** 
-    Anomalies found:
-    340P = $2.1M
+    Found large cash movement in past 3 min:
+    2DTE 356C = +$477K
+    44DTE 345P = +$724K
     
 Checklist
 =================
