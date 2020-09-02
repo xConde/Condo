@@ -1,5 +1,6 @@
 
 import csv
+import datetime as dt
 
 from Discord_Stonks import option_controller as o, stock_controller as s, bot_calendar as cal
 
@@ -8,7 +9,10 @@ strike_value_SPY = {}   # Maintains SPY strike value (Strike : Cost [volume * pr
 SPY_strike_value_csv = "Discord_Stonks/doc/SPY_strike_value.csv"
 call_strikes_SPY = []
 put_strikes_SPY = []
-expir = cal.find_friday()
+
+now = dt.datetime.now()
+friday_expir = cal.find_friday()
+monthly_expir = cal.third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
 
 
 def loadStrikes(ticker):
@@ -20,7 +24,7 @@ def loadStrikes(ticker):
     put_strikes = []
 
     price = s.tickerPrice(ticker)
-    strikeIterator = o.grabStrikeIterator(ticker, 'call', expir, price)
+    strikeIterator = o.grabStrikeIterator(ticker, 'call', friday_expir, price)
     callprice = o.roundPrice(price, strikeIterator, 'call')
     putprice = o.roundPrice(price, strikeIterator, 'put')
 
@@ -106,8 +110,21 @@ def generateValue(ticker, call_strikes, put_strikes, exp):
     return strike_value, res
 
 
-def checkDiff(anomaly, value, strike, type):
-    highestDiff = 250000
+def checkDiff(anomaly, value, strike, type, DTE):
+    """Checks difference in the last recorded price and reports if the difference is greater than highestDiff for
+    DTE
+
+    :param anomaly:
+    :param value:
+    :param strike:
+    :param type:
+    :param DTE:
+    :return: anomaly (empty or populated)
+    """
+    if DTE >= 7:
+        highestDiff = 450000
+    else:
+        highestDiff = 600000
     prev_value = strike_value_SPY.get(str(strike) + type)
     diff = int(value - prev_value)
     if diff > highestDiff:
@@ -115,22 +132,37 @@ def checkDiff(anomaly, value, strike, type):
     return anomaly
 
 
-def generateValue_SPY():
-    """Generates value from strike (premium) * volume. Stores everything in strike_value, returns call_value & put_value
+def generateValue_SPY(strike, type, expir, anomaly):
+    """Generates value from strike (premium) * volume. Stores everything in strike_value_SPY, returns anomaly.
 
-    :return: highest difference in value
+    :param strike:
+    :param type:
+    :param expir:
+    :param anomaly:
+    :return: anomaly (empty or populated)
+    """
+    DTE = cal.DTE(expir)
+    typeAbv = type[0].upper()
+    value = o.pcOptionMin('SPY', strike, type, expir)
+    if strike_value_SPY.get(DTE + 'DTE ' + str(strike) + typeAbv):
+        anomaly = checkDiff(anomaly, value, strike, typeAbv, DTE)
+    strike_value_SPY[DTE + 'DTE ' + str(strike) + typeAbv] = int(value)
+    return anomaly
+
+
+def generate_SPY():
+    """calls generateValue_SPY for every strike and expiration and seeks anomalies. Returns anomaly
+
+    :return: extraneous cash flows
     """
     anomaly = {}
+
     for strike in call_strikes_SPY:
-        value = o.pcOptionMin('SPY', strike, 'call', expir)
-        if strike_value_SPY.get(str(strike)+'C'):
-            anomaly = checkDiff(anomaly, value, strike, 'C')
-        strike_value_SPY[str(strike)+'C'] = int(value)
+        anomaly = generateValue_SPY(strike, 'call', friday_expir, anomaly)
+        anomaly = generateValue_SPY(strike, 'call', monthly_expir, anomaly)
     for strike in put_strikes_SPY:
-        value = o.pcOptionMin('SPY', strike, 'put', expir)
-        if strike_value_SPY.get(str(strike)+'P'):
-            anomaly = checkDiff(anomaly, value, strike, 'P')
-        strike_value_SPY[str(strike)+'P'] = int(value)
+        anomaly = generateValue_SPY(strike, 'put', friday_expir, anomaly)
+        anomaly = generateValue_SPY(strike, 'put', monthly_expir, anomaly)
     return anomaly
 
 
@@ -143,7 +175,7 @@ def dominatingSide(ticker, call, put, exp=None):
     :return:
     """
     if not exp:
-        exp = expir
+        exp = friday_expir
 
     res = "Valued " + ticker.upper() + " " + exp + " options\n"
     largeSide = "Calls" if call > put else "Puts"
@@ -164,7 +196,7 @@ def mostExpensive(ticker):
     :return:
     """
     call_strikes, put_strikes = loadStrikes(ticker)
-    exp = o.validateExp(ticker, expir, call_strikes[0], 'call')
+    exp = o.validateExp(ticker, friday_expir, call_strikes[0], 'call')
     strike_value, res = generateValue(ticker, call_strikes, put_strikes, exp)
 
     highest = s.checkMostMentioned(strike_value, 5)
@@ -175,7 +207,12 @@ def mostExpensive(ticker):
 
 
 def checkAnomalies(timestamp):
-    anomaly = generateValue_SPY()
+    """Called every 3m to check records against current option values. Reports any anomalies found.
+
+    :param timestamp:
+    :return:
+    """
+    anomaly = generate_SPY()
     writeStocksMentioned(timestamp)
 
     if anomaly:

@@ -1,6 +1,12 @@
 import datetime as dt
 
 
+def DTE(expir):
+    now = dt.datetime.now()
+    today = now.today().strftime("%Y-%m-%d")
+    return int(expir[:-2]) - int(today[:-2])
+
+
 def find_friday():
     """Finds next Friday.
 
