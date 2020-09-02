@@ -47,6 +47,10 @@ async def top_sp500(ctx):
     :param ctx:
     :return:
     """
+    dte1 = cal.DTE('2020-09-04')
+    dte2 = cal.DTE('2020-10-17')
+    print(dte1)
+    print(dte2)
     res = s.pull_sp500('up')
     await ctx.send("```" + res + "```")
 

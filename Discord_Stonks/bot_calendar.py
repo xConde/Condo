@@ -3,8 +3,13 @@ import datetime as dt
 
 def DTE(expir):
     now = dt.datetime.now()
+    current_month = now.month
     today = now.day
-    return int(expir[-2:]) - int(today)
+    diff = int(expir[-2:]) - int(today)
+    if int(expir[5:7]) == int(current_month):
+        return diff
+    else:
+        return diff + 30 * (int(expir[5:7]) - int(current_month))
 
 
 def find_friday():
@@ -41,12 +46,8 @@ def third_friday(year, month, day):
         if w != 4:
             third = third.replace(day=(15 + (4 - w) % 7))
 
-    if month < 10:
-        month = '0' + str(month)
-    else:
-        month = str(month)
-
-    currentDate = str(year) + '-' + month + '-' + str(day)
+    now = dt.datetime.now()
+    currentDate = (now.today()).strftime("%Y-%m-%d")
 
     if str(third) != currentDate:  # See if current day is the monthly expiration, if it is move to next month.
         return third

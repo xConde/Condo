@@ -13,6 +13,7 @@ put_strikes_SPY = []
 now = dt.datetime.now()
 friday_expir = cal.find_friday()
 monthly_expir = cal.third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
+nextmonth_expir = cal.third_friday(now.year, now.month+1, now.day).strftime("%Y-%m-%d")
 
 
 def loadStrikes(ticker):
@@ -110,7 +111,7 @@ def generateValue(ticker, call_strikes, put_strikes, exp):
     return strike_value, res
 
 
-def checkDiff(anomaly, value, strike, type, expir, DTE):
+def checkDiff(anomaly, value, strike, type, expir):
     """Checks difference in the last recorded price and reports if the difference is greater than highestDiff for
     DTE
 
@@ -121,10 +122,13 @@ def checkDiff(anomaly, value, strike, type, expir, DTE):
     :param DTE:
     :return: anomaly (empty or populated)
     """
-    if DTE < 7:
-        highestDiff = 450000
-    else:
+    DTE = cal.DTE(expir)
+    if DTE > 30:
+        highestDiff = 700000
+    elif DTE > 15:
         highestDiff = 525000
+    else:
+        highestDiff = 450000
     prev_value = strike_value_SPY.get(expir + ' ' + str(strike) + type)
     diff = int(value - prev_value)
     if diff > highestDiff:
@@ -141,11 +145,10 @@ def generateValue_SPY(strike, type, expir, anomaly):
     :param anomaly:
     :return: anomaly (empty or populated)
     """
-    DTE = cal.DTE(expir)
     typeAbv = type[0].upper()
     value = o.pcOptionMin('SPY', strike, type, expir)
     if strike_value_SPY.get(expir + ' ' + str(strike) + typeAbv):
-        anomaly = checkDiff(anomaly, value, strike, typeAbv, expir, DTE)
+        anomaly = checkDiff(anomaly, value, strike, typeAbv, expir)
     strike_value_SPY[expir + ' ' + str(strike) + typeAbv] = int(value)
     return anomaly
 
@@ -160,9 +163,11 @@ def generate_SPY():
     for strike in call_strikes_SPY:
         anomaly = generateValue_SPY(strike, 'call', friday_expir, anomaly)
         anomaly = generateValue_SPY(strike, 'call', monthly_expir, anomaly)
+        anomaly = generateValue_SPY(strike, 'call', nextmonth_expir, anomaly)
     for strike in put_strikes_SPY:
         anomaly = generateValue_SPY(strike, 'put', friday_expir, anomaly)
         anomaly = generateValue_SPY(strike, 'put', monthly_expir, anomaly)
+        anomaly = generateValue_SPY(strike, 'put', nextmonth_expir, anomaly)
     return anomaly
 
 
