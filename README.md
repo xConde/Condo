@@ -242,7 +242,7 @@ Displays a sorted list of specified stocks by gain every 15m between market hour
     AMZN: $3312.49 +4.09% |AH: $3302.00 -0.32%
 <a name="anomalies"></a>
 ##### Checking S&P Anomalies -
-Scans the S&P option chain for any irregular changes over the past 5 minutes and alerts the chat if any are found.
+Scans the S&P option chain for any irregular changes over the past 5 minutes and alerts the chat if any are found. Records all anomalies found on "anomalies.csv" with an appropriate timestamp.
 *********** 
     Found large cash movement in past 3 min:
     2DTE 356C = +$477K

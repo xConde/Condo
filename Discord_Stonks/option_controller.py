@@ -163,8 +163,9 @@ def pcOptionMin(stock, strike, type, expir):
     """
     option = r.find_options_by_expiration_and_strike(stock, expir, strike, type)[0]
     curr = round(float(option['adjusted_mark_price'])*100, 2)
+    gamma = round(float(option['gamma'])*100, 2)
     volume = int(option['volume'])
-    return curr * volume
+    return curr * volume, [curr, volume, gamma]
 
 
 def pcOption(stock, strike, type, expir):

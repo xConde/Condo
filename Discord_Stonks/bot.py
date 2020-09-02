@@ -7,7 +7,8 @@ import datetime as dt
 import holidays
 from datetime import datetime
 
-from Discord_Stonks import option_controller as o, stock_controller as s, anomaly_option_controller as a, bot_calendar as cal
+from Discord_Stonks import option_controller as o, stock_controller as s, anomaly_option_controller as a, \
+    option_daily_flow as flow
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
@@ -23,7 +24,7 @@ async def readFridayOptionChain(ctx, stock):
     if s.validateTicker(stock):
         price = s.tickerPrice(stock)
         if price >= 5:
-            res = a.mostExpensive(stock)
+            res = flow.mostExpensive(stock)
             await ctx.send("```" + res + "```")
         else:
             await ctx.send("```" + stock.upper() + " is not a valid ticker for options.\n" + "```")
@@ -47,10 +48,7 @@ async def top_sp500(ctx):
     :param ctx:
     :return:
     """
-    dte1 = cal.DTE('2020-09-04')
-    dte2 = cal.DTE('2020-10-17')
-    print(dte1)
-    print(dte2)
+    o.pcOptionMin('SPY', 350, type, '2020-09-04')
     res = s.pull_sp500('up')
     await ctx.send("```" + res + "```")
 
@@ -198,11 +196,12 @@ async def background_loop():
     currentDay = str(dt.datetime.today().date())[5:7] + '-' + str(dt.datetime.today().date())[8:]
     hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
     min = datetime.now().minute
-    timestamp = " @ " + str(hour) + ":" + str(min) + ("AM" if (hour < 12) else "PM")
+    daystamp = str(datetime.now().today())
+    timestamp = str(hour) + ":" + str(min) + ("AM" if (hour < 12) else "PM")
 
     if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (8 <= hour < 20):
         if min % 3 == 0:
-            res = a.checkAnomalies(timestamp)
+            res = a.checkAnomalies(timestamp, daystamp)
             if res:
                 await channel.send("```" + res + "```")
         if min % 15 == 0:
@@ -227,6 +226,6 @@ async def on_ready():
     print('Bot successfully launched!')
 
 s.readStocksMentioned()  # Populate stocks_mentioned dictionary with .csv items
-a.readStocksMentioned()  # Populate option value for SPY friday option chain
+a.prepare_Anomalies()  # Populate option value for SPY friday option chain
 background_loop.start()  # Start up background_loop
 client.run(os.getenv('DISCORD_TOKEN'))  # Start up discord bot
