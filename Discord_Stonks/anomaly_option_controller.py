@@ -107,7 +107,7 @@ def generateValue(ticker, call_strikes, put_strikes, exp):
 
 
 def checkDiff(anomaly, value, strike, type):
-    highestDiff = 800000
+    highestDiff = 250000
     prev_value = strike_value_SPY.get(str(strike) + type)
     diff = int(value - prev_value)
     if diff > highestDiff:
