@@ -2,6 +2,11 @@ import datetime as dt
 
 
 def DTE(expir):
+    """Finds days until expiration
+
+    :param expir:
+    :return: int (DTE)
+    """
     now = dt.datetime.now()
     current_month = now.month
     today = now.day
@@ -28,7 +33,7 @@ def third_friday(year, month, day):
     :param year:
     :param month:
     :param day:
-    :return:
+    :return: string (YYYY-MM-DD)
     """
     # The 15th is the lowest third day in the month
     third = dt.date(year, month, 15)

@@ -200,7 +200,7 @@ async def background_loop():
     timestamp = str(hour) + ":" + str(min) + ("AM" if (hour < 12) else "PM")
 
     if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (8 <= hour < 20):
-        if min % 3 == 0:
+        if min % 3 == 0 and (9 <= hour <= 16):
             res = a.checkAnomalies(timestamp, daystamp)
             if res:
                 await channel.send("```" + res + "```")
