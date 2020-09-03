@@ -34,6 +34,7 @@ def prepare_Anomalies():
     :return:
     """
     loadStrikes_SPY()
+    print('Loaded anomaly strikes')
     anomaly = generate_SPY()
 
 
@@ -74,11 +75,12 @@ def checkDiff(anomaly, value, optionSpecs, strike, type, expir):
     diff = int(value - prev_value)
     if diff > highestDiff:
         prev_volume = strike_value_SPY.get(expir + ' ' + str(strike) + type)['volume']
-        anomaly.setdefault(str(DTE) + 'DTE ' + str(strike) + type, {})['diff'] = diff
-        anomaly.setdefault(str(DTE) + 'DTE ' + str(strike) + type, {})['curr'] = optionSpecs[0]
-        anomaly.setdefault(str(DTE) + 'DTE ' + str(strike) + type, {})['volume'] = optionSpecs[1] - prev_volume
-        anomaly.setdefault(str(DTE) + 'DTE ' + str(strike) + type, {})['gamma'] = optionSpecs[2]
-    return anomaly
+        anomaly.setdefault(expir + ' ' + str(strike) + type, {})['diff'] = diff
+        anomaly.setdefault(expir + ' ' + str(strike) + type, {})['curr'] = optionSpecs[0]
+        anomaly.setdefault(expir + ' ' + str(strike) + type, {})['volume'] = optionSpecs[1] - prev_volume
+        anomaly.setdefault(expir + ' ' + str(strike) + type, {})['gamma'] = optionSpecs[2]
+        anomaly.setdefault(expir + ' ' + str(strike) + type, {})['dte'] = str(DTE) + 'DTE'
+        return anomaly
 
 
 def generateValue_SPY(strike, type, expir, anomaly):
@@ -136,6 +138,7 @@ def checkAnomalies(timestamp, daystamp):
             curr = str(int(anomaly.get(val)['curr']))
             volume = str(anomaly.get(val)['volume'])
             gamma = str(anomaly.get(val)['gamma'])
-            w.writerow([val, cost, curr, volume, gamma, daystamp, timestamp])
-            res += str(val) + ' = +$' + cost + "   Price: $" + curr + "   Vol: " + volume + "   Gamma: " + gamma + "\n"
+            dte = str(anomaly.get(val)['dte'])
+            w.writerow([val, dte, cost, curr, volume, gamma, daystamp, timestamp])
+            res += dte + val[10:] + ': +$' + cost + "   Price: $" + curr + "   Vol: " + volume + "   Gamma: " + gamma + "\n"
         return res
