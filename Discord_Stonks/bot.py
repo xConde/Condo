@@ -189,6 +189,8 @@ async def priceCheck(ctx, *args):
     await ctx.send("```" + res + "```")
 
 
+
+
 @tasks.loop(minutes=1)
 async def background_loop():
     """Runs on startup and every minute that the bot is running.
@@ -217,6 +219,10 @@ async def background_loop():
         if min % 15 == 0:
             res = s.autoPull(timestamp, hour, min)
             await channel.send("```" + res + "```")
+        if min % 5 == 0:
+            if not s.validateTicker('SPY'):
+                print("restart bot")
+            s.stocks_mentioned['SPY'] = s.stocks_mentioned.get('SPY', 0) - 1
     if min % 10 == 0:
         s.writeStocksMentioned(timestamp)
     if currentDay in holidayDate and hour == 8 and min == 0:
@@ -236,6 +242,6 @@ async def on_ready():
     print('Bot successfully launched!')
 
 s.readStocksMentioned()  # Populate stocks_mentioned dictionary with .csv items
-a.prepare_Anomalies()  # Populate option value for SPY friday option chain
+# a.prepare_Anomalies()  # Populate option value for SPY friday option chain
 background_loop.start()  # Start up background_loop
 client.run(os.getenv('DISCORD_TOKEN'))  # Start up discord bot

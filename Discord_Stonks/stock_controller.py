@@ -7,7 +7,7 @@ from datetime import datetime
 from heapq import nlargest
 
 stocks_mentioned = {}  # Maintains stock ticker as key and times mentioned as value.
-stocks_mentioned_csv = "Discord_Stonks/doc/stocks_mentioned.csv"
+stocks_mentioned_csv = "doc/stocks_mentioned.csv"
 
 
 def writeStocksMentioned(timestamp):
@@ -150,12 +150,10 @@ def pcPercent(stock):
         perc2 = grabPercent(float(ah), float(curr))
         res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>9}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                       '|', 'AH: $' + str(ah), perc2) + '\n'
-        perc2 = evaluatePercent(float(ah), float(prev), perc2)
-        return res, perc2
+        return res
     else:
         res = '{:<6}{:^8}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1) + '\n'
-        perc1 = evaluatePercent(float(curr), float(prev), perc1)
-        return res, perc1
+        return res
 
 
 def pc(stock):
