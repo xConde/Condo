@@ -130,7 +130,7 @@ def checkAnomalies(timestamp, daystamp):
 
     if anomaly:
         price = s.tickerPrice('SPY')
-        res = "Found large cash movement in past 3 min: Current SPY price @ " + str(price) + "\n"
+        res = "Found large cash movement in past 3 min:\nCurrent SPY price @ " + str(price) + "\n"
         w = csv.writer(open(anomalies_csv, "w"))
 
         for val in anomaly:
@@ -139,6 +139,6 @@ def checkAnomalies(timestamp, daystamp):
             volume = str(anomaly.get(val)['volume'])
             gamma = str(anomaly.get(val)['gamma'])
             dte = str(anomaly.get(val)['dte'])
-            w.writerow([val, dte, cost, curr, volume, gamma, daystamp, timestamp])
+            w.write([val, dte, cost, curr, volume, gamma, daystamp, timestamp[2:]])
             res += dte + val[10:] + ': +$' + cost + "   Price: $" + curr + "   Vol: " + volume + "   Gamma: " + gamma + "\n"
         return res

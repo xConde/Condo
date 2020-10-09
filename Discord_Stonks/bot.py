@@ -161,6 +161,16 @@ async def checkPort(ctx):
         await ctx.send("You are not authorized to use this command.")
 
 
+@client.command(name='conde')
+async def printWL(ctx):
+    res = ""
+    wl = ['ESTC', 'NET', 'TWTR', 'UBER', 'T', 'TXN', 'JPM', 'ABBV', 'XOM', 'BYND', 'SPCE']
+    for i in range(len(wl)):
+        pcList= s.pcPercent(wl[i])
+        res += pcList
+    await ctx.send("```" + res + "```")
+
+
 @client.command(name='p')
 async def priceCheck(ctx, *args):
     """Prints the price for stock tickers provided to discord.
@@ -200,10 +210,10 @@ async def background_loop():
     timestamp = str(hour) + ":" + str(min) + ("AM" if (hour < 12) else "PM")
 
     if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and not (8 <= hour < 20):
-        if min % 1 == 0: #and (9 <= hour <= 16):
+        """if min % 15 == 0 and (9 <= hour <= 16):
             res = a.checkAnomalies(timestamp, daystamp)
             if res:
-                await channel.send("```" + res + "```")
+                await channel.send("```" + res + "```")"""
         if min % 15 == 0:
             res = s.autoPull(timestamp, hour, min)
             await channel.send("```" + res + "```")
