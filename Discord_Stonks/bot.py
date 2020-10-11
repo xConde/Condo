@@ -166,7 +166,7 @@ async def printWL(ctx):
     res = ""
     wl = ['ESTC', 'NET', 'TWTR', 'UBER', 'T', 'TXN', 'JPM', 'ABBV', 'XOM', 'BYND', 'SPCE']
     for i in range(len(wl)):
-        pcList= s.pcPercent(wl[i])
+        pcList = s.pcPercent(wl[i])
         res += pcList
     await ctx.send("```" + res + "```")
 
@@ -187,8 +187,6 @@ async def priceCheck(ctx, *args):
         else:
             res += stock.upper() + " is not a valid ticker.\n"
     await ctx.send("```" + res + "```")
-
-
 
 
 @tasks.loop(minutes=1)
@@ -221,7 +219,10 @@ async def background_loop():
             await channel.send("```" + res + "```")
         if min % 5 == 0:
             if not s.validateTicker('SPY'):
-                print("restart bot")
+                if r.login(username=os.getenv('USER'), password=os.getenv('PASS')):
+                    print("Restarted Robinhood instance successfully.")
+                else:
+                    print("Failed to create Robinhood instance.")
             s.stocks_mentioned['SPY'] = s.stocks_mentioned.get('SPY', 0) - 1
     if min % 10 == 0:
         s.writeStocksMentioned(timestamp)
