@@ -220,8 +220,10 @@ async def background_loop():
         if min % 5 == 0:
             if not s.validateTicker('SPY'):
                 if r.login(username=os.getenv('USER'), password=os.getenv('PASS')):
+                    await channel.send("```" + 'Restarted Robinhood instance successfully.' + "```")
                     print("Restarted Robinhood instance successfully.")
                 else:
+                    await channel.send("```" + 'Failed to create Robinhood instance. Bot owner has been sent an SMS.' + "```")
                     print("Failed to create Robinhood instance.")
             s.stocks_mentioned['SPY'] = s.stocks_mentioned.get('SPY', 0) - 1
     if min % 10 == 0:
