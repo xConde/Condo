@@ -138,7 +138,7 @@ async def checkPort(ctx):
     """
     if int(ctx.message.author.id) == int(os.getenv('ROBINHOOD_USER_ACCOUNT')):
         dayIndex = dt.datetime.today().weekday()  # 0-6 index
-        hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
+        hour = datetime.now().hour -4  # datetime.now().hour+1 for central to eastern (fix later)
         min = datetime.now().minute
         profileData = r.load_portfolio_profile()
         option_positions = {}
@@ -204,12 +204,14 @@ async def background_loop():
 
     dayIndex = dt.datetime.today().weekday()  # 0-6 index
     currentDay = str(dt.datetime.today().date())[5:7] + '-' + str(dt.datetime.today().date())[8:]
-    hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
+    hour = datetime.now().hour - 4
+    if hour < 0:
+        hour = 24 + hour
     min = datetime.now().minute
     daystamp = str(datetime.now().today())[:10]
     timestamp = str(hour) + ":" + str(min) + ("AM" if (hour < 12) else "PM")
 
-    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and not (8 <= hour < 20):
+    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and not (9 <= hour < 19):
         """if min % 15 == 0 and (9 <= hour <= 16):
             res = a.checkAnomalies(timestamp, daystamp)
             if res:
@@ -228,7 +230,7 @@ async def background_loop():
             s.stocks_mentioned['SPY'] = s.stocks_mentioned.get('SPY', 0) - 1
     if min % 10 == 0:
         s.writeStocksMentioned(timestamp)
-    if currentDay in holidayDate and hour == 8 and min == 0:
+    if currentDay in holidayDate and hour == 9 and min == 0:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
 
 

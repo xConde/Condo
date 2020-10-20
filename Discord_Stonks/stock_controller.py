@@ -133,7 +133,7 @@ def pcPercent(stock):
     :return: [String] formatted output of price check.
     """
     dayIndex = dt.datetime.today().weekday()  # 0-6 index
-    hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
+    hour = datetime.now().hour - 4  # datetime.now().hour+1 for central to eastern (fix later)
     min = datetime.now().minute
 
     quote = r.get_quotes(stock)[0]
