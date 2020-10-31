@@ -6,6 +6,7 @@ import robin_stocks as r
 import datetime as dt
 import holidays
 from datetime import datetime
+from pytz import timezone
 
 from Discord_Stonks import option_controller as o, stock_controller as s, anomaly_option_controller as a, \
     option_daily_flow as flow
@@ -191,7 +192,7 @@ async def priceCheck(ctx, *args):
 
 @tasks.loop(minutes=1)
 async def background_loop():
-    """Runs on startup and every minute that the bot is running.
+    """Runs on startup and every minute that the bot is running. [Specified in EST, but made in UTC]
     Task 1: If the US market is open (9AM[pre-market] - 8PM[after-hours] and not holiday), print a SPY chart``
      every 15 minutes.
     Task 2: Every 10 minutes (global time) write the stocks mentioned to 'stocks_mentioned.csv'.
@@ -203,11 +204,12 @@ async def background_loop():
     channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL2')))
 
     dayIndex = dt.datetime.utcnow().today().weekday()
-    currentDay = str(dt.datetime.utcnow().date())[5:7] + '-' + str(dt.datetime.today().date())[8:]
+    currentDay = str(dt.datetime.utcnow().date())[5:7] + '-' + str(dt.datetime.utcnow().today().date())[8:]
     hour = datetime.utcnow().hour
     min = datetime.utcnow().minute
     daystamp = str(datetime.utcnow().today())[:10]
-    timestamp = str(hour - 4) + ":" + str(min) + " EST"
+    estHour = datetime.now(timezone('US/Eastern')).hour
+    estTimestamp = str(estHour) + ":" + str(min) + " EST"
 
     if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (13 <= hour <= 24):
         """if min % 15 == 0 and (13 <= hour <= 24):
@@ -215,7 +217,7 @@ async def background_loop():
             if res:
                 await channel.send("```" + res + "```")"""
         if min % 15 == 0:
-            res = s.autoPull(timestamp, hour, min)
+            res = s.autoPull(estTimestamp, hour, min)
             await channel.send("```" + res + "```")
         if min % 5 == 0:
             if not s.validateTicker('SPY'):
@@ -227,7 +229,7 @@ async def background_loop():
                     print("Failed to create Robinhood instance.")
             s.stocks_mentioned['SPY'] = s.stocks_mentioned.get('SPY', 0) - 1
     if min % 10 == 0:
-        s.writeStocksMentioned(timestamp)
+        s.writeStocksMentioned(estTimestamp)
     if currentDay in holidayDate and hour == 9 and min == 0:
         await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
 
