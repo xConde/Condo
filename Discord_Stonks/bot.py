@@ -137,17 +137,17 @@ async def checkPort(ctx):
     :return:
     """
     if int(ctx.message.author.id) == int(os.getenv('ROBINHOOD_USER_ACCOUNT')):
-        dayIndex = dt.datetime.today().weekday()  # 0-6 index
-        hour = datetime.now().hour -4  # datetime.now().hour+1 for central to eastern (fix later)
-        min = datetime.now().minute
+        dayIndex = dt.datetime.utcnow().today().weekday()
+        hour = datetime.utcnow().hour
+        min = datetime.utcnow().minute
         profileData = r.load_portfolio_profile()
         option_positions = {}
         option_info = {}
         prev = round(float(profileData['adjusted_portfolio_equity_previous_close']), 2)
         bp = round(float(profileData['excess_margin']), 2)
 
-        if dayIndex < 5 and 9 <= hour <= 16:
-            if hour != 9 or (hour == 9 and min >= 30):
+        if dayIndex < 5 and 13 <= hour <= 24:
+            if hour != 13 or (hour == 13 and min >= 30):
                 curr = round(float(profileData['last_core_portfolio_equity']), 2)
             else:
                 curr = round(float(profileData['extended_hours_equity']), 2)
@@ -164,9 +164,9 @@ async def checkPort(ctx):
 @client.command(name='conde')
 async def printWL(ctx):
     res = ""
-    wl = ['ESTC', 'NET', 'TWTR', 'UBER', 'T', 'TXN', 'JPM', 'ABBV', 'XOM', 'BYND', 'SPCE']
+    wl = ['ESTC', 'NET', 'SPCE', 'TWTR', 'UBER', 'JPM', 'ABBV',  'TXN', 'XOM']
     for i in range(len(wl)):
-        pcList = s.pcPercent(wl[i])
+        pcList, perc = s.pc(wl[i])
         res += pcList
     await ctx.send("```" + res + "```")
 
@@ -205,19 +205,16 @@ async def background_loop():
     dayIndex = dt.datetime.utcnow().today().weekday()
     currentDay = str(dt.datetime.utcnow().date())[5:7] + '-' + str(dt.datetime.today().date())[8:]
     hour = datetime.utcnow().hour
-    if hour < 0:
-        hour = 24 + hour
     min = datetime.utcnow().minute
     daystamp = str(datetime.utcnow().today())[:10]
-    timestamp = str(hour - 4) + ":" + str(min) + " EST" #+ ("AM" if (hour < 12) else "PM")
+    timestamp = str(hour - 4) + ":" + str(min) + " EST"
 
-    #if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (13 <= hour <= 24):
-    if (13 <= hour <= 24):
+    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (13 <= hour <= 24):
         """if min % 15 == 0 and (13 <= hour <= 24):
             res = a.checkAnomalies(timestamp, daystamp)
             if res:
                 await channel.send("```" + res + "```")"""
-        if min % 1 == 0:
+        if min % 15 == 0:
             res = s.autoPull(timestamp, hour, min)
             await channel.send("```" + res + "```")
         if min % 5 == 0:

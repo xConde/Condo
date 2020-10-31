@@ -125,37 +125,6 @@ def grabIntradayHL(stock):
     high = '{:.2f}'.format(round(float(quote['high']), 2))
     return low, high
 
-
-def pcPercent(stock):
-    """Generates and formats stock percent gain/loss since market open.
-
-    :param stock: {1-5} character stock-ticker
-    :return: [String] formatted output of price check.
-    """
-    dayIndex = dt.datetime.utcnow().today().weekday()  # 0-6 index
-    hour = datetime.utcnow().hour
-    min = datetime.utcnow().minute
-
-    quote = r.get_quotes(stock)[0]
-    curr = '{:.2f}'.format(round(float(quote['last_trade_price']), 2))
-    prev = '{:.2f}'.format(round(float(quote['adjusted_previous_close']), 2))
-    perc1 = grabPercent(float(curr), float(prev))
-
-    if dayIndex < 5 and 9 <= hour < 16 and not (hour == 9 and min < 30):
-        low, high = grabIntradayHL(stock)
-        res = '{:<6}{:^8}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1) + '\n'
-        return res
-    elif quote['last_extended_hours_trade_price']:
-        ah = '{:.2f}'.format(round(float(quote['last_extended_hours_trade_price']), 2))
-        perc2 = grabPercent(float(ah), float(curr))
-        res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>9}'.format(stock.upper() + ':', '$' + str(curr), perc1,
-                                                      '|', 'AH: $' + str(ah), perc2) + '\n'
-        return res
-    else:
-        res = '{:<6}{:^8}{:>7}'.format(stock.upper() + ':', '$' + str(curr), perc1) + '\n'
-        return res
-
-
 def pc(stock):
     """Generates and formats stock prices based on if market is open or in after-hours.
 
