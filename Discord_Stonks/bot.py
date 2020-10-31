@@ -200,19 +200,19 @@ async def background_loop():
     :return:
     """
     await client.wait_until_ready()
-    channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
+    channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL2')))
 
-    dayIndex = dt.datetime.today().weekday()  # 0-6 index
-    currentDay = str(dt.datetime.today().date())[5:7] + '-' + str(dt.datetime.today().date())[8:]
-    hour = datetime.now().hour - 4
+    dayIndex = dt.datetime.utcnow().today().weekday()
+    currentDay = str(dt.datetime.utcnow().date())[5:7] + '-' + str(dt.datetime.today().date())[8:]
+    hour = datetime.utcnow().hour
     if hour < 0:
         hour = 24 + hour
-    min = datetime.now().minute
-    daystamp = str(datetime.now().today())[:10]
-    timestamp = str(hour) + ":" + str(min) + ("AM" if (hour < 12) else "PM")
+    min = datetime.utcnow().minute
+    daystamp = str(datetime.utcnow().today())[:10]
+    timestamp = str(hour - 4) + ":" + str(min) + " EST" #+ ("AM" if (hour < 12) else "PM")
 
-    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and not (9 <= hour < 19):
-        """if min % 15 == 0 and (9 <= hour <= 16):
+    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (13 <= hour <= 24):
+        """if min % 15 == 0 and (13 <= hour <= 24):
             res = a.checkAnomalies(timestamp, daystamp)
             if res:
                 await channel.send("```" + res + "```")"""

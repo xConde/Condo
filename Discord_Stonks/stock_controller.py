@@ -97,7 +97,7 @@ def evaluatePercent(curr, prev, perc):
     :param perc:
     :return:
     """
-    if curr != prev and perc[-3] != "0.0":
+    if curr != prev and perc[-2:] != "0%":
         return float(perc[:-1])
     else:
         return 0
@@ -132,9 +132,9 @@ def pcPercent(stock):
     :param stock: {1-5} character stock-ticker
     :return: [String] formatted output of price check.
     """
-    dayIndex = dt.datetime.today().weekday()  # 0-6 index
-    hour = datetime.now().hour - 4  # datetime.now().hour+1 for central to eastern (fix later)
-    min = datetime.now().minute
+    dayIndex = dt.datetime.utcnow().today().weekday()  # 0-6 index
+    hour = datetime.utcnow().hour
+    min = datetime.utcnow().minute
 
     quote = r.get_quotes(stock)[0]
     curr = '{:.2f}'.format(round(float(quote['last_trade_price']), 2))
@@ -162,16 +162,16 @@ def pc(stock):
     :param stock: {1-5} character stock-ticker
     :return: [String] formatted output of price check.
     """
-    dayIndex = dt.datetime.today().weekday()  # 0-6 index
-    hour = datetime.now().hour + 1  # datetime.now().hour+1 for central to eastern (fix later)
-    min = datetime.now().minute
+    dayIndex = dt.datetime.utcnow().today().weekday()  # 0-6 index
+    hour = datetime.utcnow().hour
+    min = datetime.utcnow().minute
 
     quote = r.get_quotes(stock)[0]
     curr = '{:.2f}'.format(round(float(quote['last_trade_price']), 2))
     prev = '{:.2f}'.format(round(float(quote['adjusted_previous_close']), 2))
     perc1 = grabPercent(float(curr), float(prev))
 
-    if dayIndex < 5 and 9 <= hour < 16 and not (hour == 9 and min < 30):
+    if dayIndex < 5 and 14 <= hour < 21 and not (hour == 14 and min < 30):
         low, high = grabIntradayHL(stock)
         res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                        '|', 'L: ' + str(low), 'H: ' + str(high)) + '\n'
@@ -208,14 +208,14 @@ def autoPull(timestamp, hour, min):
 
     :return: [String] formatted result
     """
-    scheduledStocks = ['SPY', 'AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL', 'MSFT']
+    scheduledStocks = ['SPY', 'QQQ', 'VXX', 'AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL', 'MSFT', 'NVDA', 'JPM']
 
-    if hour <= 9 and not (hour == 9 and min >= 30):
-        res = "[15M pull] Pre-market\n"
-    elif hour < 16:
-        res = "[15M pull] Intraday\n"
+    if hour <= 13 and not (hour == 14 and min >= 30):
+        res = "[15M pull] Pre-market @ " + timestamp + "\n"
+    elif hour < 21:
+        res = "[15M pull] Intraday @ " + timestamp + "\n"
     else:
-        res = "[15M pull] After-hours\n"
+        res = "[15M pull] After-hours @ " + timestamp + "\n"
 
     stockQuote = {}
     stockPerc = {}
