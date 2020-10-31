@@ -211,12 +211,13 @@ async def background_loop():
     daystamp = str(datetime.utcnow().today())[:10]
     timestamp = str(hour - 4) + ":" + str(min) + " EST" #+ ("AM" if (hour < 12) else "PM")
 
-    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (13 <= hour <= 24):
+    #if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (13 <= hour <= 24):
+    if (13 <= hour <= 24):
         """if min % 15 == 0 and (13 <= hour <= 24):
             res = a.checkAnomalies(timestamp, daystamp)
             if res:
                 await channel.send("```" + res + "```")"""
-        if min % 15 == 0:
+        if min % 1 == 0:
             res = s.autoPull(timestamp, hour, min)
             await channel.send("```" + res + "```")
         if min % 5 == 0:

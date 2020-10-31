@@ -208,7 +208,8 @@ def autoPull(timestamp, hour, min):
 
     :return: [String] formatted result
     """
-    scheduledStocks = ['SPY', 'QQQ', 'VXX', 'AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL', 'MSFT', 'NVDA', 'JPM']
+    scheduledIndex = ['SPY', 'QQQ', 'VXX']
+    scheduledStocks = ['AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL', 'MSFT', 'NVDA', 'JPM']
 
     if hour <= 13 and not (hour == 14 and min >= 30):
         res = "[15M pull] Pre-market @ " + timestamp + "\n"
@@ -217,15 +218,29 @@ def autoPull(timestamp, hour, min):
     else:
         res = "[15M pull] After-hours @ " + timestamp + "\n"
 
+    indexQuote = {}
     stockQuote = {}
+
+    indexPerc = {}
     stockPerc = {}
+
+    for index in scheduledIndex:
+        indexRes, perc = pc(index)
+        indexQuote[index] = indexRes
+        indexPerc[index] = perc
+
     for stock in scheduledStocks:
         stockRes, perc = pc(stock)
         stockQuote[stock] = stockRes
         stockPerc[stock] = perc
 
-    highest = checkMostMentioned(stockPerc, len(scheduledStocks))
-    for val in highest:
+    highestIndex = checkMostMentioned(indexPerc, len(scheduledIndex))
+    highestStock = checkMostMentioned(stockPerc, len(scheduledStocks))
+
+    for val in highestIndex:
+        res += indexQuote[val]
+    res += "----------\n"
+    for val in highestStock:
         res += stockQuote[val]
     print("Pulled [15M] " + timestamp)
     return res
