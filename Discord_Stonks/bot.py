@@ -49,7 +49,6 @@ async def top_sp500(ctx):
     :param ctx:
     :return:
     """
-    o.pcOptionMin('SPY', 350, type, '2020-09-04')
     res = s.pull_sp500('up')
     await ctx.send("```" + res + "```")
 
