@@ -232,14 +232,19 @@ Displays a sorted list of specified stocks by gain every 15m between market hour
     FB:   $260.30  -0.33% |L: 259.26  H: 262.62
     
     {Pre market and after hours pull}
-    [15M pull] Pre-market
-    AAPL: $462.25  +0.83% |AH: $463.22 +0.21%
-    SPY:  $338.64  +0.22% |AH: $338.90 +0.08%
-    NFLX: $491.87  +1.97% |AH: $491.98 +0.02%
-    FB:   $262.34  +0.45% |AH: $261.90 -0.17%
-    GOOGL:$1555.78 +2.61% |AH: $1552.70  -0.2%
-    MSFT: $211.49  +0.58% |AH: $210.98 -0.24%
-    AMZN: $3312.49 +4.09% |AH: $3302.00 -0.32%
+    [15M pull] After-hours @ 17:15 EST
+    SPY:  $326.54  -1.04% |AH: $327.30   +0.23%
+    QQQ:  $269.38  -2.54% |AH: $269.55   +0.06%
+    VXX:   $26.53  +3.03% |AH: $26.50   -0.11%
+    ----------
+    GOOGL:$1616.11  +3.8% |AH: $1618.50   +0.15%
+    JPM:   $98.04   +0.9% |AH: $98.10   +0.06%
+    NFLX: $475.74  -5.65% |AH: $475.99   +0.05%
+    AMZN: $3036.15 -5.45% |AH: $3036.00   +-0.0%
+    MSFT: $202.47   -1.1% |AH: $202.30   -0.08%
+    NVDA: $501.36  -3.76% |AH: $500.02   -0.27%
+    AAPL: $108.86   -5.6% |AH: $108.51   -0.32%
+    FB:   $263.11  -6.31% |AH: $262.20   -0.35%
 <a name="anomalies"></a>
 ##### Checking S&P Anomalies -
 Scans the S&P option chain for any irregular changes over the past 3 minutes and alerts the chat if any are found. **Currently in Alpha stage: Parses through 3 dates [friday, monthly expiration, next monthly expiration] and checks for a static number change (volume * premium) > X over the course of 3 minutes. If something pops it alerts the discord.
