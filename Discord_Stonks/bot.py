@@ -3,21 +3,13 @@ import os  # Standard library
 from discord.ext import commands, tasks  # 3rd party packages
 from dotenv import load_dotenv
 import robin_stocks as r
-import datetime as dt
-import holidays
-from datetime import datetime
-from pytz import timezone
 
 from Discord_Stonks import option_controller as o, stock_controller as s, anomaly_option_controller as a, \
-    option_daily_flow as flow
+    option_daily_flow as flow, BotCalendar as cal
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
 rhlogin = r.login(username=os.getenv('USER'), password=os.getenv('PASS'))
-
-holidayDate = {}
-for date in holidays.UnitedStates(years=2020).items():
-    holidayDate[str(date[0])[5:]] = str(date[1])
 
 
 @client.command(name='read')
@@ -137,17 +129,14 @@ async def checkPort(ctx):
     :return:
     """
     if int(ctx.message.author.id) == int(os.getenv('ROBINHOOD_USER_ACCOUNT')):
-        dayIndex = dt.datetime.utcnow().today().weekday()
-        hour = datetime.utcnow().hour
-        min = datetime.utcnow().minute
         profileData = r.load_portfolio_profile()
         option_positions = {}
         option_info = {}
         prev = round(float(profileData['adjusted_portfolio_equity_previous_close']), 2)
         bp = round(float(profileData['excess_margin']), 2)
 
-        if dayIndex < 5 and 13 <= hour <= 24:
-            if hour != 13 or (hour == 13 and min >= 30):
+        if cal.getDay() < 5 and 13 <= cal.getHour() <= 24:
+            if cal.getHour() != 13 or (cal.getHour() == 13 and cal.getMinute() >= 30):
                 curr = round(float(profileData['last_core_portfolio_equity']), 2)
             else:
                 curr = round(float(profileData['extended_hours_equity']), 2)
@@ -164,7 +153,7 @@ async def checkPort(ctx):
 @client.command(name='conde')
 async def printWL(ctx):
     res = ""
-    wl = ['ESTC', 'NET', 'SPCE', 'TWTR', 'UBER', 'JPM', 'ABBV',  'TXN', 'XOM']
+    wl = ['ESTC', 'NET', 'SPCE', 'TWTR', 'UBER', 'JPM', 'ABBV', 'TXN', 'XOM']
     for i in range(len(wl)):
         pcList, perc = s.pc(wl[i])
         res += pcList
@@ -201,36 +190,31 @@ async def background_loop():
     """
     await client.wait_until_ready()
     channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL2')))
+    holidayDate = cal.getHolidays()
 
-    dayIndex = dt.datetime.utcnow().today().weekday()
-    currentDay = str(dt.datetime.utcnow().date())[5:7] + '-' + str(dt.datetime.utcnow().today().date())[8:]
-    hour = datetime.utcnow().hour
-    min = datetime.utcnow().minute
-    daystamp = str(datetime.utcnow().today())[:10]
-    estHour = datetime.now(timezone('US/Eastern')).hour
-    estTimestamp = str(estHour) + ":" + str(min) + " EST"
-
-    if dayIndex < 5 and not client.is_closed() and currentDay not in holidayDate and (13 <= hour <= 24):
+    if cal.getDay() < 5 and not client.is_closed() and cal.getCurrentDay() not in holidayDate and \
+            (13 <= cal.getHour() <= 24):
         """if min % 15 == 0 and (13 <= hour <= 24):
             res = a.checkAnomalies(timestamp, daystamp)
             if res:
                 await channel.send("```" + res + "```")"""
-        if min % 15 == 0:
-            res = s.autoPull(estTimestamp, hour, min)
+        if cal.getMinute() % 15 == 0:
+            res = s.autoPull()
             await channel.send("```" + res + "```")
-        if min % 5 == 0:
+        if cal.getMinute() % 5 == 0:
             if not s.validateTicker('SPY'):
                 if r.login(username=os.getenv('USER'), password=os.getenv('PASS')):
                     await channel.send("```" + 'Restarted Robinhood instance successfully.' + "```")
                     print("Restarted Robinhood instance successfully.")
                 else:
-                    await channel.send("```" + 'Failed to create Robinhood instance. Bot owner has been sent an SMS.' + "```")
+                    await channel.send(
+                        "```" + 'Failed to create Robinhood instance. Bot owner has been sent an SMS.' + "```")
                     print("Failed to create Robinhood instance.")
             s.stocks_mentioned['SPY'] = s.stocks_mentioned.get('SPY', 0) - 1
-    if min % 10 == 0:
-        s.writeStocksMentioned(estTimestamp)
-    if currentDay in holidayDate and hour == 9 and min == 0:
-        await channel.send("Today is " + holidayDate[currentDay] + " the market is closed. Enjoy your holiday!")
+    if cal.getMinute() % 1 == 0:
+        s.writeStocksMentioned()
+    if cal.getCurrentDay() in holidayDate and cal.getHour() == 9 and cal.getMinute() == 0:
+        await channel.send("Today is " + holidayDate[cal.getCurrentDay()] + " the market is closed. Enjoy your holiday!")
 
 
 @client.event
@@ -244,6 +228,7 @@ async def on_ready():
     else:
         print("Failed to create Robinhood instance.")
     print('Bot successfully launched!')
+
 
 s.readStocksMentioned()  # Populate stocks_mentioned dictionary with .csv items
 # a.prepare_Anomalies()  # Populate option value for SPY friday option chain

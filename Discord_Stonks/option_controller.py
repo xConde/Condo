@@ -1,10 +1,9 @@
 import re  # Standard library
 
 import robin_stocks as r  # 3rd party packages
-import datetime as dt
 
 from Discord_Stonks import stock_controller as s
-from Discord_Stonks import bot_calendar as cal
+from Discord_Stonks import BotCalendar as cal
 
 optionFormat = 'Ex: [stock], [strike]\n' \
                'Ex: [stock], [strike], [type]\n' \
@@ -44,7 +43,7 @@ def searchStrikeIterator(stock, type, expir, price):
         strikeOptionList = [5, 10, 50]
     elif price > 100:
         strikeOptionList = [1, 5, 10, 50]
-    elif price < 100:
+    else:
         strikeOptionList = [.5, 1, 5, 10, 50]
 
     for i in range(0, len(strikeOptionList)):
@@ -57,8 +56,7 @@ def searchStrikeIterator(stock, type, expir, price):
                 and r.find_options_by_expiration_and_strike(stock, expir, checkStrike2, type)[0]['volume'] \
                 and r.find_options_by_expiration_and_strike(stock, expir, checkStrike3, type)[0]['volume']:
             return strikeIterator
-    now = dt.datetime.now()
-    generatedExp = cal.third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
+    generatedExp = cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()).strftime("%Y-%m-%d")
     if expir != generatedExp:
         print("Did not find any strikes trying again")
         searchStrikeIterator(stock, type, generatedExp, price)
@@ -79,6 +77,7 @@ def grabStrikeIterator(stock, type, expir, price):
     list1 = ['SPY', 'QQQ', 'IWM', 'SPCE', 'VXX']
     list5 = ['AAPL', 'FB', 'MSFT', 'NFLX', 'JPM', 'DIS', 'SQ', 'ESTC', 'GOOGL', 'NVDA', 'TGT', 'WMT', 'TSLA']
     list10 = ['ZM']
+
     if stock.upper() in list1:
         return 1
     elif stock.upper() in list5:
@@ -124,8 +123,7 @@ def validateExp(stock, expir, strike, type):
     :param expir:
     :return:
     """
-    now = dt.datetime.now()
-    generatedExp = cal.third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
+    generatedExp = cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()).strftime("%Y-%m-%d")
     if expir and re.match(r'^\d{4}-\d{2}-\d{2}$', expir) and r.find_options_by_expiration_and_strike(stock, expir, strike, type):
         return expir
     else:

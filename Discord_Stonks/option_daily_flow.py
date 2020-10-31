@@ -1,7 +1,5 @@
-from Discord_Stonks import option_controller as o, stock_controller as s, bot_calendar as cal, \
+from Discord_Stonks import option_controller as o, stock_controller as s, BotCalendar as cal, \
     anomaly_option_controller as a
-
-friday_expir = cal.find_friday()
 
 
 def loadStrikes(ticker):
@@ -14,7 +12,7 @@ def loadStrikes(ticker):
     put_strikes = []
 
     price = s.tickerPrice(ticker)
-    strikeIterator = o.grabStrikeIterator(ticker, 'call', friday_expir, price)
+    strikeIterator = o.grabStrikeIterator(ticker, 'call', cal.find_friday(), price)
     callprice = o.roundPrice(price, strikeIterator, 'call')
     putprice = o.roundPrice(price, strikeIterator, 'put')
 
@@ -54,7 +52,7 @@ def dominatingSide(ticker, call, put, exp=None):
     :return:
     """
     if not exp:
-        exp = friday_expir
+        exp = cal.find_friday()
 
     res = "Valued " + ticker.upper() + " " + exp + " options\n"
     largeSide = "Calls" if call > put else "Puts"
@@ -75,7 +73,7 @@ def mostExpensive(ticker):
     :return:
     """
     call_strikes, put_strikes = loadStrikes(ticker)
-    exp = o.validateExp(ticker, friday_expir, call_strikes[0], 'call')
+    exp = o.validateExp(ticker, cal.find_friday(), call_strikes[0], 'call')
     strike_value, res = generateValue(ticker, call_strikes, put_strikes, exp)
 
     highest = s.checkMostMentioned(strike_value, 5)

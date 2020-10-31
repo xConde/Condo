@@ -1,17 +1,14 @@
 import csv
-import datetime as dt
 
-from Discord_Stonks import option_controller as o, stock_controller as s, bot_calendar as cal
+from Discord_Stonks import option_controller as o, stock_controller as s, BotCalendar as cal
 
 strike_value_SPY = {}  # Maintains SPY strike value (Strike : Cost [volume * premium])
 anomalies_csv = "Discord_Stonks/doc/anomalies.csv"
 call_strikes_SPY = []
 put_strikes_SPY = []
 
-now = dt.datetime.now()
-friday_expir = cal.find_friday()
-monthly_expir = cal.third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
-nextmonth_expir = cal.third_friday(now.year, now.month + 1, now.day).strftime("%Y-%m-%d")
+monthly_expir = cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()).strftime("%Y-%m-%d")
+nextmonth_expir = cal.third_friday(cal.getYear(), cal.getMonth()+1, cal.getMonthlyDay()).strftime("%Y-%m-%d")
 
 
 def loadStrikes_SPY():
@@ -110,11 +107,11 @@ def generate_SPY():
     anomaly = {}
 
     for strike in call_strikes_SPY:
-        anomaly = generateValue_SPY(strike, 'call', friday_expir, anomaly)
+        anomaly = generateValue_SPY(strike, 'call', cal.find_friday(), anomaly)
         anomaly = generateValue_SPY(strike, 'call', monthly_expir, anomaly)
         anomaly = generateValue_SPY(strike, 'call', nextmonth_expir, anomaly)
     for strike in put_strikes_SPY:
-        anomaly = generateValue_SPY(strike, 'put', friday_expir, anomaly)
+        anomaly = generateValue_SPY(strike, 'put', cal.find_friday(), anomaly)
         anomaly = generateValue_SPY(strike, 'put', monthly_expir, anomaly)
         anomaly = generateValue_SPY(strike, 'put', nextmonth_expir, anomaly)
     return anomaly

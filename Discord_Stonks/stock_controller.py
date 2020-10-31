@@ -2,22 +2,22 @@ import re  # Standard Library
 
 import csv  # 3rd Party Packages
 import robin_stocks as r
-import datetime as dt
-from datetime import datetime
 from heapq import nlargest
+
+from Discord_Stonks import BotCalendar as cal
 
 stocks_mentioned = {}  # Maintains stock ticker as key and times mentioned as value.
 stocks_mentioned_csv = "doc/stocks_mentioned.csv"
 
 
-def writeStocksMentioned(timestamp):
+def writeStocksMentioned():
     """Writes [stock ticker, iterations] from stocks_mentioned to "stocks_mentioned.csv"
 
     :return:
     """
     w = csv.writer(open(stocks_mentioned_csv, "w"))
     if w:
-        print('Wrote stocks_mentioned to .csv ' + timestamp)
+        print('Wrote stocks_mentioned to .csv @' + cal.getEstTimestamp())
     for key, val in stocks_mentioned.items():
         w.writerow([key, val])
 
@@ -125,22 +125,19 @@ def grabIntradayHL(stock):
     high = '{:.2f}'.format(round(float(quote['high']), 2))
     return low, high
 
+
 def pc(stock):
     """Generates and formats stock prices based on if market is open or in after-hours.
 
     :param stock: {1-5} character stock-ticker
     :return: [String] formatted output of price check.
     """
-    dayIndex = dt.datetime.utcnow().today().weekday()  # 0-6 index
-    hour = datetime.utcnow().hour
-    min = datetime.utcnow().minute
-
     quote = r.get_quotes(stock)[0]
     curr = '{:.2f}'.format(round(float(quote['last_trade_price']), 2))
     prev = '{:.2f}'.format(round(float(quote['adjusted_previous_close']), 2))
     perc1 = grabPercent(float(curr), float(prev))
 
-    if dayIndex < 5 and 14 <= hour < 21 and not (hour == 14 and min < 30):
+    if cal.getDay() < 5 and 14 <= cal.getHour() < 21 and not (cal.getHour() == 14 and cal.getMinute() < 30):
         low, high = grabIntradayHL(stock)
         res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                        '|', 'L: ' + str(low), 'H: ' + str(high)) + '\n'
@@ -172,7 +169,7 @@ def validateTicker(stock):
         return True
 
 
-def autoPull(timestamp, hour, min):
+def autoPull():
     """Pulls stock quotes for scheduledStocks and formats them to be in order of highest gain to lowest gain.
 
     :return: [String] formatted result
@@ -180,12 +177,12 @@ def autoPull(timestamp, hour, min):
     scheduledIndex = ['SPY', 'QQQ', 'VXX']
     scheduledStocks = ['AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL', 'MSFT', 'NVDA', 'JPM']
 
-    if hour <= 13 and not (hour == 14 and min >= 30):
-        res = "[15M pull] Pre-market @ " + timestamp + "\n"
-    elif hour < 21:
-        res = "[15M pull] Intraday @ " + timestamp + "\n"
+    if cal.getHour() <= 13 and not (cal.getHour() == 14 and cal.getMinute() >= 30):
+        res = "[15M pull] Pre-market @ " + cal.getEstTimestamp() + "\n"
+    elif cal.getHour() < 21:
+        res = "[15M pull] Intraday @ " + cal.getEstTimestamp() + "\n"
     else:
-        res = "[15M pull] After-hours @ " + timestamp + "\n"
+        res = "[15M pull] After-hours @ " + cal.getEstTimestamp() + "\n"
 
     indexQuote = {}
     stockQuote = {}
@@ -211,5 +208,5 @@ def autoPull(timestamp, hour, min):
     res += "----------\n"
     for val in highestStock:
         res += stockQuote[val]
-    print("Pulled [15M] " + timestamp)
+    print("Pulled [15M] " + cal.getEstTimestamp())
     return res
