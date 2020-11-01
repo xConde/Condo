@@ -106,7 +106,11 @@ def getHour():
 
 
 def getEstTimestamp():
-    return str(datetime.now(timezone('US/Eastern')).hour) + ":" + str(getMinute()) + " EST"
+    if getMinute() == 0:
+        sMin = "00"
+    else:
+        sMin = str(getMinute())
+    return str(datetime.now(timezone('US/Eastern')).hour) + ":" + sMin + " EST"
 
 
 def getDayStamp():

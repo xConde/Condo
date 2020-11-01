@@ -178,6 +178,23 @@ async def priceCheck(ctx, *args):
     await ctx.send("```" + res + "```")
 
 
+async def grabMessage(message):
+    channel = client.get_channel(int(os.getenv(str(message.channel).upper())))
+    index = 1
+    async for message in channel.history():
+        if index == 2:
+            await channel.send(message.content)
+            break
+        index += 1
+
+
+@client.event
+async def on_message(message):
+    if (str(message.author) == "StockBot#3314" and message.content[:19] == "The requested chart" or message.content[:5] == "```Hi") or \
+            str(message.author) == "OptionsFamBot#9520" and message.content[:28] == "This command is on cooldown.":
+        await grabMessage(message)
+
+
 @tasks.loop(minutes=1)
 async def background_loop():
     """Runs on startup and every minute that the bot is running. [Specified in EST, but made in UTC]
@@ -189,7 +206,7 @@ async def background_loop():
     :return:
     """
     await client.wait_until_ready()
-    channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL2')))
+    channel = client.get_channel(int(os.getenv('DISCORD_CHANNEL')))
     holidayDate = cal.getHolidays()
 
     if cal.getDay() < 5 and not client.is_closed() and cal.getCurrentDay() not in holidayDate and \
@@ -211,7 +228,7 @@ async def background_loop():
                         "```" + 'Failed to create Robinhood instance. Bot owner has been sent an SMS.' + "```")
                     print("Failed to create Robinhood instance.")
             s.stocks_mentioned['SPY'] = s.stocks_mentioned.get('SPY', 0) - 1
-    if cal.getMinute() % 1 == 0:
+    if cal.getMinute() % 10 == 0:
         s.writeStocksMentioned()
     if cal.getCurrentDay() in holidayDate and cal.getHour() == 9 and cal.getMinute() == 0:
         await channel.send("Today is " + holidayDate[cal.getCurrentDay()] + " the market is closed. Enjoy your holiday!")
