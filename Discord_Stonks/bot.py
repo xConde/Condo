@@ -4,8 +4,7 @@ from discord.ext import commands, tasks  # 3rd party packages
 from dotenv import load_dotenv
 import robin_stocks as r
 
-from Discord_Stonks import option_controller as o, stock_controller as s, anomaly_option_controller as a, \
-    option_daily_flow as flow, BotCalendar as cal
+from Discord_Stonks import option_controller as o, stock_controller as s, BotCalendar as cal, option_daily_flow as flow
 
 client = commands.Bot(command_prefix='.')
 load_dotenv()
@@ -93,6 +92,16 @@ async def findOptionChain(ctx, stock, type=None, expir=None):
         await ctx.send("```" + stock.upper() + " is not a valid ticker.\n" + "```")
 
 
+@client.command(name='wl')
+async def pullWL(ctx, *args):
+    res = "Discord user token: " + str(ctx.message.author.id) + "\n"
+    # if str(ctx.message.author.id)
+    for stock in args:
+        if s.validateTicker(stock):
+            res += stock  # currently not using perc return - maybe in future?
+    await ctx.send("```" + res + "```")
+
+
 @client.command(name='option')
 async def findOptions(ctx, stock, strike, type=None, expir=None):
     """Takes in a stock ticker, strike, an optional expiration date (defaulted to friday expiration [if applicable]),``
@@ -176,23 +185,23 @@ async def priceCheck(ctx, *args):
         else:
             res += stock.upper() + " is not a valid ticker.\n"
     await ctx.send("```" + res + "```")
+6
 
-
-async def grabMessage(message):
-    channel = client.get_channel(int(os.getenv(str(message.channel).upper())))
-    index = 1
-    async for message in channel.history():
-        if index == 2:
-            await channel.send(message.content)
-            break
-        index += 1
-
-
-@client.event
-async def on_message(message):
-    if (str(message.author) == "StockBot#3314" and message.content[:19] == "The requested chart" or message.content[:5] == "```Hi") or \
-            str(message.author) == "OptionsFamBot#9520" and message.content[:28] == "This command is on cooldown.":
-        await grabMessage(message)
+# async def grabMessage(message):
+#     channel = client.get_channel(int(os.getenv(str(message.channel).upper())))
+#     index = 1
+#     async for message in channel.history():
+#         if index == 2:
+#             await channel.send(message.content)
+#             break
+#         index += 1
+#
+#
+# @client.event
+# async def on_message(message):
+#     if (str(message.author) == "StockBot#3314" and message.content[:19] == "The requested chart" or message.content[:5] == "```Hi") or \
+#             str(message.author) == "OptionsFamBot#9520" and message.content[:28] == "This command is on cooldown.":
+#         await grabMessage(message)
 
 
 @tasks.loop(minutes=1)
