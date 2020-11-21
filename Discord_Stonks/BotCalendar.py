@@ -68,20 +68,6 @@ def third_friday(year, month, day):
         return third_friday(int(year), int(month), int(day) + 1)
 
 
-def getHolidays():
-    holidayDate = {}
-    for date in holidays.USA(years=2021).items():
-        if str(date[1]) != "Columbus Day" and str(date[1]) != "Labor day" and str(
-                date[1]) != "Independence Day (Observed)" \
-                and str(date[1]) != "Veterans Day":
-            holidayDate[str(date[0])[5:]] = str(date[1])
-
-    for date in holidays.Australia(years=2021).items():
-        if str(date[1]) == "Good Friday":
-            holidayDate[str(date[0])[5:]] = str(date[1])
-    return holidayDate
-
-
 def getYear():
     return dt.datetime.utcnow().year
 
@@ -121,5 +107,18 @@ def getEstTimestamp():
 def getDayStamp():
     return str(datetime.utcnow().today())[:10]
 
+
+def getHolidays():
+    holidayDate = {}
+    for date in holidays.USA(years = getYear()).items():
+        if str(date[1]) != "Columbus Day" and str(date[1]) != "Labor day" and str(
+                date[1]) != "Independence Day (Observed)" \
+                and str(date[1]) != "Veterans Day":
+            holidayDate[str(date[0])[5:]] = str(date[1])
+
+    for date in holidays.Australia(years = getYear()).items():
+        if str(date[1]) == "Good Friday":
+            holidayDate[str(date[0])[5:]] = str(date[1])
+    return holidayDate
 
 
