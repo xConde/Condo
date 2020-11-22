@@ -1,6 +1,8 @@
 import csv
 
-from Discord_Stonks import option_controller as o, stock_controller as s, BotCalendar as cal
+from Discord_Stonks.stocks.options import option_controller as o
+from Discord_Stonks.stocks import stocks as s
+from Discord_Stonks.bot import cal as cal
 
 strike_value_SPY = {}  # Maintains SPY strike value (Strike : Cost [volume * premium])
 anomalies_csv = "Discord_Stonks/doc/anomalies.csv"
@@ -8,7 +10,7 @@ call_strikes_SPY = []
 put_strikes_SPY = []
 
 monthly_expir = cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()).strftime("%Y-%m-%d")
-nextmonth_expir = cal.third_friday(cal.getYear(), cal.getMonth()+1, cal.getMonthlyDay()).strftime("%Y-%m-%d")
+nextmonth_expir = cal.third_friday(cal.getYear(), cal.getMonth() + 1, cal.getMonthlyDay()).strftime("%Y-%m-%d")
 
 
 def loadStrikes_SPY():

@@ -1,5 +1,6 @@
-from Discord_Stonks import option_controller as o, stock_controller as s, BotCalendar as cal, \
-    anomaly_option_controller as a
+from Discord_Stonks.stocks.options import option_controller as o, anomaly_option_controller as a
+from Discord_Stonks.stocks import stocks as s
+from Discord_Stonks.bot import cal as cal
 
 
 def loadStrikes(ticker):

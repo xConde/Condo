@@ -2,8 +2,8 @@ import re  # Standard library
 
 import robin_stocks as r  # 3rd party packages
 
-from Discord_Stonks import stock_controller as s
-from Discord_Stonks import BotCalendar as cal
+from Discord_Stonks.stocks import stocks as s
+from Discord_Stonks.bot import cal as cal
 
 optionFormat = 'Ex: [stock], [strike]\n' \
                'Ex: [stock], [strike], [type]\n' \

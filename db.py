@@ -8,7 +8,7 @@ conn = None
 cursor = None
 
 """
-Watchlist for users up to 10-15 stock_tickers. Unique user_id to guild_id for multiple lists per user for each channel.
+Watchlist for users up to 10-15 stock_tickers. Unique ID for user_id to guild_id.
 > TODO: Add a column to the .wl to show price gain/loss since added.
 
 id                  PRIMARY_KEY
@@ -54,6 +54,10 @@ try:
                             database=os.getenv('DB_NAME'))
 
     cursor = conn.cursor()
+
+    CREATE ROLE valepy WITH LOGIN PASSWORD 'your_password';
+    CREATE DATABASE valepy OWNER valepy;
+    CREATE EXTENSION pg_trgm;
 
     create_table_query = '''
     CREATE TABLE watchlist

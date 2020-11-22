@@ -1,10 +1,4 @@
-import os
-
-import datetime
-import pytest
-import robin_stocks as r
-
-from Discord_Stonks.stock_controller import validateTicker
+from Discord_Stonks.stocks.stocks import validateTicker
 
 
 class TestStockController:
