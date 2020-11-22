@@ -4,7 +4,7 @@ import csv  # 3rd Party Packages
 import robin_stocks as r
 from heapq import nlargest
 
-from Discord_Stonks.bot import cal as cal
+from bot import cal as cal
 
 stocks_mentioned = {}  # Maintains stock ticker as key and times mentioned as value.
 stocks_mentioned_csv = "doc/stocks_mentioned.csv"

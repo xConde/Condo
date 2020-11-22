@@ -1,7 +1,7 @@
 import os  # Standard library
 from discord.ext import commands  # 3rd party package
-import Discord_Stonks.bot.cal as cal
-from Discord_Stonks.stocks import stocks as s
+import bot.cal as cal
+from stocks import stocks as s
 
 from dotenv import load_dotenv
 import robin_stocks as r

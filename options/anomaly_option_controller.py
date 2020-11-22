@@ -1,8 +1,8 @@
 import csv
 
-from Discord_Stonks.options import option_controller as o
-from Discord_Stonks.stocks import stocks as s
-from Discord_Stonks.bot import cal as cal
+from options import option_controller as o
+from stocks import stocks as s
+from bot import cal as cal
 
 strike_value_SPY = {}  # Maintains SPY strike value (Strike : Cost [volume * premium])
 anomalies_csv = "Discord_Stonks/doc/anomalies.csv"

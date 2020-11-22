@@ -1,7 +1,7 @@
 import os  # Standard library
 from discord.ext import commands, tasks  # 3rd party package
-from Discord_Stonks.stocks import stocks as s
-from Discord_Stonks.bot import cal as cal
+from stocks import stocks as s
+from bot import cal as cal
 import robin_stocks as r
 
 

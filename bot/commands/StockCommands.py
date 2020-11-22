@@ -1,5 +1,5 @@
 from discord.ext import commands  # 3rd party package
-from Discord_Stonks.stocks import stocks as s
+from stocks import stocks as s
 
 
 class StockCommands(commands.Cog):

@@ -1,10 +1,10 @@
 import os  # Standard library
 
-from discord.ext import commands, tasks  # 3rd party packages
+from discord.ext import commands  # 3rd party packages
 from dotenv import load_dotenv
 import robin_stocks as r
 
-from Discord_Stonks.stocks import stocks as s
+from stocks import stocks as s
 
 bot = commands.Bot(command_prefix='.')
 load_dotenv()
