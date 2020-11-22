@@ -1,6 +1,6 @@
 import csv
 
-from Discord_Stonks.stocks.options import option_controller as o
+from Discord_Stonks.options import option_controller as o
 from Discord_Stonks.stocks import stocks as s
 from Discord_Stonks.bot import cal as cal
 

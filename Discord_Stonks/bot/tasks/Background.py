@@ -24,10 +24,6 @@ class Background(commands.Cog):
         channel = self.bot.get_channel(int(os.getenv('DISCORD_CHANNEL')))
         holidayDate = cal.getHolidays()
 
-        if cal.getMinute() % 1 == 0:
-            res = s.autoPull()
-            await channel.send("```" + "test" + "```")
-
         if cal.getDay() < 5 and not self.bot.is_closed() and cal.getCurrentDay() not in holidayDate and \
                 (13 <= cal.getHour() <= 24):
             """if min % 15 == 0 and (13 <= hour <= 24):
