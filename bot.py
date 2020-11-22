@@ -19,12 +19,6 @@ initExt = [
 
 
 if __name__ == '__main__':
-    # load in the credentials
-    # config = loadFiles()
-
-    # attempt to get the bot stuff
-    # client.client_id = config['client_id']
-
     # loadDatabase()
 
     for ext in initExt:
