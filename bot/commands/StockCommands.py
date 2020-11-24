@@ -4,12 +4,12 @@ from bot import cal
 from stocks import stocks as s
 import csv  # 3rd Party Packages
 
-
-wl_dict = {}  # Maintains stock ticker as key and times mentioned as value.
 wl_csv = "doc/watchlist.csv"
 
 
 class StockCommands(commands.Cog):
+    wl_dict = {}  # Maintains stock ticker as key and times mentioned as value.
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -41,33 +41,51 @@ class StockCommands(commands.Cog):
 
     @commands.command(name='wl')
     async def pullWL(self, ctx, *args):
-        # res = "Discord user token: " + str(ctx.message.author.id) + "\n"
-        author = ctx.message.author.id
+        author = str(ctx.message.author.id)
+        initiatedUser = True
+        if not self.wl_dict:
+            self.loadWatchlist()
 
-        if author not in wl_dict:
-            wl_dict[author] = author
+        if self.wl_dict.get(author) is None:
             if args:
                 wl_list = []
                 for stock in args:
                     if s.validateTicker(stock):
                         wl_list.append(stock)
-                wl_dict[author] = wl_list
+                self.wl_dict[author] = wl_list
+                writeWatchlist(self.wl_dict)
+                await ctx.send("```" + "Watchlist instance successfully created for " + str(ctx.message.author) + "```")
+            else:
+                initiatedUser = False
+                await ctx.send("```" + "To create a personal watchlist use the command \".wl\" followed by stock "
+                                       "tickers.\n"
+                                       "Example: .wl estc net" + "```")
         else:
             if args:
                 old_wl_list = []
-                for stock in wl_dict[author]:
+                updatedList = False
+                for stock in self.wl_dict[author]:
                     old_wl_list.append(stock)
                 for stock in args:
                     if s.validateTicker(stock):
                         if stock not in old_wl_list:
+                            updatedList = True
                             old_wl_list.append(stock)
-                wl_dict[author] = old_wl_list
-
-        res = ""
-        for stock in wl_dict[author]:
-            pcList, perc = s.pc(stock)
-            res += pcList
-        await ctx.send("```" + res + "```")
+                self.wl_dict[author] = old_wl_list
+                if updatedList:
+                    writeWatchlist(self.wl_dict)
+                    await ctx.send(
+                        "```" + "Watchlist instance successfully updated for " + str(ctx.message.author) + "```")
+                else:
+                    await ctx.send("```" + "Watchlist had no unique stock tickers to add" + "```")
+        if initiatedUser and self.wl_dict.get(author) is not None:
+            res = ""
+            for stock in self.wl_dict[author]:
+                pcList, perc = s.pc(stock)
+                res += pcList
+            await ctx.send("```" + res + "```")
+        elif self.wl_dict.get(author) is None:
+            await ctx.send("```" + "Attempted to pull watchlist - something went wrong." + "```")
 
     @commands.command(name='spyup')
     async def top_sp500(self, ctx):
@@ -102,31 +120,41 @@ class StockCommands(commands.Cog):
             res += str(val) + ' = ' + str(s.stocks_mentioned.get(val)) + " \n"
         await ctx.send("```" + res + "```")
 
+    def loadWatchlist(self):
+        """Reads "watchlist.csv" to wl[stock ticker, iterations]
 
-def loadWatchlist():
-    """Reads "watchlist.csv" to wl[stock ticker, iterations]
+        :return:
+        """
+        reader = csv.reader(open(wl_csv))
+        if reader:
+            print('Loaded watchlist dictionary from .csv')
+        rows = 0
+        for row in reader:
+            if row and rows != 0:
+                key = row[0]
+                stockList = []
+                stockString = row[1:][0]
+                word = ""
+                for char in stockString:
+                    if char == ',' or char == ']':
+                        stockList.append(word)
+                        word = ""
+                    elif char.isalpha():
+                        word += char
+                self.wl_dict[key] = stockList
+            rows += 1
 
-    :return:
-    """
-    reader = csv.reader(open(wl_csv))
-    if reader:
-        print('Loaded watchlist dictionary from .csv')
-    for row in reader:
-        if row:
-            key = row[0]
-            wl_dict[key] = int(row[1:][0])
 
-
-def writeWatchlist():
-    """Writes [author.id, (list of stock tickers) ['SPY', 'ESTC']] from wl_csv to "watchlist.csv"
+def writeWatchlist(d):
+    """Writes [author.id, (list of stock tickers) ['SPY', 'ESTC'] from wl_csv to "watchlist.csv"
 
     :return:
     """
     w = csv.writer(open(wl_csv, "w"))
     if w:
-        print('Wrote stocks_mentioned to .csv @' + cal.getEstTimestamp())
-    for key, val in wl_dict.items():
-        w.writerow([key, val])
+        print('Wrote wl_csv @' + cal.getEstTimestamp())
+        w.writerow(['Author_ID', 'Watchlist'])
+        w.writerows(d.items())
 
 
 def setup(bot):

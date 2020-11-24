@@ -65,7 +65,7 @@ if __name__ == '__main__':
             print('Failed to load extension {}\n{}: {}'.format(ext, type(e).__name__, e))
 
     s.readStocksMentioned()  # Populate stocks_mentioned dictionary with .csv items
-    sc.loadWatchlist()       # Populate wl_dict dictionary with .csv items
+    # sc.loadWatchlist()       # Populate wl_dict dictionary with .csv items
     # a.prepare_Anomalies()  # Populate option value for SPY friday option chain
 
     bot.run(os.getenv('DISCORD_TOKEN'))
