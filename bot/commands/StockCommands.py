@@ -62,30 +62,33 @@ class StockCommands(commands.Cog):
                                        "Example: .wl estc net" + "```")
         else:
             if args:
-                old_wl_list = []
-                updatedList = False
-                for stock in self.wl_dict[author]:
-                    old_wl_list.append(stock)
-                for stock in args:
-                    if s.validateTicker(stock):
-                        if stock not in old_wl_list:
-                            updatedList = True
-                            old_wl_list.append(stock)
-                self.wl_dict[author] = old_wl_list
-                if updatedList:
-                    writeWatchlist(self.wl_dict)
+                if (args[0]).lower() == 'refresh':
+                    self.wl_dict.pop(author, None)
                     await ctx.send(
-                        "```" + "Watchlist instance successfully updated for " + str(ctx.message.author) + "```")
+                        "```" + "Watchlist instance successfully removed for " + str(ctx.message.author) + "```")
                 else:
-                    await ctx.send("```" + "Watchlist had no unique stock tickers to add" + "```")
+                    old_wl_list = []
+                    updatedList = False
+                    for stock in self.wl_dict[author]:
+                        old_wl_list.append(stock)
+                    for stock in args:
+                        if s.validateTicker(stock):
+                            if stock not in old_wl_list:
+                                updatedList = True
+                                old_wl_list.append(stock)
+                    self.wl_dict[author] = old_wl_list
+                    if updatedList:
+                        writeWatchlist(self.wl_dict)
+                        await ctx.send(
+                            "```" + "Watchlist instance successfully updated for " + str(ctx.message.author) + "```")
+                    else:
+                        await ctx.send("```" + "Watchlist had no unique stock tickers to add" + "```")
         if initiatedUser and self.wl_dict.get(author) is not None:
             res = ""
             for stock in self.wl_dict[author]:
                 pcList, perc = s.pc(stock)
                 res += pcList
             await ctx.send("```" + res + "```")
-        elif self.wl_dict.get(author) is None:
-            await ctx.send("```" + "Attempted to pull watchlist - something went wrong." + "```")
 
     @commands.command(name='spyup')
     async def top_sp500(self, ctx):
