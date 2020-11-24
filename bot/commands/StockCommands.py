@@ -47,7 +47,7 @@ class StockCommands(commands.Cog):
             self.loadWatchlist()
 
         if self.wl_dict.get(author) is None:
-            if args:
+            if args and not (args[0]).lower() == 'refresh':
                 wl_list = []
                 for stock in args:
                     if s.validateTicker(stock):
@@ -59,7 +59,8 @@ class StockCommands(commands.Cog):
                 initiatedUser = False
                 await ctx.send("```" + "To create a personal watchlist use the command \".wl\" followed by stock "
                                        "tickers.\n"
-                                       "Example: .wl estc net" + "```")
+                                       "Example: .wl estc net\n"
+                                       "To remove watchlist use the command \".wl refresh\"" + "```")
         else:
             if args:
                 if (args[0]).lower() == 'refresh':
