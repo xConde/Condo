@@ -45,7 +45,7 @@ class Background(commands.Cog):
                 s.stocks_mentioned['SPY'] = s.stocks_mentioned.get('SPY', 0) - 1
         if cal.getMinute() % 10 == 0:
             s.writeStocksMentioned()
-        if cal.getCurrentDay() in holidayDate and cal.getHour() == 9 and cal.getMinute() == 0:
+        if cal.getCurrentDay() in holidayDate and cal.getHour() == 14 and cal.getMinute() == 0:
             await channel.send("Today is " + holidayDate[
                 cal.getCurrentDay()] + " the market is closed. Enjoy your holiday!")
 

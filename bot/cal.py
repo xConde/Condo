@@ -110,15 +110,13 @@ def getDayStamp():
 
 def getHolidays():
     holidayDate = {}
-    for date in holidays.USA(years = getYear()).items():
-        if str(date[1]) != "Columbus Day" and str(date[1]) != "Labor day" and str(
-                date[1]) != "Independence Day (Observed)" \
-                and str(date[1]) != "Veterans Day":
+    marketOpenHolidays = ['Columbus Day', 'Veterans Day']
+    irrelevantHolidays = ['Independence Day (Observed)']
+    for date in holidays.USA(years=getYear()).items():
+        if str(date[1]) not in marketOpenHolidays and str(date[1]) not in irrelevantHolidays:
             holidayDate[str(date[0])[5:]] = str(date[1])
 
-    for date in holidays.Australia(years = getYear()).items():
+    for date in holidays.Australia(years=getYear()).items():
         if str(date[1]) == "Good Friday":
             holidayDate[str(date[0])[5:]] = str(date[1])
     return holidayDate
-
-
