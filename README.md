@@ -215,6 +215,29 @@ Maintains a record of mentioned stocks (currently on a csv, [stocks_mentioned.cs
     SQ = 20 
     ESTC = 14 
     TSLA = 13
+<a name="personal-watchlists"></a>
+##### Personal Watchlists -
+Maintains a record of unique watchlists to each user per server to be initialized, pulled, and added through a single command. 
+***********
+    Ex: .wl
+    -- Watchlist that has been created by the user saved indefinitely. 
+    ESTC: $116.14  +2.82% |AH: $116.14    +0.0%
+    NET:   $66.09  -0.69% |AH: $66.40   +0.47%
+    SPCE:  $24.91  +6.86% |AH: $25.06    +0.6%
+    
+    
+    Ex: .wl twtr
+    -- Watchlist attempting to add a duplicate stock.
+    Watchlist had no unique stock tickers to add
+    ESTC: $116.14  +2.82% |AH: $116.14    +0.0%
+    NET:   $66.09  -0.69% |AH: $66.40   +0.47%
+    SPCE:  $24.91  +6.86% |AH: $25.06    +0.6%
+    TWTR:  $44.94  +0.58% |AH: $45.18   +0.53%
+    UBER:  $50.04  +3.32% |AH: $50.36   +0.64%
+    JPM:  $117.87  +2.88% |AH: $118.60   +0.62%
+    ABBV: $102.18  +1.33% |AH: $102.95   +0.75%
+    TXN:  $157.42  +0.38% |AH: $158.22   +0.51%
+    XOM:   $39.36  +6.55% |AH: $39.55   +0.48%
 
 Features
 =================
