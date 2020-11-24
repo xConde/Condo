@@ -66,7 +66,7 @@ class StockCommands(commands.Cog):
                                        "To remove watchlist use the command \".wl refresh\"" + "```")
         else:
             if args:
-                if (args[0]).lower() == 'refresh' or not (args[0]).lower() == 'reset':
+                if (args[0]).lower() == 'refresh' or (args[0]).lower() == 'reset':
                     self.wl_dict.pop(author, None)
                     await ctx.send(
                         "```" + "Watchlist instance successfully removed for " + str(ctx.message.author) + "```")
