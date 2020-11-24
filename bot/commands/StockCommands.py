@@ -47,7 +47,7 @@ class StockCommands(commands.Cog):
             self.loadWatchlist()
 
         if self.wl_dict.get(author) is None:
-            if args and not (args[0]).lower() == 'refresh':
+            if args and not (args[0]).lower() == 'refresh' or not (args[0]).lower() == 'reset':
                 wl_list = []
                 for stock in args:
                     if s.validateTicker(stock):
@@ -63,7 +63,7 @@ class StockCommands(commands.Cog):
                                        "To remove watchlist use the command \".wl refresh\"" + "```")
         else:
             if args:
-                if (args[0]).lower() == 'refresh':
+                if (args[0]).lower() == 'refresh' or not (args[0]).lower() == 'reset':
                     self.wl_dict.pop(author, None)
                     await ctx.send(
                         "```" + "Watchlist instance successfully removed for " + str(ctx.message.author) + "```")
