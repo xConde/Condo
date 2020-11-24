@@ -47,14 +47,17 @@ class StockCommands(commands.Cog):
             self.loadWatchlist()
 
         if self.wl_dict.get(author) is None:
-            if args and not (args[0]).lower() == 'refresh' or not (args[0]).lower() == 'reset':
+            if args and (not (args[0]).lower() == 'refresh' or not (args[0]).lower() == 'reset'):
                 wl_list = []
+                stockInArgs = False
                 for stock in args:
                     if s.validateTicker(stock):
+                        stockInArgs = True
                         wl_list.append(stock)
-                self.wl_dict[author] = wl_list
-                writeWatchlist(self.wl_dict)
-                await ctx.send("```" + "Watchlist instance successfully created for " + str(ctx.message.author) + "```")
+                if stockInArgs:
+                    self.wl_dict[author] = wl_list
+                    writeWatchlist(self.wl_dict)
+                    await ctx.send("```" + "Watchlist instance successfully created for " + str(ctx.message.author) + "```")
             else:
                 initiatedUser = False
                 await ctx.send("```" + "To create a personal watchlist use the command \".wl\" followed by stock "
