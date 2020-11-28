@@ -9,10 +9,10 @@ import robin_stocks as r
 class Background(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.background_loop.start()
+        self.background_loop.start(bot)
 
     @tasks.loop(minutes=1)
-    async def background_loop(self):
+    async def background_loop(self, bot):
         """Runs on startup and every minute that the bot is running. [Specified in EST, but made in UTC]
         Task 1: If the US market is open (9AM[pre-market] - 8PM[after-hours] and not holiday), print a SPY chart``
          every 15 minutes.
@@ -36,6 +36,8 @@ class Background(commands.Cog):
                 await channel.send("```" + res + "```")
             if cal.getMinute() % 5 == 0:
                 if not s.validateTicker('SPY'):
+                    user = await bot.fetch_user(247095523197190154)
+                    await channel.send(user.mention + " API key expired.")
                     if r.login(username=os.getenv('USER'), password=os.getenv('PASS')):
                         await channel.send("```" + 'Restarted Robinhood instance successfully.' + "```")
                         print("Restarted Robinhood instance successfully.")
