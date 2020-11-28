@@ -343,48 +343,10 @@ Displays a sorted list of specified stocks by gain every 15m between market hour
     FB:   $263.11  -6.31% |AH: $262.20   -0.35%
 <a name="anomalies"></a>
 ##### Checking S&P Anomalies -
-Scans the S&P option chain for any irregular changes over the past 3 minutes and alerts the chat if any are found. **Currently in Alpha stage: Parses through 3 dates [friday, monthly expiration, next monthly expiration] and checks for a static number change (volume * premium) > X over the course of 3 minutes. If something pops it alerts the discord.
+Scans the S&P option chain for any irregular changes over the past 3 minutes and alerts the chat if any are found. Parses through the 3 closest dates [friday, monthly expiration, next monthly expiration] and checks for a static number change (volume * premium) > X over the course of 3 minutes. If something pops it alerts the discord.
 *********** 
     Found large cash movement in past 3 min. 
     Current SPY price @ 358.54
     2DTE 358C = +$547K   Price: $239   Vol: 569   Gamma: 7.45
     2DTE 359C = +$649K   Price: $188   Vol: 1959   Gamma: 7.5
     2DTE 360C = +$563K   Price: $144   Vol: 1446   Gamma: 7.36
-    
-Checklist
-=================
-
-### Initial build
-
-- [x] Connect to pyrh
-- [x] Create a discord bot
-- [x] Have the discord bot output something onto discord.
-- [x] Discord bot use pyrh to output something.
-- [x] Create a discord command "priceCheck" that triggers on '.p'. Should output the ticker, current price, and percentage difference since market open. 
-- [x] Create a discord command "priceCheckList" that triggers on '.pp'. Performs "priceCheck" on a list of tickers. Produces output in a single message. 
-- [x] Implement eastern time for hours, minutes, day.
-- [x] Create a background loop, when the bot starts up it will print out the SPY price to a channel and the console with a timestamp every 15m during market hours.
-- [x] Have background loop account for holiday days (do not post any automatic stock messages on holidays)
-
-### Next steps
-
-- [x] Tweak priceChecker formatting to enhance the aesthetic and allow all information to be posted on a single line. 
-- [x] Allow priceChecker to differentiate the current time to output different results depending on if market is open or not. If market is closed, it should outprint the open price, close price, percent difference, after hours price, and percent difference since market close. 
-- [x] Implement csv read to 'stocks mentioned' on load up and csv write every 20 minutes while bot is running.
-- [x] Add comments and clean up code.
-- [x] Add an additional condition check to validateTicker if the stock provided fits the criteria of 1-5 letters, but does not exist. A stock such as TVIX can cause an exception to pop.
-- [x] Add a command for implied IV and move for options. 
-- [x] Add the '.option' command which displays monthly (third friday) expiry options (if not provided a date) for the call side (if not provided a side). 
-- [x] Add a function that calculates the third friday of each month and verifies the current day is not. This could be used to auto generate an expiration date (monthlies).
-- [x] Add a function roundPrice, which rounds up/down based on what type of option is desired (call or put).
-- [x] Add a validateType function that returns a type that is corrected or defaulted.
-- [x] Add a validateExp function that returns an expiration that is provided, if correct or defaulted date.
-- [ ] ~~Fix port command, so stock and option positions that the user has is displayed.~~ ***Currently not possible through robin_stocks API.
-
-### Final steps
-
-- [x] Add an option chain command that checks 1 ITM and 3 OTM strikes for any ticker
-- [x] Add a validateStrike function that determines if a strike is correct, if not it calls grabStrikeIterator, RoundPrice, and finally grabStrike to produce a strike.
-- [x] Add a searchStrikeIterator function that determines a strike price iterator based off of valid option strike entries.
-- [x] Add a grabStrikeIterator function that returns a proper strike price iterator.
-- [x] Add a grabStrike function that grabs a determined strike price based on strike iterator, iteration, and roundedprice.
