@@ -221,23 +221,64 @@ Maintains a record of unique watchlists to each user per server to be initialize
 ***********
     Ex: .wl
     -- Watchlist that has been created by the user saved indefinitely. 
-    ESTC: $116.14  +2.82% |AH: $116.14    +0.0%
-    NET:   $66.09  -0.69% |AH: $66.40   +0.47%
-    SPCE:  $24.91  +6.86% |AH: $25.06    +0.6%
+    
+    Conde's Watchlist
+    ---------------------------------
+    HOME:  $19.14  +1.54% |AH: $19.19   +0.26%
+    ROOT:  $17.23  +1.29% |AH: $17.36   +0.75%
+    CAN:   $5.75   -9.73% |AH: $5.81   +1.04%
+    SOLO:  $8.27   -3.39% |AH: $8.26   -0.12%
+    FLWS:  $24.97  +5.58% |AH: $24.97    +0.0%
     
     
-    Ex: .wl twtr
+    Ex: .wl home
     -- Watchlist attempting to add a duplicate stock.
+    
     Watchlist had no unique stock tickers to add
-    ESTC: $116.14  +2.82% |AH: $116.14    +0.0%
-    NET:   $66.09  -0.69% |AH: $66.40   +0.47%
-    SPCE:  $24.91  +6.86% |AH: $25.06    +0.6%
-    TWTR:  $44.94  +0.58% |AH: $45.18   +0.53%
-    UBER:  $50.04  +3.32% |AH: $50.36   +0.64%
-    JPM:  $117.87  +2.88% |AH: $118.60   +0.62%
-    ABBV: $102.18  +1.33% |AH: $102.95   +0.75%
-    TXN:  $157.42  +0.38% |AH: $158.22   +0.51%
-    XOM:   $39.36  +6.55% |AH: $39.55   +0.48%
+    Conde's Watchlist
+    ---------------------------------
+    HOME:  $19.14  +1.54% |AH: $19.19   +0.26%
+    ROOT:  $17.23  +1.29% |AH: $17.36   +0.75%
+    CAN:   $5.75   -9.73% |AH: $5.81   +1.04%
+    SOLO:  $8.27   -3.39% |AH: $8.26   -0.12%
+    FLWS:  $24.97  +5.58% |AH: $24.97    +0.0%
+    
+    Ex: .wl reset
+    -- Remove user's watchlist
+    
+    Watchlist instance successfully removed for Conde#9779
+    
+    Ex. .wl @MAGA
+    -- Access other discord user's watchlist instance
+    
+    Looking for a pullback's Watchlist
+    ---------------------------------
+    TSLA: $585.76  +2.05% |AH: $584.50   -0.22%
+    AAPL: $116.59  +0.48% |AH: $116.46   -0.11%
+    FB:   $277.81  +0.81% |AH: $276.70    -0.4%
+    ZM:   $471.61  +6.29% |AH: $474.00   +0.51%
+    SPY:  $363.67  +0.28% |AH: $363.67    +0.0%
+    QQQ:  $299.01  +0.92% |AH: $299.01    +0.0%
+    BABA: $276.48  -0.45% |AH: $276.90   +0.15%
+    GE:    $10.40  -0.95% |AH: $10.41    +0.1%
+    F:     $9.09   +0.11% |AH: $9.10   +0.11%
+    
+    Ex. .wl @MAGA estc
+    -- Blocks any modification to other user's watchlists.
+    
+    Cannot modify other watchlists
+    
+    Looking for a pullback's Watchlist
+    ---------------------------------
+    TSLA: $585.76  +2.05% |AH: $584.50   -0.22%
+    AAPL: $116.59  +0.48% |AH: $116.46   -0.11%
+    FB:   $277.81  +0.81% |AH: $276.70    -0.4%
+    ZM:   $471.61  +6.29% |AH: $474.00   +0.51%
+    SPY:  $363.67  +0.28% |AH: $363.67    +0.0%
+    QQQ:  $299.01  +0.92% |AH: $299.01    +0.0%
+    BABA: $276.48  -0.45% |AH: $276.90   +0.15%
+    GE:    $10.40  -0.95% |AH: $10.41    +0.1%
+    F:     $9.09   +0.11% |AH: $9.10   +0.11%
 
 Features
 =================
