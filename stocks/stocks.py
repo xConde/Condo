@@ -18,6 +18,7 @@ def writeStocksMentioned():
     w = csv.writer(open(stocks_mentioned_csv, "w"))
     if w:
         print('Wrote stocks_mentioned to .csv @' + cal.getEstTimestamp())
+        w.writerow(['Stock Ticker', 'Quantity'])
     for key, val in stocks_mentioned.items():
         w.writerow([key, val])
 
@@ -30,10 +31,12 @@ def readStocksMentioned():
     reader = csv.reader(open(stocks_mentioned_csv))
     if reader:
         print('Loaded stocks_mentioned dictionary from .csv')
+    rows = 0
     for row in reader:
-        if row:
+        if row and rows != 0:
             key = row[0]
             stocks_mentioned[key] = int(row[1:][0])
+        rows += 1
 
 
 def pull_sp500(dir):
