@@ -9,7 +9,7 @@ from bot.commands import StockCommands as sc
 
 bot = commands.Bot(command_prefix='.')
 load_dotenv()
-rhlogin = r.login(username=os.getenv('USER'), password=os.getenv('PASS'))
+rhlogin = r.login(username=os.getenv('RH_USER'), password=os.getenv('RH_PASS'))
 
 initExt = [
     'bot.commands.StockCommands',

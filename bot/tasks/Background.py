@@ -38,7 +38,7 @@ class Background(commands.Cog):
                 if not s.validateTicker('SPY'):
                     user = await bot.fetch_user(247095523197190154)
                     await channel.send(user.mention + " API key expired.")
-                    if r.login(username=os.getenv('USER'), password=os.getenv('PASS')):
+                    if r.login(username=os.getenv('RH_USER'), password=os.getenv('RH_PASS')):
                         await channel.send("```" + 'Restarted Robinhood instance successfully.' + "```")
                         print("Restarted Robinhood instance successfully.")
                     else:

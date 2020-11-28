@@ -76,7 +76,7 @@ class StockCommands(commands.Cog):
                 await ctx.send("```" + "To create a personal watchlist use the command \".wl\" followed by stock "
                                        "tickers.\n"
                                        "Example: .wl estc net\n"
-                                       "To view other user's watchlists use the command \".wl @user\""
+                                       "To view other user's watchlists use the command \".wl @user\"\n"
                                        "To remove watchlist use the command \".wl refresh\"" + "```")
         elif not sudoUser:
             if args:
