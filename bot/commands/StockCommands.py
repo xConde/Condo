@@ -69,7 +69,8 @@ class StockCommands(commands.Cog):
                     if stockInArgs:
                         self.wl_dict[author] = wl_list
                         writeWatchlist(self.wl_dict)
-                        await ctx.send("```" + "Watchlist instance successfully created for " + str(ctx.message.author) + "```")
+                        await ctx.send(
+                            "```" + "Watchlist instance successfully created for " + str(ctx.message.author) + "```")
             else:
                 initiatedUser = False
                 await ctx.send("```" + "To create a personal watchlist use the command \".wl\" followed by stock "
@@ -105,7 +106,9 @@ class StockCommands(commands.Cog):
             for stock in self.wl_dict[author]:
                 pcList, perc = s.pc(stock)
                 res += pcList
-            await ctx.send("```" + res + "```")
+            authorName = str(await self.bot.fetch_user(author)).split('#')
+            await ctx.send("```" + authorName[0] + "'s Watchlist\n" +
+                           '---------------------------------\n' + res + "```")
 
     @commands.command(name='spyup')
     async def top_sp500(self, ctx):
