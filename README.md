@@ -235,6 +235,14 @@ Maintains a record of mentioned stocks (currently on a csv, [stocks_mentioned.cs
 Maintains a record of unique watchlists to each user per server to be initialized, pulled, and added through a single command. 
 ***********
     Ex: .wl
+    -- No watchlist
+    
+    To create a personal watchlist use the command ".wl" followed by stock tickers.
+    Example: .wl estc net
+    To view other user's watchlists use the command ".wl @user"
+    To remove watchlist use the command ".wl refresh"
+
+    Ex: .wl
     -- Watchlist that has been created by the user saved indefinitely. 
     
     Conde's Watchlist
