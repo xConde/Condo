@@ -75,15 +75,23 @@ class OptionCommands(commands.Cog):
             await ctx.send("```" + stock.upper() + " is not a valid ticker.\n" + "```")
 
     @commands.command(name='read')
-    async def readFridayOptionChain(self, ctx, stock):
-        if s.validateTicker(stock):
+    async def readFridayOptionChain(self, ctx, stock=None):
+        validParam = True
+        if not stock:
+            validParam = False
+            res = "Read Option Info: Displays closest valued options for a ticker with which side is dominating and " \
+                  "top 5 most valued strikes.\n" + \
+                  "Ex. .read [stock]\n"
+            await ctx.send("```" + res + "```")
+
+        if validParam and s.validateTicker(stock):
             price = s.tickerPrice(stock)
             if price >= 5:
                 res = flow.mostExpensive(stock)
                 await ctx.send("```" + res + "```")
             else:
                 await ctx.send("```" + stock.upper() + " is not a valid ticker for options.\n" + "```")
-        else:
+        elif validParam:
             await ctx.send("```" + stock.upper() + " is not a valid ticker.\n" + "```")
 
 

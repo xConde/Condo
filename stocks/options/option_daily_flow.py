@@ -34,11 +34,11 @@ def generateValue(ticker, call_strikes, put_strikes, exp):
     put_value = 0
 
     for strike in call_strikes:
-        value = o.pcOptionMin(ticker, strike, 'call', exp)
+        value, _ = o.pcOptionMin(ticker, strike, 'call', exp)
         strike_value[str(strike) + 'C'] = value
         call_value += value
     for strike in put_strikes:
-        value = o.pcOptionMin(ticker, strike, 'put', exp)
+        value, _ = o.pcOptionMin(ticker, strike, 'put', exp)
         strike_value[str(strike) + 'P'] = value
         put_value += value
     res = dominatingSide(ticker, call_value, put_value, exp)

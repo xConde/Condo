@@ -141,9 +141,6 @@ def validateStrike(stock, type, expir, strike):
     :return:
     """
     price = s.tickerPrice(stock)
-    print('type ' + str(type) + '\n')       # call
-    print('expir ' + str(expir) + '\n')         # 2020-01-17
-    print('strike ' + str(strike) + '\n')       # 115
     if not r.find_options_by_expiration_and_strike(stock, expir, strike, type):
         strikeIterator = grabStrikeIterator(stock, type, expir, price)
         price = roundPrice(price, strikeIterator, type)
