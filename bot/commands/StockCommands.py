@@ -43,28 +43,41 @@ class StockCommands(commands.Cog):
     async def pullWL(self, ctx, *args):
         author = str(ctx.message.author.id)
         initiatedUser = True
+        sudoUser = False
         if not self.wl_dict:
             self.loadWatchlist()
 
-        if self.wl_dict.get(author) is None:
-            if args and (not (args[0]).lower() == 'refresh' or not (args[0]).lower() == 'reset'):
-                wl_list = []
-                stockInArgs = False
-                for stock in args:
-                    if s.validateTicker(stock):
-                        stockInArgs = True
-                        wl_list.append(stock)
-                if stockInArgs:
-                    self.wl_dict[author] = wl_list
-                    writeWatchlist(self.wl_dict)
-                    await ctx.send("```" + "Watchlist instance successfully created for " + str(ctx.message.author) + "```")
+        if args and args[0][:2] == '<@':
+            if args[0][:3] == '<@!':
+                author = args[0][3:-1]
+            elif args[0][:2] == '<@':
+                author = args[0][2:-1]
+            sudoUser = True
+            if len(args) > 1:
+                await ctx.send(
+                    "```" + "Cannot modify other watchlists" + "```")
+
+        if self.wl_dict.get(author) is None and not sudoUser:
+            if args:
+                if not (args[0]).lower() == 'refresh' or not (args[0]).lower() == 'reset':
+                    wl_list = []
+                    stockInArgs = False
+                    for stock in args:
+                        if s.validateTicker(stock):
+                            stockInArgs = True
+                            wl_list.append(stock)
+                    if stockInArgs:
+                        self.wl_dict[author] = wl_list
+                        writeWatchlist(self.wl_dict)
+                        await ctx.send("```" + "Watchlist instance successfully created for " + str(ctx.message.author) + "```")
             else:
                 initiatedUser = False
                 await ctx.send("```" + "To create a personal watchlist use the command \".wl\" followed by stock "
                                        "tickers.\n"
                                        "Example: .wl estc net\n"
+                                       "To view other user's watchlists use the command \".wl @user\""
                                        "To remove watchlist use the command \".wl refresh\"" + "```")
-        else:
+        elif not sudoUser:
             if args:
                 if (args[0]).lower() == 'refresh' or (args[0]).lower() == 'reset':
                     self.wl_dict.pop(author, None)
