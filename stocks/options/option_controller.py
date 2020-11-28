@@ -181,6 +181,10 @@ def pcOption(stock, strike, type, expir):
     exp = validateExp(stock, expir, strike, type)
     vstrike = validateStrike(stock, type, expir, strike)
 
+    # print('type ' + str(type) + '\n')       # call
+    # print('exp ' + str(exp) + '\n')         # 2020-01-17
+    # print('vstrike ' + str(vstrike) + '\n') # 115
+
     res = str(stock.upper()) + " " + exp[5:] + " " + str(vstrike) + type[0].upper() + " "
     msg = ""
 
@@ -190,6 +194,7 @@ def pcOption(stock, strike, type, expir):
         msg += 'Strike price ' + strike + ' did not exist for ' + stock.upper() + \
                '.\nDefaulted strike to ' + str(vstrike) + ' (1 ITM).\n'
     option = r.find_options_by_expiration_and_strike(stock, exp, vstrike, type)[0]
+    # print(option)
     curr = '{:.2f}'.format(round(float(option['adjusted_mark_price']), 2))
     prev = '{:.2f}'.format(round(float(option['previous_close_price']), 2))
     breakeven = '{:.2f}'.format(round(float(option['break_even_price']), 2))

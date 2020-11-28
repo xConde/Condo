@@ -47,14 +47,12 @@ def third_friday(year, month, day):
         # Replace just the day (of month)
         third = third.replace(day=(15 + (4 - w) % 7))
 
-    if third.day < day < 12:
+    if day > third.day:
         month += 1
+        if month > 12:
+            month = 1
+            year += 1
         third = dt.date(year, month, 15)
-        w = third.weekday()
-        if w != 4:
-            third = third.replace(day=(15 + (4 - w) % 7))
-    elif day >= 12:
-        third = dt.date(year, 1, 15)
         w = third.weekday()
         if w != 4:
             third = third.replace(day=(15 + (4 - w) % 7))
