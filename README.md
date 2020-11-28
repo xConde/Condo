@@ -210,11 +210,11 @@ Maintains a record of mentioned stocks (currently on a csv, [stocks_mentioned.cs
 
     .used
     Most mentioned stocks:
-    AAPL = 29 
-    SPY = 29 
-    SQ = 20 
-    ESTC = 14 
-    TSLA = 13
+    FB = 237 
+    SPY = 225 
+    NFLX = 211 
+    TSLA = 145 
+    SPCE = 111 
 <a name="personal-watchlists"></a>
 ##### Personal Watchlists -
 Maintains a record of unique watchlists to each user per server to be initialized, pulled, and added through a single command. 
@@ -235,6 +235,7 @@ Maintains a record of unique watchlists to each user per server to be initialize
     -- Watchlist attempting to add a duplicate stock.
     
     Watchlist had no unique stock tickers to add
+    
     Conde's Watchlist
     ---------------------------------
     HOME:  $19.14  +1.54% |AH: $19.19   +0.26%
@@ -286,16 +287,24 @@ Features
 ##### Background Loop -
 Displays a sorted list of specified stocks by gain every 15m between market hours. Not displayed before or after, as well as not on weekends or holidays. Stocks pulled through background loop are not added to 'most mentioned stocks'.  
 ***********
-    {during market hours}
-    [15M pull] Intraday
-    AMZN: $3294.32 +3.52% |L: 3205.82 H: 3296.96
-    NFLX: $492.61  +2.13% |L: 482.88  H: 492.79
-    GOOGL:$1532.81 +1.09% |L: 1522.00 H: 1536.00
-    AAPL: $461.64   +0.7% |L: 456.03  H: 462.00
-    SPY:  $338.41  +0.15% |L: 336.61  H: 339.07
-    FB:   $260.30  -0.33% |L: 259.26  H: 262.62
+    -- Market hours
+   
+    [15M pull] Intraday @ 14:45 EST
+    QQQ:  $299.01  +0.92% |L: 297.90  H: 300.17
+    VXX:   $17.51  +0.69% |L: 17.10   H: 17.64
+    SPY:  $363.67  +0.28% |L: 362.58  H: 364.18
+    ----------
+    NFLX: $491.36  +1.31% |L: 481.85  H: 493.25
+    GOOGL:$1787.02  +1.3% |L: 1764.54 H: 1797.01
+    FB:   $277.81  +0.81% |L: 274.82  H: 279.13
+    MSFT: $215.23  +0.64% |L: 214.04  H: 216.27
+    AAPL: $116.59  +0.48% |L: 116.22  H: 117.48
+    AMZN: $3195.34 +0.32% |L: 3190.28 H: 3216.19
+    NVDA: $530.45   +0.2% |L: 526.88  H: 536.30
+    JPM:  $121.22  -0.66% |L: 121.09  H: 122.34
     
-    {Pre market and after hours pull}
+    -- Pre market and after hours pull
+    
     [15M pull] After-hours @ 17:15 EST
     SPY:  $326.54  -1.04% |AH: $327.30   +0.23%
     QQQ:  $269.38  -2.54% |AH: $269.55   +0.06%
