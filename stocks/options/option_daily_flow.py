@@ -32,7 +32,7 @@ def loadStrikes(ticker):
                     or not r.find_options_by_expiration_and_strike(
                     ticker, expir, o.grabStrike(callprice, strikeIterator, 'call', i+1), 'call'):
                 break
-        print(o.grabStrike(callprice, strikeIterator, 'call', i))
+        # print(o.grabStrike(callprice, strikeIterator, 'call', i))
         call_strikes.append(o.grabStrike(callprice, strikeIterator, 'call', i))
         put_strikes.append(o.grabStrike(putprice, strikeIterator, 'put', i))
         i += 1
@@ -49,7 +49,7 @@ def generateValue(ticker, call_strikes, put_strikes, exp):
     put_value = 0
 
     for strike in call_strikes:
-        print('generateValue', ticker, strike, 'call', exp)
+        # print('generateValue', ticker, strike, 'call', exp)
         value, _ = o.pcOptionMin(ticker, strike, 'call', exp)
         strike_value[str(strike) + 'C'] = value
         call_value += value
