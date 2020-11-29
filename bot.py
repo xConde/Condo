@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 import robin_stocks as r
 
 from stocks import stocks as s
-from bot.commands import StockCommands as sc
 
 bot = commands.Bot(command_prefix='.')
 load_dotenv()

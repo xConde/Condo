@@ -3,6 +3,8 @@ from stocks.options import option_controller as o
 from stocks import stocks as s
 from bot import cal as cal
 
+import robin_stocks as r  # 3rd party packages
+
 
 def loadStrikes(ticker):
     """Loads strikes into call_strikes & put_strikes
@@ -12,15 +14,28 @@ def loadStrikes(ticker):
 
     call_strikes = []
     put_strikes = []
-
+    i = 0
+    expir = cal.find_friday()
     price = s.tickerPrice(ticker)
-    strikeIterator = o.grabStrikeIterator(ticker, 'call', cal.find_friday(), price)
+    strikeIterator = o.searchStrikeIterator(ticker, 'call', cal.find_friday(), price)
+
     callprice = o.roundPrice(price, strikeIterator, 'call')
     putprice = o.roundPrice(price, strikeIterator, 'put')
+    while True:  # Now that we have the iterator and rounded price, collect actual strikes
+        if i == 0 and not r.find_options_by_expiration_and_strike(
+                    ticker, cal.find_friday(), o.grabStrike(callprice, strikeIterator, 'call', i), 'call'):
+            expir = str(cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()))
 
-    for i in range(0, 10):  # Now that we have the iterator and rounded price, collect actual strikes
+        if i > 5:  # Find the highest strike applicable
+            if not r.find_options_by_expiration_and_strike(
+                    ticker, expir, o.grabStrike(callprice, strikeIterator, 'call', i), 'call')[0]['volume']\
+                    or not r.find_options_by_expiration_and_strike(
+                    ticker, expir, o.grabStrike(callprice, strikeIterator, 'call', i+1), 'call'):
+                break
+        print(o.grabStrike(callprice, strikeIterator, 'call', i))
         call_strikes.append(o.grabStrike(callprice, strikeIterator, 'call', i))
         put_strikes.append(o.grabStrike(putprice, strikeIterator, 'put', i))
+        i += 1
     return call_strikes, put_strikes
 
 
@@ -34,6 +49,7 @@ def generateValue(ticker, call_strikes, put_strikes, exp):
     put_value = 0
 
     for strike in call_strikes:
+        print('generateValue', ticker, strike, 'call', exp)
         value, _ = o.pcOptionMin(ticker, strike, 'call', exp)
         strike_value[str(strike) + 'C'] = value
         call_value += value

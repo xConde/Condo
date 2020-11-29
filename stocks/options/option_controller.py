@@ -39,53 +39,33 @@ def searchStrikeIterator(stock, type, expir, price):
     :param price:
     :return:
     """
-    if price > 1000:
+    found = False
+    actualPrice = price
+    i = 0
+    if actualPrice > 1000:
         strikeOptionList = [5, 10, 50]
-    elif price > 100:
+    elif actualPrice > 100:
         strikeOptionList = [1, 5, 10, 50]
     else:
         strikeOptionList = [.5, 1, 5, 10, 50]
 
-    for i in range(0, len(strikeOptionList)):
+    while True:
         strikeIterator = strikeOptionList[i]
         price = price - (price % strikeIterator)
         checkStrike = strikeIterator * round(price / strikeIterator) + strikeIterator * 0
         checkStrike2 = strikeIterator * round(price / strikeIterator) + strikeIterator * 1
         checkStrike3 = strikeIterator * round(price / strikeIterator) + strikeIterator * 2
-        if r.find_options_by_expiration_and_strike(stock, expir, checkStrike, type) \
-                and r.find_options_by_expiration_and_strike(stock, expir, checkStrike2, type)[0]['volume'] \
-                and r.find_options_by_expiration_and_strike(stock, expir, checkStrike3, type)[0]['volume']:
+        if r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike), type) \
+                and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike2), type) \
+                and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike3), type)[0]['volume']:
             return strikeIterator
-    generatedExp = cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()).strftime("%Y-%m-%d")
-    if expir != generatedExp:
-        print("Did not find any strikes trying again")
-        searchStrikeIterator(stock, type, generatedExp, price)
-    else:
-        print("Did not find any strikes, stopping.")
-
-
-def grabStrikeIterator(stock, type, expir, price):
-    """Check to see if stock option chain iterator being requested is one of the highly used tickers inside of one of two lists.
-    If it is not, send information to search strike iterator and find the strike iterator.
-
-    :param stock:
-    :param type:
-    :param expir:
-    :param price:
-    :return:
-    """
-    list1 = ['SPY', 'QQQ', 'IWM', 'SPCE', 'VXX']
-    list5 = ['AAPL', 'FB', 'MSFT', 'NFLX', 'JPM', 'DIS', 'SQ', 'ESTC', 'GOOGL', 'NVDA', 'TGT', 'WMT', 'TSLA']
-    list10 = ['ZM']
-
-    if stock.upper() in list1:
-        return 1
-    elif stock.upper() in list5:
-        return 5
-    elif stock.upper() in list10:
-        return 10
-    else:
-        return searchStrikeIterator(stock, type, expir, price)
+        elif not found and i + 1 == len(strikeOptionList):
+            thirdFriday = str(cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()))
+            i = -1  # set i to -1 + 1 (0)
+            print("No strikes found for " + expir + " trying " + thirdFriday)
+            expir = thirdFriday
+            price = actualPrice
+        i += 1
 
 
 def grabStrike(price, strikeIterator, type, i):
@@ -124,7 +104,8 @@ def validateExp(stock, expir, strike, type):
     :return:
     """
     generatedExp = cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()).strftime("%Y-%m-%d")
-    if expir and re.match(r'^\d{4}-\d{2}-\d{2}$', expir) and r.find_options_by_expiration_and_strike(stock, expir, strike, type):
+    if expir and re.match(r'^\d{4}-\d{2}-\d{2}$', expir) and r.find_options_by_expiration_and_strike(stock, expir,
+                                                                                                     strike, type):
         return expir
     else:
         return generatedExp
@@ -142,7 +123,7 @@ def validateStrike(stock, type, expir, strike):
     """
     price = s.tickerPrice(stock)
     if not r.find_options_by_expiration_and_strike(stock, expir, strike, type):
-        strikeIterator = grabStrikeIterator(stock, type, expir, price)
+        strikeIterator = searchStrikeIterator(stock, type, expir, price)
         price = roundPrice(price, strikeIterator, type)
         return grabStrike(price, strikeIterator, type, 0)
     else:
@@ -159,9 +140,10 @@ def pcOptionMin(stock, strike, type, expir):
     :param expir:
     :return:
     """
+    print(stock, expir, strike, type)
     option = r.find_options_by_expiration_and_strike(stock, expir, strike, type)[0]
-    curr = round(float(option['adjusted_mark_price'])*100, 2)
-    gamma = round(float(option['gamma'])*100, 2)
+    curr = round(float(option['adjusted_mark_price']) * 100, 2)
+    gamma = round(float(option['gamma']) * 100, 2)
     volume = int(option['volume'])
     return curr * volume, [curr, volume, gamma]
 
@@ -219,7 +201,7 @@ def pcOptionChain(stock, type, expir, price):
     """
     strikes = []
     type = validateType(type)
-    strikeIterator = grabStrikeIterator(stock, type, expir, price)
+    strikeIterator = searchStrikeIterator(stock, type, expir, price)
 
     price = roundPrice(price, strikeIterator, type)
 

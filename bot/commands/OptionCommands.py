@@ -86,9 +86,12 @@ class OptionCommands(commands.Cog):
 
         if validParam and s.validateTicker(stock):
             price = s.tickerPrice(stock)
-            if price >= 5:
+            if price >= 10:
+                junk = await ctx.send("```" + "Loading the entire option chain for " + str(stock).upper() + "..." + "```")
                 res = flow.mostExpensive(stock)
-                await ctx.send("```" + res + "```")
+                await junk.delete()
+                if res:
+                    await ctx.send("```" + res + "```")
             else:
                 await ctx.send("```" + stock.upper() + " is not a valid ticker for options.\n" + "```")
         elif validParam:
