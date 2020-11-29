@@ -91,7 +91,7 @@ def mostExpensive(ticker):
     :return:
     """
     call_strikes, put_strikes = loadStrikes(ticker)
-    exp = o.validateExp(ticker, cal.find_friday(), call_strikes[0], 'call')
+    exp = o.validateExp(ticker, cal.find_friday(), 'call', call_strikes[0])
     strike_value, res = generateValue(ticker, call_strikes, put_strikes, exp)
 
     highest = s.checkMostMentioned(strike_value, 5)

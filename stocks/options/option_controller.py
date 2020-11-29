@@ -97,7 +97,7 @@ def validateType(type):
         return 'call'
 
 
-def validateExp(stock, expir, strike, type):
+def validateExp(stock, expir, type, strike=None):
     """Given an expiration date return an expiration that is provided if correct or a default date.
 
     :param expir:
@@ -159,7 +159,7 @@ def pcOption(stock, strike, type, expir):
     :return:
     """
     type = validateType(type)
-    exp = validateExp(stock, expir, strike, type)
+    exp = validateExp(stock, expir, type, strike)
     vstrike = validateStrike(stock, type, exp, strike)
 
     res = str(stock.upper()) + " " + exp[5:] + " " + str(vstrike) + type[0].upper() + " "
@@ -200,14 +200,15 @@ def pcOptionChain(stock, type, expir, price):
     """
     strikes = []
     type = validateType(type)
-    strikeIterator = searchStrikeIterator(stock, type, expir, price)
+    exp = validateExp(stock, expir, type, None)
+    strikeIterator = searchStrikeIterator(stock, type, exp, price)
 
     price = roundPrice(price, strikeIterator, type)
 
     for i in range(0, 4):  # Now that we have the iterator and rounded price, collect actual strikes
         strikes.append(grabStrike(price, strikeIterator, type, i))
 
-    expir = validateExp(stock, expir, strikes[0], type)
+    expir = validateExp(stock, expir, type, strikes[0])
     res = "Option chain for " + stock.upper() + ":\n"
     i = 0
     for strike in strikes:  # We have strikes, call pcOption and format output
