@@ -1,6 +1,6 @@
 Author_ID,Watchlist
 708413428695564370,"['tsla', 'aapl', 'fb', 'zm', 'spy', 'qqq', 'baba', 'Ge', 'f']"
-399034405097701397,"['fcx', 'net', 'xom', 'spce', 'ely', 'ezpw']"
+399034405097701397,"['fcx', 'net', 'xom', 'spce', 'ely', 'ezpw', 'chgg', 'cake']"
 314920727495180288,"['spy', 'qqq', 'msft', 'aapl', 'sq', 'mcd']"
 384100252652666892,"['rkt', 'Aapl', 'regn', 'spy', 'amzn', 'RH', 'NVDA', 'BABA', 'zm']"
 357557941777334272,"['aapl', 'amzn', 'googl', 'fb', 'tsla', 'spce', 'mrna', 'fsr', 'rkt', 'work', 'pltr']"
@@ -8,5 +8,8 @@ Author_ID,Watchlist
 535286285355450371,"['spy', 't', 'amc', 'aapl', 'msft', 'aal', 'luv']"
 377675029195784194,"['odt', 'isee', 'mbio']"
 201920789514027019,"['mdgl', 'vktx', 'bbio', 'eigr', 'tril', 'tgtx', 'lgvw', 'spy', 'xbi']"
-368219429336645634,"['baba', 'uber', 'twtr', 'nflx', 'aapl', 'amd', 'tsla', 'ba', 'atvi', 'spce', 'snow', 'work', 'sig', 'pd', 'regn', 'spy', 'bac', 'wen', 'gld', 'cgc']"
-247095523197190154,"['home', 'root', 'solo', 'flws', 'can', 'twtr', 'xom', 'estc']"
+368219429336645634,"['baba', 'uber', 'twtr', 'nflx', 'aapl', 'amd', 'tsla', 'ba', 'atvi', 'spce', 'snow', 'work', 'sig', 'pd', 'regn', 'spy', 'bac', 'wen', 'gld', 'cgc', 'low']"
+247095523197190154,"['home', 'root', 'solo', 'flws', 'can', 'twtr', 'xom', 'estc', 'nflx', 'amzn']"
+314627495443824640,['amzn']
+455928734403395606,"['jpm', 'abbv', 'arkg', 'tef', 'aapl', 'mrna', 'azn', 'nbev', 't', 'RDS.b', 'gold', 'ezpw']"
+293143966721900545,"['zm', 'zm', 'zm', 'zm', 'zm', 'zm']"
