@@ -162,7 +162,7 @@ class StockCommands(commands.Cog):
                     if char == ',' or char == ']':
                         stockList.append(word)
                         word = ""
-                    elif char.isalpha():
+                    elif char.isalpha() or char == '.':
                         word += char
                 self.wl_dict[key] = stockList
             rows += 1
