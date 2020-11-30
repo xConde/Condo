@@ -45,7 +45,7 @@ def searchStrikeIterator(stock, type, expir, price):
     if actualPrice > 1000:
         strikeOptionList = [5, 10, 50]
     elif actualPrice > 100:
-        strikeOptionList = [1, 5, 10, 50]
+        strikeOptionList = [1, 2.5, 5, 10, 50]
     else:
         strikeOptionList = [.5, 1, 5, 10, 50]
 
