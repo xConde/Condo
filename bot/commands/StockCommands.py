@@ -63,7 +63,7 @@ class StockCommands(commands.Cog):
                     wl_list = []
                     stockInArgs = False
                     for stock in args:
-                        if s.validateTicker(stock):
+                        if s.validateTicker(stock) and stock not in wl_list:
                             stockInArgs = True
                             wl_list.append(stock)
                     if stockInArgs:
