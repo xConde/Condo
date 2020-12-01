@@ -30,15 +30,6 @@ class StockCommands(commands.Cog):
                 res += stock.upper() + " is not a valid ticker.\n"
         await ctx.send("```" + res + "```")
 
-    @commands.command(name='conde')
-    async def printWL(self, ctx):
-        res = ""
-        wl = ['ESTC', 'NET', 'SPCE', 'TWTR', 'UBER', 'JPM', 'ABBV', 'TXN', 'XOM']
-        for i in range(len(wl)):
-            pcList, perc = s.pc(wl[i])
-            res += pcList
-        await ctx.send("```" + res + "```")
-
     @commands.command(name='wl')
     async def pullWL(self, ctx, *args):
         author = str(ctx.message.author.id)
@@ -103,9 +94,16 @@ class StockCommands(commands.Cog):
                         await ctx.send("```" + "Watchlist had no unique stock tickers to add" + "```")
         if initiatedUser and self.wl_dict.get(author) is not None:
             res = ""
+            stockList = {}
+            stockPercent = {}
             for stock in self.wl_dict[author]:
                 pcList, perc = s.pc(stock)
-                res += pcList
+                stockList[stock] = pcList
+                stockPercent[stock] = perc
+            highestStock = s.checkMostMentioned(stockPercent, len(self.wl_dict[author]))
+            for val in highestStock:
+                res += stockList[val]
+
             authorName = str(await self.bot.fetch_user(author)).split('#')
             await ctx.send("```" + authorName[0] + "'s Watchlist\n" +
                            '---------------------------------\n' + res + "```")
