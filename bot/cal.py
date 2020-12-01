@@ -38,6 +38,8 @@ def third_friday(year, month, day):
     :param day:
     :return: string (YYYY-MM-DD)
     """
+    if month > 12:
+        month = 1
     # The 15th is the lowest third week in the month
     third = dt.date(year, month, 15)
     # What day of the week is the 15th?

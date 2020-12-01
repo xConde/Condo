@@ -23,14 +23,14 @@ def loadStrikes(ticker):
     putprice = o.roundPrice(price, strikeIterator, 'put')
     while True:  # Now that we have the iterator and rounded price, collect actual strikes
         if i == 0 and not r.find_options_by_expiration_and_strike(
-                    ticker, cal.find_friday(), o.grabStrike(callprice, strikeIterator, 'call', i), 'call'):
+                ticker, cal.find_friday(), o.grabStrike(callprice, strikeIterator, 'call', i), 'call'):
             expir = str(cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()))
 
         if i > 5:  # Find the highest strike applicable
             if not r.find_options_by_expiration_and_strike(
-                    ticker, expir, o.grabStrike(callprice, strikeIterator, 'call', i), 'call')[0]['volume']\
+                    ticker, expir, o.grabStrike(callprice, strikeIterator, 'call', i), 'call')[0]['volume'] \
                     or not r.find_options_by_expiration_and_strike(
-                    ticker, expir, o.grabStrike(callprice, strikeIterator, 'call', i+1), 'call'):
+                ticker, expir, o.grabStrike(callprice, strikeIterator, 'call', i + 1), 'call'):
                 break
         # print(o.grabStrike(callprice, strikeIterator, 'call', i))
         call_strikes.append(o.grabStrike(callprice, strikeIterator, 'call', i))
@@ -47,18 +47,17 @@ def generateValue(ticker, call_strikes, put_strikes, exp):
     strike_value = {}
     call_value = 0
     put_value = 0
-
+    DTE = cal.DTE(exp)
     for strike in call_strikes:
-        # print('generateValue', ticker, strike, 'call', exp)
         value, _ = o.pcOptionMin(ticker, strike, 'call', exp)
-        strike_value[str(strike) + 'C'] = value
+        strike_value['[' + str(DTE) + ' DTE] ' + str(strike) + 'C'] = value
         call_value += value
     for strike in put_strikes:
         value, _ = o.pcOptionMin(ticker, strike, 'put', exp)
-        strike_value[str(strike) + 'P'] = value
+        strike_value['[' + str(DTE) + ' DTE] ' + str(strike) + 'P'] = value
         put_value += value
-    res = dominatingSide(ticker, call_value, put_value, exp)
-    return strike_value, res
+    # res = dominatingSide(ticker, call_value, put_value, exp)
+    return strike_value, [call_value, put_value, exp]
 
 
 def dominatingSide(ticker, call, put, exp=None):
@@ -92,10 +91,28 @@ def mostExpensive(ticker):
     """
     call_strikes, put_strikes = loadStrikes(ticker)
     exp = o.validateExp(ticker, cal.find_friday(), 'call', call_strikes[0])
-    strike_value, res = generateValue(ticker, call_strikes, put_strikes, exp)
+    monthlyExp = str(cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()))
 
+    # GenerateValue = strike_value, [call_value, put_value, exp]
+    strike_value, optionValue = generateValue(ticker, call_strikes, put_strikes, exp)
     highest = s.checkMostMentioned(strike_value, 5)
-    for val in highest:
-        cost = a.formatIntForHumans(strike_value.get(val))
-        res += str(val) + ' = $' + cost + "\n"
+
+    if exp != monthlyExp:
+        exp2 = o.validateExp(ticker, monthlyExp, 'call', call_strikes[0])
+        strike_value2, optionValue2 = generateValue(ticker, call_strikes, put_strikes, exp2)
+        strike_value = {**strike_value, **strike_value2}
+        combinedHighest = s.checkMostMentioned(strike_value, 10)
+        res = dominatingSide(ticker, optionValue2[0]+optionValue[0], optionValue2[1]+optionValue[1], '(' +
+                             str(optionValue[2]) + ', ' + str(optionValue2[2]) + ')')
+    else:
+        res = dominatingSide(ticker, optionValue[0], optionValue[1], optionValue[2])
+
+    if not combinedHighest:
+        for val in highest:
+            cost = a.formatIntForHumans(strike_value.get(val))
+            res += str(val) + ' = $' + cost + "\n"
+    else:
+        for val in combinedHighest:
+            cost = a.formatIntForHumans(strike_value.get(val))
+            res += str(val) + ' = $' + cost + "\n"
     return res
