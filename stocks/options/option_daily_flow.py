@@ -57,7 +57,7 @@ def dominatingSide(ticker, call, put, expDates=None):
     res += call_abv if call > put else put_abv
     res += " > "
     res += call_abv if call < put else put_abv
-    res += ")\n"
+    res += ") Value = Vol * Price\n"
     return res
 
 

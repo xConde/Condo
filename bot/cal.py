@@ -38,8 +38,8 @@ def generate_next_month_exp(exp):
     :param exp:
     :return:
     """
-    newDate = third_friday(int(exp[:4]), int(exp[5:7]), int(exp[8:10]))
-    print(third_friday(2020, 1, 17))
+    newDate = third_friday(int(str(exp)[:4]), int(str(exp)[5:7])+1, int(str(exp)[8:10]))
+    print(newDate)
     return newDate
 
 

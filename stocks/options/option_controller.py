@@ -43,22 +43,20 @@ def searchStrikeIterator(stock, type, expir, price):
     actualPrice = price
     i = 0
     if actualPrice > 1000:
-        strikeOptionList = [5, 10, 50]
+        strikeOptionList = [2.5, 5, 10, 50]
     elif actualPrice > 100:
         strikeOptionList = [1, 2.5, 5, 10, 50]
     else:
-        strikeOptionList = [.5, 1, 5, 10, 50]
+        strikeOptionList = [.5, 1, 2.5, 5, 10, 50]
 
     while True:
         strikeIterator = strikeOptionList[i]
         price = price - (price % strikeIterator)
         checkStrike = strikeIterator * round(price / strikeIterator) + strikeIterator * 0
         checkStrike2 = strikeIterator * round(price / strikeIterator) + strikeIterator * 1
-        checkStrike3 = strikeIterator * round(price / strikeIterator) + strikeIterator * 2
-        print((stock, expir, str(checkStrike), type))
+        print(checkStrike, checkStrike2)
         if r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike), type) \
-                and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike2), type) \
-                and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike3), type)[0]['volume']:
+                and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike2), type):
             return strikeIterator
         elif not found and i + 1 == len(strikeOptionList):
             expir = cal.generate_next_month_exp(expir)
