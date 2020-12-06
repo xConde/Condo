@@ -147,11 +147,10 @@ def pcOptionMin(stock, type, expir, strike_value=None, DTE=None, price=None, str
         while True:
             strike = grabStrike(price, strikeIterator[i], type, j)
             j += 1
-            if len(r.find_options_by_expiration_and_strike(stock, expir[i], strike, type)) and \
-                    int(r.find_options_by_expiration_and_strike(stock, expir[i], strike, type)[0]['volume']) > 25:
-                option = r.find_options_by_expiration_and_strike(stock, expir[i], strike, type)[0]
+            option = r.find_options_by_expiration_and_strike(stock, expir[i], strike, type)[0]
+            volume = int(option['volume'])
+            if volume > 25:
                 curr = round(float(option['adjusted_mark_price']) * 100, 2)
-                volume = int(option['volume'])
                 value = curr * volume
                 totalValue += value
                 strike_value['[' + str(DTE[i]) + ' DTE] ' + str(strike) + type.upper()[:1]] = value

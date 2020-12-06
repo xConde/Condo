@@ -32,36 +32,6 @@ def loadStrikes(ticker, expir):
     return strike_value, [call_value, put_value]
 
 
-# def generateValue(ticker, call_strikes, put_strikes, exp):
-#     """Generates value from strike (premium) * volume. Stores everything in strike_value, returns call_value & put_value
-#
-#     :return: 2 ints call_value, put_value
-#     """
-#     strike_value = {}
-#     call_value = 0
-#     put_value = 0
-#     DTE = cal.DTE(exp)
-#     print('generateValue')
-#     for strike in call_strikes:
-#         if o.pcOptionMin(ticker, strike, 'call', exp):
-#             print(ticker, strike, 'call', exp)
-#             value, _ = o.pcOptionMin(ticker, strike, 'call', exp)
-#             strike_value['[' + str(DTE) + ' DTE] ' + str(strike) + 'C'] = value
-#             call_value += value
-#         else:
-#             print('Something went wrong with: o.pcOptionMin(' + str(ticker), str(strike), 'call', str(exp))
-#     for strike in put_strikes:
-#         if o.pcOptionMin(ticker, strike, 'put', exp):
-#             print(ticker, strike, 'put', exp)
-#             value, _ = o.pcOptionMin(ticker, strike, 'put', exp)
-#             strike_value['[' + str(DTE) + ' DTE] ' + str(strike) + 'P'] = value
-#             put_value += value
-#         else:
-#             print('Something went wrong with: o.pcOptionMin(' + str(ticker), str(strike), 'put', str(exp))
-#
-#     return strike_value, [call_value, put_value, exp]
-
-
 def dominatingSide(ticker, call, put, expDates=None):
     """Determines dominating side (calls vs puts) and returns result
 
@@ -105,10 +75,6 @@ def mostExpensive(ticker):
     strike_value, optionValue1 = loadStrikes(ticker, monthExp)
     end = time.time()
     print(end - start)
-
-    # strike_value1, optionValue1 = generateValue(ticker, call_strikes1, put_strikes1, monthly1)
-    # strike_value2, optionValue2 = generateValue(ticker, call_strikes2, put_strikes2, monthly2)
-    # strike_value2, optionValue3 = generateValue(ticker, call_strikes3, put_strikes3, monthly3)
 
     call_value = optionValue1[0]
     put_value = optionValue1[1]
