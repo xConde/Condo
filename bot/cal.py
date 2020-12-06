@@ -11,13 +11,15 @@ def DTE(expir):
     :return: int (DTE)
     """
     now = dt.datetime.now()
+    current_year = now.year
     current_month = now.month
     today = now.day
+    year = int(expir[:4]) - int(current_year) + 1
     diff = int(str(expir[-2:])) - int(today)
     if int(expir[5:7]) == int(current_month):
         return diff
     else:
-        return diff + 30 * (int(expir[5:7]) - int(current_month))
+        return (diff + 30 * (int(expir[5:7]) * year - int(current_month))) % 365
 
 
 def find_friday():

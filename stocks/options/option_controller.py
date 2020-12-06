@@ -59,7 +59,6 @@ def searchStrikeIterator(stock, type, expir, price):
         if r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike), type) \
                 and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike2), type) \
                 and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike3), type)[0]['volume']:
-            print(r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike), type))
             return strikeIterator
         elif not found and i + 1 == len(strikeOptionList):
             expir = cal.generate_next_month_exp(expir)
@@ -131,7 +130,7 @@ def validateStrike(stock, type, expir, strike):
         return strike
 
 
-def pcOptionMin(stock, strike, type, expir):
+def pcOptionMin(stock, type, expir, strike_value=None, DTE=None, price=None, strikeIterator=None):
     """Given parameters needed to collect option data, provide the current volume and price for option. ***Used
     for anomaly_option_controller (parameters are verified).
 
@@ -141,12 +140,25 @@ def pcOptionMin(stock, strike, type, expir):
     :param expir:
     :return:
     """
-    if len(r.find_options_by_expiration_and_strike(stock, expir, strike, type)):
-        option = r.find_options_by_expiration_and_strike(stock, expir, strike, type)[0]
-        curr = round(float(option['adjusted_mark_price']) * 100, 2)
-        gamma = round(float(option['gamma']) * 100, 2)
-        volume = int(option['volume'])
-        return curr * volume, [curr, volume, gamma]
+    totalValue = 0
+
+    for i in range(len(expir)):
+        j = 0
+        while True:
+            strike = grabStrike(price, strikeIterator[i], type, j)
+            j += 1
+            if len(r.find_options_by_expiration_and_strike(stock, expir[i], strike, type)) and \
+                    int(r.find_options_by_expiration_and_strike(stock, expir[i], strike, type)[0]['volume']) > 25:
+                option = r.find_options_by_expiration_and_strike(stock, expir[i], strike, type)[0]
+                curr = round(float(option['adjusted_mark_price']) * 100, 2)
+                volume = int(option['volume'])
+                value = curr * volume
+                totalValue += value
+                strike_value['[' + str(DTE[i]) + ' DTE] ' + str(strike) + type.upper()[:1]] = value
+                print('[' + str(DTE[i]) + ' DTE] ' + str(strike) + type.upper()[:1])
+            else:
+                break
+    return totalValue, strike_value
 
 
 def pcOption(stock, strike, type, expir):
