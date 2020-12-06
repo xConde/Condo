@@ -179,14 +179,14 @@ Displays closest valued options for a ticker with which side is dominating and t
 ***********
     Ex: .read [stock]
 
-    .read vxx
-    Valued VXX 2020-09-04 options
-    Calls are dominating (3.63M > 965K)
-    27C = $1.64M
-    26C = $866K
-    26P = $573K
-    28C = $430K
-    30C = $398K
+    .read spy
+    Valued SPY (2020-12-18, 2021-01-15, 2021-02-19) options
+    Puts are dominating (109M > 42.4M)
+    [75 DTE] 330P = $13.8M
+    [13 DTE] 360P = $9.06M
+    [75 DTE] 365P = $7.72M
+    [75 DTE] 345P = $6.99M
+    [75 DTE] 360P = $6.24M
 <a name="top/bottom-5-s&p-performing-stocks"></a>
 ##### Top/Bottom 5 S&P performing stocks - 
 Displays out top 5 S&P performers/sinkers for the day. Sorts by market performance, not extended hours.
