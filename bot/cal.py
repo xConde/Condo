@@ -43,6 +43,13 @@ def generate_next_month_exp(exp):
     return newDate
 
 
+def generate_3_months():
+    monthly1 = str(third_friday(getYear(), getMonth(), getMonthlyDay()))
+    monthly2 = str(third_friday(getYear(), getMonth() + 1, getMonthlyDay()))
+    monthly3 = str(third_friday(getYear(), getMonth() + 2, getMonthlyDay()))
+    return [monthly1, monthly2, monthly3]
+
+
 def third_friday(year, month, day):
     """Return datetime.date for monthly option expiration given year and month.
 

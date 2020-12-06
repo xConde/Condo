@@ -158,7 +158,7 @@ def pcOptionMin(stock, type, expir, strike_value=None, DTE=None, price=None, str
                 print('[' + str(DTE[i]) + ' DTE] ' + str(strike) + type.upper()[:1])
             else:
                 break
-    return totalValue, strike_value
+    return totalValue
 
 
 def pcOption(stock, strike, type, expir):

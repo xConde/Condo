@@ -6,7 +6,7 @@ from bot import cal as cal
 import robin_stocks as r  # 3rd party packages
 
 
-def loadStrikes(ticker, expir, expir2=None, expir3=None):
+def loadStrikes(ticker, expir):
     """Loads strikes into call_strikes & put_strikes
 
     :return: 2 lists: call_strikes & put_strikes
@@ -14,23 +14,19 @@ def loadStrikes(ticker, expir, expir2=None, expir3=None):
     strike_value = {}
     call_value = 0
     put_value = 0
-    DTE1 = cal.DTE(expir)
-    DTE2 = cal.DTE(expir2)
-    DTE3 = cal.DTE(expir3)
+    DTE = []
+    callStrikeIterator = []
     price = s.tickerPrice(ticker)
-    callStrikeIterator1 = o.searchStrikeIterator(ticker, 'call', expir, price)
-    callStrikeIterator2 = o.searchStrikeIterator(ticker, 'call', expir2, price)
-    callStrikeIterator3 = o.searchStrikeIterator(ticker, 'call', expir3, price)
+    for exp in expir:
+        DTE.append(cal.DTE(exp))
+        callStrikeIterator.append(o.searchStrikeIterator(ticker, 'call', exp, price))
 
-    callprice = o.roundPrice(price, callStrikeIterator1, 'call')
-    putprice = o.roundPrice(price, callStrikeIterator1, 'put')
-
-    cvalue, strike_value = o.pcOptionMin(ticker, 'call', [expir, expir2, expir3],
-                                         strike_value, [DTE1, DTE2, DTE3], callprice, [callStrikeIterator1, callStrikeIterator2, callStrikeIterator3])
+    cvalue = o.pcOptionMin(ticker, 'call', expir,
+                           strike_value, DTE, o.roundPrice(price, callStrikeIterator[0], 'call'), callStrikeIterator)
     call_value += cvalue
 
-    pvalue, strike_value = o.pcOptionMin(ticker, 'put', [expir, expir2, expir3],
-                                         strike_value, [DTE1, DTE2, DTE3], putprice, [callStrikeIterator1, callStrikeIterator2, callStrikeIterator3])
+    pvalue = o.pcOptionMin(ticker, 'put', expir,
+                           strike_value, DTE, o.roundPrice(price, callStrikeIterator[0], 'put'), callStrikeIterator)
     put_value += pvalue
 
     return strike_value, [call_value, put_value]
@@ -101,14 +97,12 @@ def mostExpensive(ticker):
     :return:
     """
     # friday = cal.find_friday()
-    monthly1 = str(cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()))
-    monthly2 = str(cal.third_friday(cal.getYear(), cal.getMonth() + 1, cal.getMonthlyDay()))
-    monthly3 = str(cal.third_friday(cal.getYear(), cal.getMonth() + 2, cal.getMonthlyDay()))
+    monthExp = cal.generate_3_months()
 
     import time
 
     start = time.time()
-    strike_value, optionValue1 = loadStrikes(ticker, monthly1, monthly2, monthly3)
+    strike_value, optionValue1 = loadStrikes(ticker, monthExp)
     end = time.time()
     print(end - start)
 
@@ -119,7 +113,7 @@ def mostExpensive(ticker):
     call_value = optionValue1[0]
     put_value = optionValue1[1]
 
-    res = dominatingSide(ticker, call_value, put_value, [monthly1, monthly2, monthly3])
+    res = dominatingSide(ticker, call_value, put_value, monthExp)
 
     highest = s.checkMostMentioned(strike_value, 5)
     for val in highest:
