@@ -20,6 +20,7 @@ def loadStrikes(ticker, expir):
     for exp in expir:
         DTE.append(cal.DTE(exp))
         callStrikeIterator.append(o.searchStrikeIterator(ticker, 'call', exp, price))
+        print(o.searchStrikeIterator(ticker, 'call', exp, price))
 
     cvalue = o.pcOptionMin(ticker, 'call', expir,
                            strike_value, DTE, o.roundPrice(price, callStrikeIterator[0], 'call'), callStrikeIterator)
