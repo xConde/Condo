@@ -39,7 +39,7 @@ def searchStrikeIterator(stock, type, expir, price):
     :param price:
     :return:
     """
-    found = False
+    tryNewDate = False
     actualPrice = price
     i = 0
     if actualPrice > 1000:
@@ -58,11 +58,13 @@ def searchStrikeIterator(stock, type, expir, price):
         if r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike), type) \
                 and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike2), type):
             return strikeIterator
-        elif not found and i + 1 == len(strikeOptionList):
+        elif not tryNewDate and i + 1 == len(strikeOptionList):
             expir = cal.generate_next_month_exp(expir)
             i = -1  # set i to -1 + 1 (0)
-            print("Generating a new date")
             price = actualPrice
+            tryNewDate = True
+        elif tryNewDate:
+            return 1
         i += 1
 
 
@@ -95,18 +97,20 @@ def validateType(type):
         return 'call'
 
 
-def validateExp(stock, expir, type, strike=None):
+def validateExp(stock, expir, type):
     """Given an expiration date return an expiration that is provided if correct or a default date.
 
     :param expir:
     :return:
     """
-    generatedExp = cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()).strftime("%Y-%m-%d")
-    if expir and re.match(r'^\d{4}-\d{2}-\d{2}$', expir) and r.find_options_by_expiration_and_strike(stock, expir,
-                                                                                                     strike, type):
-        return expir
+    if expir and re.match(r'^\d{4}-\d{2}-\d{2}$', expir):
+        while True:
+            if r.find_options_by_expiration(stock, expir, type):
+                return expir
+            else:
+                expir = cal.generate_next_month_exp(expir)
     else:
-        return generatedExp
+        return cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()).strftime("%Y-%m-%d")
 
 
 def validateStrike(stock, type, expir, strike):

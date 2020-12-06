@@ -68,7 +68,7 @@ def mostExpensive(ticker):
     :return:
     """
     # friday = cal.find_friday()
-    monthExp = cal.generate_3_months()
+    monthExp = cal.generate_3_months(ticker)
 
     import time
 

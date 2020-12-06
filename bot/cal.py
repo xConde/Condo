@@ -3,6 +3,8 @@ import holidays
 from datetime import datetime
 from pytz import timezone
 
+from stocks.options.option_controller import validateExp
+
 
 def DTE(expir):
     """Finds days until expiration
@@ -38,16 +40,20 @@ def generate_next_month_exp(exp):
     :param exp:
     :return:
     """
-    newDate = third_friday(int(str(exp)[:4]), int(str(exp)[5:7])+1, int(str(exp)[8:10]))
-    print(newDate)
-    return newDate
+    newDate = third_friday(int(str(exp)[:4]), int(str(exp)[5:7]), int(str(exp)[8:10]) + 1)
+    return str(newDate)
 
 
-def generate_3_months():
-    monthly1 = str(third_friday(getYear(), getMonth(), getMonthlyDay()))
-    monthly2 = str(third_friday(getYear(), getMonth() + 1, getMonthlyDay()))
-    monthly3 = str(third_friday(getYear(), getMonth() + 2, getMonthlyDay()))
-    return [monthly1, monthly2, monthly3]
+def parse_next_active_month_exp(ticker, oldExp):
+    return validateExp(ticker, generate_next_month_exp(oldExp), 'call')
+
+
+def generate_3_months(ticker):
+    monthly1 = validateExp(ticker, str(third_friday(getYear(), getMonth(), getMonthlyDay())), 'call')
+    months = [monthly1]
+    for i in range(1, 3):
+        months.append(parse_next_active_month_exp(ticker, months[i-1]))
+    return months
 
 
 def third_friday(year, month, day):
