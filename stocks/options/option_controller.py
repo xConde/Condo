@@ -55,15 +55,16 @@ def searchStrikeIterator(stock, type, expir, price):
         checkStrike = strikeIterator * round(price / strikeIterator) + strikeIterator * 0
         checkStrike2 = strikeIterator * round(price / strikeIterator) + strikeIterator * 1
         checkStrike3 = strikeIterator * round(price / strikeIterator) + strikeIterator * 2
+        print((stock, expir, str(checkStrike), type))
         if r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike), type) \
                 and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike2), type) \
                 and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike3), type)[0]['volume']:
+            print(r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike), type))
             return strikeIterator
         elif not found and i + 1 == len(strikeOptionList):
-            thirdFriday = str(cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()))
+            expir = cal.generate_next_month_exp(expir)
             i = -1  # set i to -1 + 1 (0)
-            print("No strikes found for " + expir + " trying " + thirdFriday)
-            expir = thirdFriday
+            print("Generating a new date")
             price = actualPrice
         i += 1
 
@@ -140,11 +141,12 @@ def pcOptionMin(stock, strike, type, expir):
     :param expir:
     :return:
     """
-    option = r.find_options_by_expiration_and_strike(stock, expir, strike, type)[0]
-    curr = round(float(option['adjusted_mark_price']) * 100, 2)
-    gamma = round(float(option['gamma']) * 100, 2)
-    volume = int(option['volume'])
-    return curr * volume, [curr, volume, gamma]
+    if len(r.find_options_by_expiration_and_strike(stock, expir, strike, type)):
+        option = r.find_options_by_expiration_and_strike(stock, expir, strike, type)[0]
+        curr = round(float(option['adjusted_mark_price']) * 100, 2)
+        gamma = round(float(option['gamma']) * 100, 2)
+        volume = int(option['volume'])
+        return curr * volume, [curr, volume, gamma]
 
 
 def pcOption(stock, strike, type, expir):

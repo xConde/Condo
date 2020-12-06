@@ -13,7 +13,7 @@ def DTE(expir):
     now = dt.datetime.now()
     current_month = now.month
     today = now.day
-    diff = int(expir[-2:]) - int(today)
+    diff = int(str(expir[-2:])) - int(today)
     if int(expir[5:7]) == int(current_month):
         return diff
     else:
@@ -30,6 +30,17 @@ def find_friday():
     return friday
 
 
+def generate_next_month_exp(exp):
+    """Generates a new exp for next monthly
+    '2020-01-17'
+    :param exp:
+    :return:
+    """
+    newDate = third_friday(int(exp[:4]), int(exp[5:7]), int(exp[8:10]))
+    print(third_friday(2020, 1, 17))
+    return newDate
+
+
 def third_friday(year, month, day):
     """Return datetime.date for monthly option expiration given year and month.
 
@@ -39,7 +50,8 @@ def third_friday(year, month, day):
     :return: string (YYYY-MM-DD)
     """
     if month > 12:
-        month = 1
+        month -= 12
+        year += 1
     # The 15th is the lowest third week in the month
     third = dt.date(year, month, 15)
     # What day of the week is the 15th?
@@ -52,7 +64,7 @@ def third_friday(year, month, day):
     if day > third.day:
         month += 1
         if month > 12:
-            month = 1
+            month -= 12
             year += 1
         third = dt.date(year, month, 15)
         w = third.weekday()
