@@ -1,9 +1,10 @@
 import re  # Standard library
 import math
+from multiprocessing import Pool
 
 import robin_stocks as r  # 3rd party packages
 
-from stocks import stocks as s
+from stocks import stock_controller as s
 from bot import cal as cal
 
 optionFormat = 'Ex: [stock], [strike]\n' \
@@ -14,7 +15,7 @@ optionFormat = 'Ex: [stock], [strike]\n' \
 def round10(price):
     return int(math.ceil(price/10.0)) * 10
 
-#functools.lru_cache(maxsize=100, typed=False)
+
 def roundPrice(price, strikeIterator, type):
     """Round up/down based on 'type' of option desired to allow first option shown to be ITM for
     that type. It is possible when initially rounding up [puts] for a strike price to be closer to a rounded down 5, so
@@ -44,9 +45,7 @@ def searchStrikeIterator(stock, type, expir, price):
     :param price:
     :return:
     """
-    tryNewDate = False
     actualPrice = price
-    i = 0
     if actualPrice > 1000:
         strikeOptionList = [2.5, 5, 10, 50]
     elif actualPrice > 100:
@@ -54,7 +53,7 @@ def searchStrikeIterator(stock, type, expir, price):
     else:
         strikeOptionList = [.5, 1, 2.5, 5, 10, 50]
 
-    while True:
+    for i in range(len(strikeOptionList)):
         strikeIterator = strikeOptionList[i]
         price = price - (price % strikeIterator)
         checkStrike = strikeIterator * round(price / strikeIterator) + strikeIterator * 0
@@ -64,14 +63,7 @@ def searchStrikeIterator(stock, type, expir, price):
                 and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike2), type) \
                 and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike3), type):
             return strikeIterator
-        elif not tryNewDate and i + 1 == len(strikeOptionList):
-            expir = cal.generate_next_month_exp(expir)
-            i = -1  # set i to -1 + 1 (0)
-            price = actualPrice
-            tryNewDate = True
-        elif tryNewDate:
-            return 1
-        i += 1
+    return 5
 
 
 def grabStrike(price, strikeIterator, type, i):
@@ -106,7 +98,10 @@ def validateType(type):
 def validateExp(stock, expir, type, strike=None):
     """Given an expiration date return an expiration that is provided if correct or a default date.
 
+    :param stock:
     :param expir:
+    :param type:
+    :param strike:
     :return:
     """
     if expir and re.match(r'^\d{4}-\d{2}-\d{2}$', expir):

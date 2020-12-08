@@ -4,7 +4,7 @@ from discord.ext import commands  # 3rd party packages
 from dotenv import load_dotenv
 import robin_stocks as r
 
-from stocks import stocks as s
+from stocks import stock_controller as s
 
 bot = commands.Bot(command_prefix='.')
 load_dotenv()

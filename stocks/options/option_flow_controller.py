@@ -1,6 +1,6 @@
 from stocks.options import anomaly_option_controller as a
 from stocks.options import option_controller as o
-from stocks import stocks as s
+from stocks import stock_controller as s
 from bot import cal as cal
 
 import robin_stocks as r  # 3rd party packages
@@ -64,8 +64,12 @@ def mostExpensive(ticker):
     :param ticker:
     :return:
     """
-    monthExp = cal.generate_3_months(ticker)
+    import time
+    start = time.time()
+    monthExp = cal.generate_multiple_months(ticker, 3)
     strike_value, optionValue1 = loadStrikes(ticker, monthExp)
+    end = time.time()
+    print(end - start)
 
     call_value = optionValue1[0]
     put_value = optionValue1[1]

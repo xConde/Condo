@@ -1,6 +1,6 @@
 from discord.ext import commands  # 3rd party package
-from stocks import stocks as s
-from stocks.options import option_daily_flow as flow, option_controller as o
+from stocks import stock_controller as s
+from stocks.options import option_flow_controller as flow, option_controller as o
 
 
 class OptionCommands(commands.Cog):

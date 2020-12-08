@@ -1,7 +1,7 @@
 import csv
 
 from stocks.options import option_controller as o
-from stocks import stocks as s
+from stocks import stock_controller as s
 from bot import cal as cal
 
 strike_value_SPY = {}  # Maintains SPY strike value (Strike : Cost [volume * premium])

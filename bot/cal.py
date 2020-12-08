@@ -2,7 +2,7 @@ import datetime as dt
 import holidays
 from datetime import datetime
 from pytz import timezone
-from stocks import stocks as s
+from stocks import stock_controller as s
 from stocks.options.option_controller import validateExp, round10
 
 
@@ -13,15 +13,12 @@ def DTE(expir):
     :return: int (DTE)
     """
     now = dt.datetime.now()
-    current_year = now.year
-    current_month = now.month
-    today = now.day
-    year = int(expir[:4]) - int(current_year) + 1
-    diff = int(str(expir[-2:])) - int(today)
-    if int(expir[5:7]) == int(current_month):
+    year = int(expir[:4]) - int(now.year) + 1
+    diff = int(str(expir[-2:])) - int(now.day)
+    if int(expir[5:7]) == int(now.month):
         return diff
     else:
-        return (diff + 30 * (int(expir[5:7]) * year - int(current_month))) % 365
+        return (diff + 30 * (int(expir[5:7]) * year - int(now.month))) % 365
 
 
 def find_friday():
@@ -44,11 +41,11 @@ def generate_next_month_exp(exp):
     return str(newDate)
 
 
-def generate_3_months(ticker):
+def generate_multiple_months(ticker, quantity):
     strike = round10(s.tickerPrice(ticker))
     monthly1 = validateExp(ticker, str(third_friday(getYear(), getMonth(), getMonthlyDay())), 'call', strike)
     months = [monthly1]
-    for i in range(1, 3):
+    for i in range(1, quantity):
         months.append(validateExp(ticker, generate_next_month_exp(months[i-1]), 'call', strike))
     return months
 
@@ -62,8 +59,9 @@ def third_friday(year, month, day):
     :return: string (YYYY-MM-DD)
     """
     if month > 12:
-        month -= 12
-        year += 1
+        diff = int(month / 12)
+        month = month % 12
+        year += diff
     # The 15th is the lowest third week in the month
     third = dt.date(year, month, 15)
     # What day of the week is the 15th?
@@ -76,8 +74,9 @@ def third_friday(year, month, day):
     if day > third.day:
         month += 1
         if month > 12:
-            month -= 12
-            year += 1
+            diff = int(month / 12)
+            month = month % 12
+            year += diff
         third = dt.date(year, month, 15)
         w = third.weekday()
         if w != 4:

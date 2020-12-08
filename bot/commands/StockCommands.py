@@ -1,7 +1,7 @@
 from discord.ext import commands  # 3rd party package
 
 from bot import cal
-from stocks import stocks as s
+from stocks import stock_controller as s
 import csv  # 3rd Party Packages
 
 wl_csv = "doc/watchlist.csv"
