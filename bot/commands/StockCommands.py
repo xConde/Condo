@@ -37,6 +37,7 @@ class StockCommands(commands.Cog):
         sudoUser = False
         if not self.wl_dict:
             self.loadWatchlist()
+        responseRet = ""
 
         if args and args[0][:2] == '<@':
             if args[0][:3] == '<@!':
@@ -45,8 +46,7 @@ class StockCommands(commands.Cog):
                 author = args[0][2:-1]
             sudoUser = True
             if len(args) > 1:
-                await ctx.send(
-                    "```" + "Cannot modify other watchlists" + "```")
+                responseRet += "Cannot modify other watchlists\n"
 
         if self.wl_dict.get(author) is None and not sudoUser:
             if args:
@@ -60,15 +60,15 @@ class StockCommands(commands.Cog):
                     if stockInArgs:
                         self.wl_dict[author] = wl_list
                         writeWatchlist(self.wl_dict)
-                        await ctx.send(
-                            "```" + "Watchlist instance successfully created for " + str(ctx.message.author) + "```")
+                        responseRet += "Watchlist instance successfully created\n"
             else:
                 initiatedUser = False
                 await ctx.send("```" + "To create a personal watchlist use the command \".wl\" followed by stock "
                                        "tickers.\n"
                                        "Example: .wl estc net\n"
                                        "To view other user's watchlists use the command \".wl @user\"\n"
-                                       "To remove watchlist use the command \".wl refresh\"" + "```")
+                                       "To remove a stock use the command \".wl rm\"\n"
+                                       "To remove watchlist use the command \".wl refresh\"\n" + "```")
         elif not sudoUser:
             if args:
                 if (args[0]).lower() == 'refresh' or (args[0]).lower() == 'reset':
@@ -80,18 +80,22 @@ class StockCommands(commands.Cog):
                     updatedList = False
                     for stock in self.wl_dict[author]:
                         old_wl_list.append(stock)
-                    for stock in args:
-                        if s.validateTicker(stock):
-                            if stock not in old_wl_list:
+                    if args[0].lower() == 'rm' or args[0].lower() == 'remove':
+                        for stock in args:
+                            if s.validateTicker(stock) and stock in old_wl_list:
+                                updatedList = True
+                                old_wl_list.remove(stock)
+                    else:
+                        for stock in args:
+                            if s.validateTicker(stock) and stock not in old_wl_list:
                                 updatedList = True
                                 old_wl_list.append(stock)
                     self.wl_dict[author] = old_wl_list
                     if updatedList:
                         writeWatchlist(self.wl_dict)
-                        await ctx.send(
-                            "```" + "Watchlist instance successfully updated for " + str(ctx.message.author) + "```")
+                        responseRet += "Watchlist instance successfully updated\n"
                     else:
-                        await ctx.send("```" + "Watchlist had no unique stock tickers to add" + "```")
+                        responseRet += "Watchlist had no unique stock tickers to add\n"
         if initiatedUser and self.wl_dict.get(author) is not None:
             res = ""
             stockList = {}
@@ -105,7 +109,7 @@ class StockCommands(commands.Cog):
                 res += stockList[val]
 
             authorName = str(await self.bot.fetch_user(author)).split('#')
-            await ctx.send("```" + authorName[0] + "'s Watchlist\n" +
+            await ctx.send("```" + responseRet + '------\n' + authorName[0] + "'s Watchlist\n" +
                            '---------------------------------\n' + res + "```")
 
     @commands.command(name='spyup')
