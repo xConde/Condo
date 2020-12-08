@@ -72,7 +72,10 @@ class OptionCommands(commands.Cog):
 
     @commands.command(name='read')
     async def readOptionChain(self, ctx, stock=None):
-        """Takes a stock ticker as the parameter to parse multiple option chains on multiple generated expirations
+        """Takes a stock ticker as the parameter to parse multiple option chains for multiple dynamically generated
+         expirations (currently set to next 3 monthly expirations) and prints out information regarding a stock option's
+         volume * current price. The printout takes the 5 best results and showcases it, as well as the entire OCs
+         tallied up to show a preferred side.
 
         :param ctx:
         :param stock:
