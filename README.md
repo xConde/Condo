@@ -236,10 +236,11 @@ Maintains a record of unique watchlists to each user per server to be initialize
 ***********
     Ex: .wl
     -- No watchlist
-    
+
     To create a personal watchlist use the command ".wl" followed by stock tickers.
     Example: .wl estc net
     To view other user's watchlists use the command ".wl @user"
+    To remove a stock use the command ".wl rm"
     To remove watchlist use the command ".wl refresh"
 
     Ex: .wl
