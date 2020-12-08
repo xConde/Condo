@@ -12,22 +12,20 @@ def loadStrikes(ticker, expir):
     :return: 2 lists: call_strikes & put_strikes
     """
     strike_value = {}
-    call_value = 0
-    put_value = 0
-    DTE = []
+    days_till_expiration = []
     callStrikeIterator = []
     price = s.tickerPrice(ticker)
     for exp in expir:
-        DTE.append(cal.DTE(exp))
+        days_till_expiration.append(cal.DTE(exp))
         callStrikeIterator.append(o.searchStrikeIterator(ticker, 'call', exp, price))
 
-    cvalue = o.pcOptionMin(ticker, 'call', expir,
-                           strike_value, DTE, o.roundPrice(price, callStrikeIterator[0], 'call'), callStrikeIterator)
-    call_value += cvalue
+    call_value = o.pcOptionMin(ticker, 'call', expir,
+                               strike_value, days_till_expiration, o.roundPrice(price, callStrikeIterator[0], 'call'),
+                               callStrikeIterator)
 
-    pvalue = o.pcOptionMin(ticker, 'put', expir,
-                           strike_value, DTE, o.roundPrice(price, callStrikeIterator[0], 'put'), callStrikeIterator)
-    put_value += pvalue
+    put_value = o.pcOptionMin(ticker, 'put', expir,
+                              strike_value, days_till_expiration, o.roundPrice(price, callStrikeIterator[0], 'put'),
+                              callStrikeIterator)
 
     return strike_value, [call_value, put_value]
 

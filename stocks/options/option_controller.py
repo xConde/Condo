@@ -14,7 +14,7 @@ optionFormat = 'Ex: [stock], [strike]\n' \
 def round10(price):
     return int(math.ceil(price/10.0)) * 10
 
-
+#functools.lru_cache(maxsize=100, typed=False)
 def roundPrice(price, strikeIterator, type):
     """Round up/down based on 'type' of option desired to allow first option shown to be ITM for
     that type. It is possible when initially rounding up [puts] for a strike price to be closer to a rounded down 5, so
