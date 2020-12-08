@@ -88,18 +88,16 @@ class OptionCommands(commands.Cog):
             price = s.tickerPrice(stock)
             if price >= 10:
                 junk = await ctx.send("```" + "Loading the option chain for " + str(stock).upper() + "..." + "```")
-                # try:
-                res = flow.mostExpensive(stock)
-                if res:
-                    await ctx.send("```" + res + "```")
-                # except ValueError as err:
-                #     print(err)
-                # except:
-                #     await ctx.send("```" + "Failed to load the option chain for " + str(stock).upper() + "\n"
-                #                             "This may be due to low activity in the option chain, Robinhood API, "
-                #                             "or other abnormal activity." + "```")
-                # finally:
-                await junk.delete()
+                try:
+                    res = flow.mostExpensive(stock)
+                    if res:
+                        await ctx.send("```" + res + "```")
+                except:
+                    await ctx.send("```" + "Failed to load the option chain for " + str(stock).upper() + "\n"
+                                            "This may be due to low activity in the option chain, Robinhood API, "
+                                            "or other abnormal activity." + "```")
+                finally:
+                    await junk.delete()
             else:
                 await ctx.send("```" + stock.upper() + " is not a valid ticker for options.\n" + "```")
         elif validParam:

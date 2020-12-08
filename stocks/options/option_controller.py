@@ -1,4 +1,5 @@
 import re  # Standard library
+import math
 
 import robin_stocks as r  # 3rd party packages
 
@@ -8,6 +9,10 @@ from bot import cal as cal
 optionFormat = 'Ex: [stock], [strike]\n' \
                'Ex: [stock], [strike], [type]\n' \
                'Ex: [stock], [strike], [type], [expiration]\n'
+
+
+def round10(price):
+    return int(math.ceil(price/10.0)) * 10
 
 
 def roundPrice(price, strikeIterator, type):
@@ -54,9 +59,10 @@ def searchStrikeIterator(stock, type, expir, price):
         price = price - (price % strikeIterator)
         checkStrike = strikeIterator * round(price / strikeIterator) + strikeIterator * 0
         checkStrike2 = strikeIterator * round(price / strikeIterator) + strikeIterator * 1
-        print(checkStrike, checkStrike2)
+        checkStrike3 = strikeIterator * round(price / strikeIterator) + strikeIterator * 2
         if r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike), type) \
-                and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike2), type):
+                and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike2), type) \
+                and r.find_options_by_expiration_and_strike(stock, expir, str(checkStrike3), type):
             return strikeIterator
         elif not tryNewDate and i + 1 == len(strikeOptionList):
             expir = cal.generate_next_month_exp(expir)
@@ -97,15 +103,19 @@ def validateType(type):
         return 'call'
 
 
-def validateExp(stock, expir, type):
+def validateExp(stock, expir, type, strike=None):
     """Given an expiration date return an expiration that is provided if correct or a default date.
 
     :param expir:
     :return:
     """
     if expir and re.match(r'^\d{4}-\d{2}-\d{2}$', expir):
-        while True:
-            if r.find_options_by_expiration(stock, expir, type):
+
+        while True and strike:
+            print("Trying", stock, expir, strike, type)
+            options = r.find_options_by_expiration_and_strike(stock, expir, strike, type)
+            if options and options[0]:
+                print("EZ")
                 return expir
             else:
                 expir = cal.generate_next_month_exp(expir)
@@ -150,7 +160,7 @@ def pcOptionMin(stock, type, expir, strike_value=None, DTE=None, price=None, str
             strike = grabStrike(price, strikeIterator[i], type, j)
             j += 1
             option = r.find_options_by_expiration_and_strike(stock, expir[i], strike, type)
-            if not option:
+            if not option or not option[0]['volume']:
                 break
             volume = int(option[0]['volume'])
             if volume > 25:

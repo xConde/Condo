@@ -20,7 +20,6 @@ def loadStrikes(ticker, expir):
     for exp in expir:
         DTE.append(cal.DTE(exp))
         callStrikeIterator.append(o.searchStrikeIterator(ticker, 'call', exp, price))
-        print(o.searchStrikeIterator(ticker, 'call', exp, price))
 
     cvalue = o.pcOptionMin(ticker, 'call', expir,
                            strike_value, DTE, o.roundPrice(price, callStrikeIterator[0], 'call'), callStrikeIterator)
@@ -67,15 +66,8 @@ def mostExpensive(ticker):
     :param ticker:
     :return:
     """
-    # friday = cal.find_friday()
     monthExp = cal.generate_3_months(ticker)
-
-    import time
-
-    start = time.time()
     strike_value, optionValue1 = loadStrikes(ticker, monthExp)
-    end = time.time()
-    print(end - start)
 
     call_value = optionValue1[0]
     put_value = optionValue1[1]

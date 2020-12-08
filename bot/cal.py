@@ -2,8 +2,8 @@ import datetime as dt
 import holidays
 from datetime import datetime
 from pytz import timezone
-
-from stocks.options.option_controller import validateExp
+from stocks import stocks as s
+from stocks.options.option_controller import validateExp, round10
 
 
 def DTE(expir):
@@ -44,15 +44,12 @@ def generate_next_month_exp(exp):
     return str(newDate)
 
 
-def parse_next_active_month_exp(ticker, oldExp):
-    return validateExp(ticker, generate_next_month_exp(oldExp), 'call')
-
-
 def generate_3_months(ticker):
-    monthly1 = validateExp(ticker, str(third_friday(getYear(), getMonth(), getMonthlyDay())), 'call')
+    strike = round10(s.tickerPrice(ticker))
+    monthly1 = validateExp(ticker, str(third_friday(getYear(), getMonth(), getMonthlyDay())), 'call', strike)
     months = [monthly1]
     for i in range(1, 3):
-        months.append(parse_next_active_month_exp(ticker, months[i-1]))
+        months.append(validateExp(ticker, generate_next_month_exp(months[i-1]), 'call', strike))
     return months
 
 
