@@ -2,8 +2,7 @@ from stocks.options import anomaly_option_controller as a
 from stocks.options import option_controller as o
 from stocks import stock_controller as s
 from bot import cal as cal
-
-import robin_stocks as r  # 3rd party packages
+from functools import lru_cache
 
 
 def loadStrikes(ticker, expir):
@@ -58,6 +57,7 @@ def dominatingSide(ticker, call, put, expDates=None):
     return res
 
 
+@lru_cache(maxsize=50)
 def mostExpensive(ticker):
     """Outputs dominating side and highest value strikes (+type)
 

@@ -1,6 +1,7 @@
 import re  # Standard library
 import math
 from multiprocessing import Pool
+from functools import lru_cache
 
 import robin_stocks as r  # 3rd party packages
 
@@ -12,10 +13,12 @@ optionFormat = 'Ex: [stock], [strike]\n' \
                'Ex: [stock], [strike], [type], [expiration]\n'
 
 
+@lru_cache(maxsize=200)
 def round10(price):
     return int(math.ceil(price/10.0)) * 10
 
 
+@lru_cache(maxsize=200)
 def roundPrice(price, strikeIterator, type):
     """Round up/down based on 'type' of option desired to allow first option shown to be ITM for
     that type. It is possible when initially rounding up [puts] for a strike price to be closer to a rounded down 5, so
@@ -35,6 +38,7 @@ def roundPrice(price, strikeIterator, type):
             return strikeIterator * round(price / strikeIterator) + strikeIterator * 0  # round up
 
 
+@lru_cache(maxsize=200)
 def searchStrikeIterator(stock, type, expir, price):
     """Iterate through a list of possible strike option iterators from greatest to least (to prevent a possible match for
     rounding, but not actually exist for 1-3 more option strike prices). Return strike iterator.
@@ -95,6 +99,7 @@ def validateType(type):
         return 'call'
 
 
+@lru_cache(maxsize=100)
 def validateExp(stock, expir, type, strike=None):
     """Given an expiration date return an expiration that is provided if correct or a default date.
 
@@ -118,6 +123,7 @@ def validateExp(stock, expir, type, strike=None):
         return cal.third_friday(cal.getYear(), cal.getMonth(), cal.getMonthlyDay()).strftime("%Y-%m-%d")
 
 
+@lru_cache(maxsize=100)
 def validateStrike(stock, type, expir, strike):
     """Given parameters that should all be correct validate strike price. If strike price is not correct, return a
     correct one.
@@ -169,6 +175,7 @@ def pcOptionMin(stock, type, expir, strike_value=None, DTE=None, price=None, str
     return totalValue
 
 
+@lru_cache(maxsize=100)
 def pcOption(stock, strike, type, expir):
     """Given parameters needed to collect option data, validate/correct type, exp, and strike, and return option data
     relating to all of these fields. Also returns a msg if something major was defaulted when the user attempted to

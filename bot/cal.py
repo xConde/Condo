@@ -1,4 +1,6 @@
 import datetime as dt
+from functools import lru_cache
+
 import holidays
 from datetime import datetime
 from pytz import timezone
@@ -6,6 +8,7 @@ from stocks import stock_controller as s
 from stocks.options.option_controller import validateExp, round10
 
 
+@lru_cache(maxsize=200)
 def DTE(expir):
     """Finds days until expiration
 
@@ -21,6 +24,7 @@ def DTE(expir):
         return (diff + 30 * (int(expir[5:7]) * year - int(now.month))) % 365
 
 
+@lru_cache(maxsize=200)
 def find_friday():
     """Finds next Friday.
 
@@ -31,6 +35,7 @@ def find_friday():
     return friday
 
 
+@lru_cache(maxsize=200)
 def generate_next_month_exp(exp):
     """Generates a new exp for next monthly
     '2020-01-17'
@@ -41,6 +46,7 @@ def generate_next_month_exp(exp):
     return str(newDate)
 
 
+@lru_cache(maxsize=200)
 def generate_multiple_months(ticker, quantity):
     strike = round10(s.tickerPrice(ticker))
     monthly1 = validateExp(ticker, str(third_friday(getYear(), getMonth(), getMonthlyDay())), 'call', strike)
@@ -50,6 +56,7 @@ def generate_multiple_months(ticker, quantity):
     return months
 
 
+@lru_cache(maxsize=200)
 def third_friday(year, month, day):
     """Return datetime.date for monthly option expiration given year and month.
 
