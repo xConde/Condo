@@ -40,6 +40,11 @@ def readStocksMentioned():
 
 
 def pull_sp500(dir):
+    """ Pull top movers from SPY.
+
+    :param dir:
+    :return:
+    """
     movers = r.get_top_movers_sp500(dir)
     res = ""
     for i in range(0, 5):
@@ -50,6 +55,11 @@ def pull_sp500(dir):
 
 
 def formatThousand(val):
+    """ Transform large numbers to an easily read number.
+
+    :param val:
+    :return:
+    """
     if val > 1000:
         val = '{:.2f}'.format(round(val / 1000), 1) + 'K'
         if val[-3:] == '00K':
@@ -86,8 +96,7 @@ def grabPercent(curr, prev):
     :param prev: [float] previous value
     :return: [string] percent difference
     """
-    perc = round(((curr - prev) / prev * 100), 2)
-    perc = validateUporDown(float(perc))
+    perc = validateUporDown(float(round(((curr - prev) / prev * 100), 2)))
     return perc + '%'
 
 
@@ -112,8 +121,7 @@ def tickerPrice(stock):
     :param stock: {1-5} character stock-ticker
     :return: [float] current price
     """
-    price = float(r.get_latest_price(stock)[0])
-    return price
+    return float(r.get_latest_price(stock)[0])
 
 
 def grabIntradayHL(stock):
@@ -122,8 +130,7 @@ def grabIntradayHL(stock):
     :param stock: {1-5} character stock-ticker
     :return: [float] low, [float] high
     """
-    quote = r.get_fundamentals(stock)
-    quote = quote[0]
+    quote = r.get_fundamentals(stock)[0]
     low = '{:.2f}'.format(round(float(quote['low']), 2))
     high = '{:.2f}'.format(round(float(quote['high']), 2))
     return low, high

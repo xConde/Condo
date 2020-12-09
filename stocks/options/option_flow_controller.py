@@ -64,12 +64,8 @@ def mostExpensive(ticker):
     :param ticker:
     :return:
     """
-    import time
-    start = time.time()
     monthExp = cal.generate_multiple_months(ticker, 3)
     strike_value, optionValue1 = loadStrikes(ticker, monthExp)
-    end = time.time()
-    print(end - start)
 
     call_value = optionValue1[0]
     put_value = optionValue1[1]
