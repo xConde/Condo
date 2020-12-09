@@ -15,17 +15,21 @@ class StockCommands(commands.Cog):
 
     @commands.command(name='p')
     async def priceCheck(self, ctx, *args):
-        """Prints the price for stock tickers provided to discord.
+        """Takes in any amount of arguments for a price check on each ticker.
 
         :param ctx:
         :param args: (arg1), (arg2), ... (argN) Takes one to multiple stock tickers.
         :return:
         """
         res = ""
+        stocksRequested = []
         for stock in args:
-            if s.validateTicker(stock):
+            if s.validateTicker(stock) and stock not in stocksRequested:
+                stocksRequested.append(stock)
                 pcList, perc = s.pc(stock)  # currently not using perc return - maybe in future?
                 res += pcList
+            elif stock in stocksRequested:
+                continue
             else:
                 res += stock.upper() + " is not a valid ticker.\n"
         await ctx.send("```" + res + "```")
@@ -35,22 +39,22 @@ class StockCommands(commands.Cog):
         author = str(ctx.message.author.id)
         initiatedUser = True
         sudoUser = False
+        wlKeywords = ['refresh', 'reset', 'rm', 'remove']
+
         if not self.wl_dict:
             self.loadWatchlist()
         responseRet = ""
 
         if args and args[0][:2] == '<@':
-            if args[0][:3] == '<@!':
-                author = args[0][3:-1]
-            elif args[0][:2] == '<@':
-                author = args[0][2:-1]
             sudoUser = True
-            if len(args) > 1:
-                responseRet += "Cannot modify other watchlists\n"
+            author = args[0][2:-1]
+        elif args and args[0][:3] == '<@!':
+            sudoUser = True
+            author = args[0][3:-1]
 
         if self.wl_dict.get(author) is None and not sudoUser:
             if args:
-                if not (args[0]).lower() == 'refresh' or not (args[0]).lower() == 'reset':
+                if not args[0].lower() in wlKeywords:
                     wl_list = []
                     stockInArgs = False
                     for stock in args:
@@ -71,7 +75,7 @@ class StockCommands(commands.Cog):
                                        "To remove watchlist use the command \".wl refresh\"\n" + "```")
         elif not sudoUser:
             if args:
-                if (args[0]).lower() == 'refresh' or (args[0]).lower() == 'reset':
+                if args[0].lower() == 'refresh' or args[0].lower() == 'reset':
                     self.wl_dict.pop(author, None)
                     await ctx.send(
                         "```" + "Watchlist instance successfully removed for " + str(ctx.message.author) + "```")
