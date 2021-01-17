@@ -184,8 +184,8 @@ def autoPull():
 
     :return: [String] formatted result
     """
-    scheduledIndex = ['SPY', 'QQQ', 'VXX']
-    scheduledStocks = ['AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL', 'MSFT', 'NVDA', 'JPM']
+    scheduledIndex = ['SPY', 'QQQ', 'IWM', 'VXX']
+    scheduledStocks = ['AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL', 'MSFT', 'NVDA', 'JPM', 'TSLA']
 
     if cal.getHour() <= 13 and not (cal.getHour() == 14 and cal.getMinute() >= 30):
         res = "[15M pull] Pre-market @ " + cal.getEstTimestamp() + "\n"
