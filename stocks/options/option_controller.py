@@ -175,7 +175,6 @@ def pcOptionMin(stock, type, expir, strike_value=None, DTE=None, price=None, str
     return totalValue
 
 
-@lru_cache(maxsize=100)
 def pcOption(stock, strike, type, expir):
     """Given parameters needed to collect option data, validate/correct type, exp, and strike, and return option data
     relating to all of these fields. Also returns a msg if something major was defaulted when the user attempted to

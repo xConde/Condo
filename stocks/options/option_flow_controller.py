@@ -57,7 +57,6 @@ def dominatingSide(ticker, call, put, expDates=None):
     return res
 
 
-@lru_cache(maxsize=50)
 def mostExpensive(ticker):
     """Outputs dominating side and highest value strikes (+type)
 

@@ -136,6 +136,20 @@ def grabIntradayHL(stock):
     return low, high
 
 
+def grabSimplePrice(stock):
+    """Grabs a simple float price. If AH, use the extended hours price instead.
+
+    :param stock:
+    :return:
+    """
+    quote = r.get_quotes(stock)[0]
+
+    if quote['last_extended_hours_trade_price']:
+        return '{:.2f}'.format(round(float(quote['last_extended_hours_trade_price']), 2))
+    else:
+        return '{:.2f}'.format(round(float(quote['last_trade_price']), 2))
+
+
 def pc(stock):
     """Generates and formats stock prices based on if market is open or in after-hours.
 
