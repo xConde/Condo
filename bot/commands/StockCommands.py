@@ -126,18 +126,37 @@ class StockCommands(commands.Cog):
             res = ""
             stockList = {}
             stockPercent = {}
+            netPercentDAY = 0
+            countDay = 0
+            netPercentAH = 0
+            countAH = 0
             stockWPrice = self.wl_dict.get(author)
             for stock in stockWPrice:
-                pcList, perc = s.pc(stock)
+                pcList, perc = s.WLpc(stock)
                 stockList[stock] = pcList
-                stockPercent[stock] = perc
+                netPercentDAY += perc[0]
+                countDay += 1
+                if len(perc) == 1:
+                    stockPercent[stock] = perc[0]
+                else:
+                    stockPercent[stock] = perc[1]
+                    netPercentAH += perc[1]
+                    countAH += 1
+
             highestStock = s.checkMostMentioned(stockPercent, len(self.wl_dict[author]))
             for val in highestStock:
                 res += stockList[val]
 
+            if countAH > 1:
+                totalPercent = '{:<6}{:>15}{:>2}{:>4}{:>15}'.format('NET: ', s.validateUporDown(round(netPercentDAY/countDay, 2)) + '%',
+                                                      '|', 'AH: ', s.validateUporDown(round(netPercentAH/countAH, 2)) + '%' )
+            else:
+                totalPercent = '{:<6}{:>15}'.format('NET: ', s.validateUporDown(round(netPercentDAY/countDay, 2)) + '%')
+
             authorName = str(await self.bot.fetch_user(author)).split('#')
             await ctx.send("```" + responseRet + '------\n' + authorName[0] + "'s Watchlist\n" +
-                           '---------------------------------\n' + res + "```")
+                           '---------------------------------\n' + res + '---------------------------------\n' +
+                           totalPercent + "```")
 
     @commands.command(name='wl_history')
     async def wl_history(self, ctx, *args):
@@ -167,7 +186,7 @@ class StockCommands(commands.Cog):
                     tickerPrice += price
                 percDiff = s.grabPercent(float(currPrice), float(tickerPrice))
                 resPercDict[stock.upper()] = float(percDiff[:-1]), '{:<6}{:^8}{:>7}'.format(stock.upper() + ':', percDiff,
-                                                "Added @ $" + currPrice) + '\n'
+                                                "Added @ $" + tickerPrice) + '\n'
             highestStock = s.checkMostMentioned(resPercDict, len(self.wl_dict[author]))
             for val in highestStock:
                 res += resPercDict[val][1]
