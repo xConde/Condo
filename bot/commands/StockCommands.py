@@ -1,8 +1,13 @@
+import os  # Standard library
+import websocket
+import json
 from discord.ext import commands  # 3rd party package
 
 from bot import cal
 from stocks import stock_controller as s
 import csv  # 3rd Party Packages
+from dotenv import load_dotenv
+import alpaca_trade_api as tradeapi
 
 wl_csv = "doc/watchlist.csv"
 
@@ -10,8 +15,41 @@ wl_csv = "doc/watchlist.csv"
 class StockCommands(commands.Cog):
     wl_dict = {}  # Maintains stock ticker as key and times mentioned as value.
 
-    def __init__(self, bot):
+    def __init__(self, bot, on_close=None):
         self.bot = bot
+        load_dotenv()
+        ws = websocket.WebSocketApp(os.getenv('APCA_SOCKET'), on_open=self.on_open, on_message=self.on_message)
+        ws.run_forever()
+        self.alpaca_api = tradeapi.REST(
+            os.getenv('APCA_API_KEY_ID'),
+            os.getenv('APCA_API_SECRET_KEY'),
+            os.getenv('APCA_API_BASE_URL'),
+            'v2')
+
+    def on_open(self, ws):
+        auth_data = {
+            "action": "authenticate",
+            "data": {"key_id": os.getenv('APCA_API_KEY_ID'), "secret_key": os.getenv('APCA_API_SECRET_KEY')}
+        }
+        ws.send(json.dumps(auth_data))
+
+        listen = {"action": "listen", "data": {"streams": ["Q.BIGC"]}}
+        ws.send(json.dumps(listen))
+
+    def on_message(self, ws, msg):
+        print(msg)
+
+    @commands.command(name='alpaca')
+    async def testalpaca(self, ctx, *args):
+        # Get daily price data for AAPL over the last 5 trading days.
+        barset = self.alpaca_api.get_barset('AAPL', 'day', limit=5)
+        aapl_bars = barset['AAPL']
+
+        # See how much AAPL moved in that timeframe.
+        week_open = aapl_bars[0].o
+        week_close = aapl_bars[-1].c
+        percent_change = (week_close - week_open) / week_open * 100
+        print('AAPL moved {}% over the last 5 days'.format(percent_change))
 
     @commands.command(name='p')
     async def priceCheck(self, ctx, *args):

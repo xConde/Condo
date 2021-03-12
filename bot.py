@@ -15,6 +15,7 @@ initExt = [
     'bot.commands.OptionCommands',
     'bot.commands.BotCommands',
     'bot.tasks.Background',
+    'bot.commands.MiscCommands',
 ]
 
 if __name__ == '__main__':
