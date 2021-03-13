@@ -1,8 +1,8 @@
-Stonks
+Condo 
+<img src="https://www.emoji.co.uk/files/twitter-emojis/animals-nature-twitter/10664-monkey.png" width="100" height="100">
 ========================
-#### Stonks utilizes an unofficial Robinhood API (robin_stocks), discord API, and various other tools/imports to create a user-friendly environment for market enthusiasts. 
+#### Condo utilizes an unofficial Robinhood API (robin_stocks), discord API, and various other tools/imports to create a user-friendly environment for market enthusiasts. 
 
-![alt text](https://emoji.gg/assets/emoji/6522_Stonks.png)
 
 Table of Contents
 =================
@@ -18,10 +18,12 @@ Table of Contents
       * [Top/Bottom 5 S&P performing stocks](#top/bottom-5-s&p-performing-stocks)
       * [Portfolio status](#portfolio-status)
       * [Most mentioned stocks](#most-mentioned-stocks)
+      * [Personal Watchlists](#personal-watchlists)
+      * [Trending on Stocktwits](#trend)
+      * [Ark Investments](#ark)
    * [Features](#features)
       * [Background Loop](#background-loop)
       * [Checking S&P Anomalies](#anomalies)
-   * [Checklist](#checklist)
 <!--te-->
 
 Discord commands
@@ -304,6 +306,54 @@ Maintains a record of unique watchlists to each user per server to be initialize
     BABA: $276.48  -0.45% |AH: $276.90   +0.15%
     GE:    $10.40  -0.95% |AH: $10.41    +0.1%
     F:     $9.09   +0.11% |AH: $9.10   +0.11%
+<a name="trend"></a>
+##### Trend -
+Displays a price roster of the top 10 trending stock tickers from Stocktwits. 
+*********** 
+    Ex: .trend
+
+    Stocktwits Trending Stock Tickers
+    ---------------------------------
+    RIDE:  $14.78 -16.54% |AH: $15.18   +2.71%
+    GBTC:  $50.00  -4.36% |AH: $50.00    +0.0%
+    LLY:  $208.08   +1.4% |AH: $211.00    +1.4%
+    SYX:   $37.88  -0.16% |AH: $37.88    +0.0%
+    KWR:  $247.30  -0.31% |AH: $247.30    +0.0%
+    ASO:   $25.70   +2.8% |AH: $25.70    +0.0%
+    RACE: $195.81  -0.51% |AH: $195.81    +0.0%
+    ADES:  $5.75    +0.0% |AH: $5.75    +0.0%
+    ---------------------------------
+<a name="ark"></a>
+##### Ark -
+Displays a scraped excerpt from Ark investments recent buy/sells between multiple ETFs. 
+***********   
+    Ex: .ark
+
+    ARK Orders
+    ---------------------------------
+    ticker        date  shares  weight  fund direction
+       TER  2021-03-12  139619  0.0640  ARKK       Buy
+       BLI  2021-03-12   50512  0.0112  ARKK       Buy
+      TDOC  2021-03-12  162624  0.1281  ARKK       Buy
+     NTDOY  2021-03-12   97801  0.0908  ARKW      Sell
+       DDD  2021-03-12  243893  0.2130  ARKQ       Buy
+      AONE  2021-03-12    1223  0.0004  ARKQ       Buy
+       CAT  2021-03-12   20705  0.1345  ARKQ      Sell
+     KMTUY  2021-03-12   12300  0.0114  ARKQ      Sell
+      ESLT  2021-03-12   17055  0.0690  ARKQ       Buy
+       TSM  2021-03-12    5700  0.0198  ARKQ      Sell
+        DE  2021-03-12    3800  0.0409  ARKQ      Sell
+      KSPI  2021-03-12    9199  0.0158  ARKF       Buy
+      PSTI  2021-03-12   22034  0.0012  ARKG      Sell
+      IONS  2021-03-12   79806  0.0432  ARKG       Buy
+       TER  2021-03-11  133982  0.0629  ARKK       Buy
+      TDOC  2021-03-11  270500  0.2199  ARKK       Buy
+      SKLZ  2021-03-11  632223  0.2163  ARKW       Buy
+     NTDOY  2021-03-11  108109  0.1000  ARKW      Sell
+     KMTUY  2021-03-11   14000  0.0128  ARKQ      Sell
+      AONE  2021-03-11   50607  0.0175  ARKQ       Buy
+      ESLT  2021-03-11      98  0.0004  ARKQ       Buy
+    ---------------------------------
 
 Features
 =================
