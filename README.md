@@ -1,5 +1,5 @@
 Condo 
-<img src="https://www.emoji.co.uk/files/twitter-emojis/animals-nature-twitter/10664-monkey.png" width="100" height="100">
+<img src="https://www.emoji.co.uk/files/twitter-emojis/animals-nature-twitter/10664-monkey.png" width="80" height="80">
 ========================
 #### Condo utilizes an unofficial Robinhood API (robin_stocks), discord API, and various other tools/imports to create a user-friendly environment for market enthusiasts. 
 
