@@ -10,7 +10,7 @@ def trending():
             found = 0
             for symbol in result.json()["symbols"]:
                 stock = symbol["symbol"]
-                if stock.find('.') == -1 and found <= 10:
+                if stock.find('.') == -1 and found <= 10 and s.validateTicker(stock):
                     pc, _ = s.WLpc(stock)
                     res += pc
                     found += 1

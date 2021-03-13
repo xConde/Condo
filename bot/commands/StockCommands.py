@@ -119,7 +119,7 @@ class StockCommands(commands.Cog):
                     for stock in args:
                         if s.validateTicker(stock) and stock not in stockWPrice:
                             stockInArgs = True
-                            stockWPrice[stock] = s.grabSimplePrice(stock)
+                            stockWPrice[stock.upper()] = s.grabSimplePrice(stock)
                     if stockInArgs:
                         self.wl_dict[author] = stockWPrice
                         writeWatchlist(self.wl_dict)
@@ -143,17 +143,17 @@ class StockCommands(commands.Cog):
                     old_wl = []
                     updatedList = False
                     for stock in self.wl_dict[author]:
-                        old_wl.append(stock)
+                        old_wl.append(stock.upper())
                     if args[0].lower() == 'rm' or args[0].lower() == 'remove':
                         for stock in args:
-                            if s.validateTicker(stock) and stock in old_wl:
+                            if s.validateTicker(stock) and stock.upper() in old_wl:
                                 updatedList = True
-                                stockWPrice.pop(stock)
+                                stockWPrice.pop(stock.upper())
                     else:
                         for stock in args:
                             if s.validateTicker(stock) and stock not in old_wl:
                                 updatedList = True
-                                stockWPrice[stock] = s.grabSimplePrice(stock)
+                                stockWPrice[stock.upper()] = s.grabSimplePrice(stock)
                     if updatedList:
                         self.wl_dict[author] = stockWPrice
                         writeWatchlist(self.wl_dict)

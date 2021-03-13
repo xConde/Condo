@@ -18,6 +18,12 @@ Ex. .wl @Discord_user
 - Watchlist history: Maintains a record of price change since added
 Ex: .wl_history
 
+- Trend: Displays a price roster of the top 10 trending stock tickers from Stocktwits.
+Ex: .trend
+
+- Ark: Displays a scraped excerpt from Ark investments recent buy/sells between multiple ETFs.
+Ex: .ark
+
 ============== Options ==============
 - Option: Displays stock option information based on ticker, strike, type (call or put), and expiration.
 Ex: .option [stock], [strike]
