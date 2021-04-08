@@ -175,6 +175,25 @@ def pcOptionMin(stock, type, expir, strike_value=None, DTE=None, price=None, str
     return totalValue
 
 
+def stPcOption(stock, strike, type, expir):
+    option = r.find_options_by_expiration_and_strike(stock, expir, strike, type)[0]
+    curr = '{:.2f}'.format(round(float(option['adjusted_mark_price']), 2))
+    prev = '{:.2f}'.format(round(float(option['previous_close_price']), 2))
+    breakeven = '{:.2f}'.format(round(float(option['break_even_price']), 2))
+    iv = int(float(option['implied_volatility']) * 100)
+    perc = s.grabPercent(float(curr), float(prev))
+    volume = int(option['volume'])
+    volume = s.formatThousand(volume)
+    oi = int(option['open_interest'])
+    oi = s.formatThousand(oi)
+
+    res = '{}{:>8}{}{:>8}{:>10}{:>12}'.format('[' + str(strike) + type[0].upper() + ' ' + expir + '] $' + str(curr), perc,
+                                                         '\nVol:' + str(volume), 'OI:' + str(oi),
+                                                         'IV:' + str(iv) + '% ',
+                                                         'BE:' + str(breakeven) + '\n')
+    return res
+
+
 def pcOption(stock, strike, type, expir):
     """Given parameters needed to collect option data, validate/correct type, exp, and strike, and return option data
     relating to all of these fields. Also returns a msg if something major was defaulted when the user attempted to
@@ -199,7 +218,6 @@ def pcOption(stock, strike, type, expir):
         msg += 'Strike price ' + strike + ' did not exist for ' + stock.upper() + \
                '.\nDefaulted strike to ' + str(vstrike) + ' (1 ITM).\n'
     option = r.find_options_by_expiration_and_strike(stock, exp, vstrike, type)[0]
-    # print(option)
     curr = '{:.2f}'.format(round(float(option['adjusted_mark_price']), 2))
     prev = '{:.2f}'.format(round(float(option['previous_close_price']), 2))
     breakeven = '{:.2f}'.format(round(float(option['break_even_price']), 2))

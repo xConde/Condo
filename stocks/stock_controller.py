@@ -161,7 +161,7 @@ def WLpc(stock):
     prev = '{:.2f}'.format(round(float(quote['adjusted_previous_close']), 2))
     perc1 = grabPercent(float(curr), float(prev))
 
-    if cal.getDay() < 5 and 14 <= cal.getHour() < 21 and not (cal.getHour() == 14 and cal.getMinute() < 30):
+    if cal.getDay() < 5 and 9 <= cal.getEstHour() < 16 and not (cal.getEstHour() == 9 and cal.getMinute() < 30):
         low, high = grabIntradayHL(stock)
         res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                        '|', 'L: ' + str(low), 'H: ' + str(high)) + '\n'
@@ -192,7 +192,7 @@ def pc(stock):
     prev = '{:.2f}'.format(round(float(quote['adjusted_previous_close']), 2))
     perc1 = grabPercent(float(curr), float(prev))
 
-    if cal.getDay() < 5 and 14 <= cal.getHour() < 21 and not (cal.getHour() == 14 and cal.getMinute() < 30):
+    if cal.getDay() < 5 and 9 <= cal.getEstHour() < 16 and not (cal.getEstHour() == 9 and cal.getMinute() < 30):
         low, high = grabIntradayHL(stock)
         res = '{:<6}{:^8}{:>7}{:>2}{:>6}{:>11}'.format(stock.upper() + ':', '$' + str(curr), perc1,
                                                        '|', 'L: ' + str(low), 'H: ' + str(high)) + '\n'
@@ -232,9 +232,9 @@ def autoPull():
     scheduledIndex = ['SPY', 'QQQ', 'IWM', 'VXX']
     scheduledStocks = ['AAPL', 'FB', 'AMZN', 'NFLX', 'GOOGL', 'MSFT', 'NVDA', 'JPM', 'TSLA']
 
-    if cal.getHour() <= 13 and not (cal.getHour() == 14 and cal.getMinute() >= 30):
+    if cal.getEstHour() <= 8 and not (cal.getEstHour() == 9 and cal.getMinute() >= 30):
         res = "[15M pull] Pre-market @ " + cal.getEstTimestamp() + "\n"
-    elif cal.getHour() < 21:
+    elif cal.getEstHour() < 16:
         res = "[15M pull] Intraday @ " + cal.getEstTimestamp() + "\n"
     else:
         res = "[15M pull] After-hours @ " + cal.getEstTimestamp() + "\n"

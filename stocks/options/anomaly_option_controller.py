@@ -37,20 +37,6 @@ def prepare_Anomalies():
     anomaly = generate_SPY()
 
 
-def formatIntForHumans(num):
-    """Formats integer into a readable string format
-
-    :param num:
-    :return:
-    """
-    num = float('{:.3g}'.format(num))
-    magnitude = 0
-    while abs(num) >= 1000:
-        magnitude += 1
-        num /= 1000.0
-    return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
-
-
 def checkDiff(anomaly, value, optionSpecs, strike, type, expir):
     """Checks difference in the last recorded price and reports if the difference is greater than highestDiff for
     DTE

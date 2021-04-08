@@ -1,6 +1,6 @@
-import os  # Standard library
+import os
 
-from discord.ext import commands  # 3rd party packages
+from discord.ext import commands
 from dotenv import load_dotenv
 import robin_stocks as r
 

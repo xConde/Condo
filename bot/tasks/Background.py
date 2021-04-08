@@ -1,7 +1,7 @@
 import os  # Standard library
 from discord.ext import commands, tasks  # 3rd party package
 from stocks import stock_controller as s
-from bot.commands import StockCommands as sc
+from stocks.misc.stocktwits import sweepcast
 from bot import cal as cal
 import robin_stocks as r
 
@@ -23,20 +23,17 @@ class Background(commands.Cog):
         """
         await self.bot.wait_until_ready()
         channel = self.bot.get_channel(int(os.getenv('DISCORD_CHANNEL')))
+        altchannel = self.bot.get_channel(int(os.getenv('DISCORD_CHANNEL_ALT')))
         holidayDate = cal.getHolidays()
 
         if cal.getDay() < 5 and not self.bot.is_closed() and cal.getCurrentDay() not in holidayDate and \
-                (13 <= cal.getHour() <= 24):
-            """if min % 15 == 0 and (13 <= hour <= 24):
-                res = a.checkAnomalies(timestamp, daystamp)
-                if res:
-                    await channel.send("```" + res + "```")"""
+                (12 <= cal.getHour() <= 23):
             if cal.getMinute() % 15 == 0:
                 res = s.autoPull()
                 await channel.send("```" + res + "```")
             if cal.getMinute() % 5 == 0:
                 if not s.validateTicker('SPY'):
-                    user = await bot.fetch_user(247095523197190154)
+                    user = await bot.fetch_user(int(os.getenv('ROBINHOOD_USER_ACCOUNT')))
                     await channel.send(user.mention + " API key expired.")
                     if r.login(username=os.getenv('RH_USER'), password=os.getenv('RH_PASS')):
                         await channel.send("```" + 'Restarted Robinhood instance successfully.' + "```")
@@ -46,6 +43,13 @@ class Background(commands.Cog):
                             "```" + 'Failed to create Robinhood instance. Bot owner has been sent an SMS.' + "```")
                         print("Failed to create Robinhood instance.")
                 s.stocks_mentioned['SPY'] = s.stocks_mentioned.get('SPY', 0) - 1
+            if cal.getMinute() % 1 == 0:
+                msg, found = sweepcast()
+                if found:
+                    print('Option whales spotted')
+                    await channel.send("```" + msg + "```")
+                    await altchannel.send("```" + msg + "```")
+
         if cal.getMinute() % 10 == 0:
             s.writeStocksMentioned()
         if cal.getCurrentDay() in holidayDate and cal.getHour() == 14 and cal.getMinute() == 0:

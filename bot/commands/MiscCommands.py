@@ -1,7 +1,7 @@
 import os  # Standard library
 from discord.ext import commands  # 3rd party package
 from stocks.misc.stocktwits import trending
-from stocks.misc.ark import get_ark_daily
+from stocks.misc.ark import get_ark_daily, get_ark_holdings
 
 
 class MiscCommands(commands.Cog):
@@ -18,6 +18,13 @@ class MiscCommands(commands.Cog):
         # get_ark_daily()
         await ctx.send("```" + "ARK Orders" + '\n---------------------------------\n'
                        + get_ark_daily() + '\n---------------------------------\n' + "```")
+
+    @commands.command(name='ark_holdings')
+    async def arkHoldings(self, ctx):
+        # get_ark_daily()
+        await ctx.send("```" + "ARK Orders" + '\n---------------------------------\n'
+                       + get_ark_holdings() + '\n---------------------------------\n' + "```")
+
 
 
 

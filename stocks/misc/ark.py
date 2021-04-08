@@ -42,3 +42,32 @@ def get_ark_daily():
     df_orders["date"] = pd.to_datetime(df_orders["date"], format="%Y-%m-%dZ").dt.date
 
     return df_orders.loc[0:20].to_string(index=False)
+
+def get_ark_holdings():
+    url_orders = "https://cathiesark.com/ark-funds-combined/complete-holdings"
+
+    raw_page = requests.get(url_orders, headers={"User-Agent": random.choice(user_agent_strings)}).text
+
+    parsed_script = BeautifulSoup(raw_page, features='lxml').find(
+        "script", {"id": "__NEXT_DATA__"}
+    )
+
+    parsed_json = json.loads(parsed_script.string)
+
+    df_orders = pd.json_normalize(parsed_json["props"]["pageProps"]["arkPositions"])
+    df_orders.drop(
+        [
+            # "everything",
+            # "everything.profile.customThumbnail",
+            # "hidden",
+            "images.thumbnail",
+        ],
+        axis=1,
+        inplace=True,
+    )
+    #
+    # df_orders["date"] = pd.to_datetime(df_orders["date"], format="%Y-%m-%dZ").dt.date
+    #
+
+    print(df_orders.loc[0:20].to_string(index=False))
+    return df_orders.loc[0:20].to_string(index=False)

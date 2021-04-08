@@ -24,6 +24,20 @@ def DTE(expir):
         return (diff + 30 * (int(expir[5:7]) * year - int(now.month))) % 365
 
 
+def getMonthsOut(expir):
+    now = dt.datetime.now()
+    year = int(expir[-4:]) - int(now.year) + 1
+    diff = int(expir[3:5]) - int(now.day)
+    if int(expir[:2]) == int(now.month) and year == 1:
+        return 1
+    else:
+        return 1 + ((diff + 30 * (int(expir[:2]) * year - int(now.month))) % 365) // 30
+
+
+def convertDate(expir):
+    return datetime.strptime(expir, '%m-%d-%Y').strftime('%Y-%m-%d')
+
+
 @lru_cache(maxsize=200)
 def find_friday():
     """Finds next Friday.
@@ -52,7 +66,7 @@ def generate_multiple_months(ticker, quantity):
     monthly1 = validateExp(ticker, str(third_friday(getYear(), getMonth(), getMonthlyDay())), 'call', strike)
     months = [monthly1]
     for i in range(1, quantity):
-        months.append(validateExp(ticker, generate_next_month_exp(months[i-1]), 'call', strike))
+        months.append(validateExp(ticker, generate_next_month_exp(months[i - 1]), 'call', strike))
     return months
 
 
@@ -126,12 +140,16 @@ def getHour():
     return datetime.utcnow().hour
 
 
+def getEstHour():
+    return datetime.now(timezone('US/Eastern')).hour
+
+
 def getEstTimestamp():
     if getMinute() == 0:
         sMin = "00"
     else:
         sMin = str(getMinute())
-    return str(datetime.now(timezone('US/Eastern')).hour) + ":" + sMin + " EST"
+    return str(getEstHour()) + ":" + sMin + " EST"
 
 
 def getDayStamp():
@@ -150,3 +168,26 @@ def getHolidays():
         if str(date[1]) == "Good Friday":
             holidayDate[str(date[0])[5:]] = str(date[1])
     return holidayDate
+
+
+def formatIntForHumans(num):
+    """Formats integer into a readable string format
+
+    :param num:
+    :return:
+    """
+    num = float('{:.3g}'.format(num))
+    magnitude = 0
+    while abs(num) >= 1000:
+        magnitude += 1
+        num /= 1000.0
+    return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
+
+
+def formatStrForComputers(num):
+    numSwitch = {
+        'K': 1000,
+        'M': 1000000,
+    }
+    mult = num[len(num) - 1]
+    return int(num[:-1]) * numSwitch.get(mult)
